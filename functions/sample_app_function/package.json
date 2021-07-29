@@ -1,0 +1,9 @@
+{
+	"name": "sample_app_function",
+	"version": "1.0.0",
+	"main": "index.js",
+	"author": "user1@demo3.tranzition-zoho.com",
+	"dependencies": {
+		"zcatalyst-sdk-node": "latest"
+	}
+}
