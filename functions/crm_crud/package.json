@@ -1,0 +1,11 @@
+{
+	"name": "crm_crud",
+	"version": "1.0.0",
+	"main": "index.js",
+	"author": "stephane.ung@tranzition.fr",
+	"dependencies": {
+		"express": "^4.17.1",
+		"node-fetch": "^2.6.1",
+		"zcatalyst-sdk-node": "latest"
+	}
+}

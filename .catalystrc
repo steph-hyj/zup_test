@@ -1,0 +1,29 @@
+{
+  "defaults": {
+    "project": 1,
+    "env": 1
+  },
+  "actives": {
+    "project": 1,
+    "env": 1
+  },
+  "projects": [
+    {
+      "idx": 1,
+      "id": "128000000004001",
+      "name": "ZUP",
+      "domain": {
+        "id": 30003824257,
+        "name": "zup-20078233842.development"
+      },
+      "env": [
+        {
+          "idx": 1,
+          "id": "20078233842",
+          "name": "Development",
+          "type": 3
+        }
+      ]
+    }
+  ]
+}
