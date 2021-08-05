@@ -8,8 +8,8 @@ const HOST = 'www.zohoapis.eu';
 const AUTH_HOST = 'https://accounts.zoho.eu/oauth/v2/token';
 const PORT = 443;
 const fetch = require('node-fetch');
-const CLIENTID = '1000.R7DL1I33NXIRTFBOJR62ABWC6582QP'; //Add your client ID
-const CLIENT_SECRET = 'f56bd8485f6d7f26156ded430e7732586b769ce209'; //Add your client secret
+const CLIENTID = '1000.IYF7J63XV0A53M4ETIBX0VOW390GRU'; //Add your client ID
+const CLIENT_SECRET = '395daade4fea147b9bdb37e0e9f84f2f00c223ee74'; //Add your client secret
 
 //Fetches the Refresh Token by calling the getRefreshToken() function, and inserts it along with the userID in the Token table
 app.get('/generateToken', async (req, res) => {
@@ -44,7 +44,7 @@ app.get('/getUserDetails', async (req, res) => {
 		const userDetails = await getUserDetails(catalystApp);
 
 		if (userDetails.length !== 0) {
-			res.status(200).send({ userId: userDetails[0].Token.userId })
+			res.status(200).send({ userId: userDetails[0].Token.userId, userRole: userDetails[0].Token.Role })
 		} else {
 			res.status(200).send({ userId: null })
 		}
@@ -80,6 +80,7 @@ app.get('/crmData', async (req, res) => {
 
 			response.on('end', function () {
 				console.log(response.statusCode);
+				console.log(accessToken);
 				res.setHeader('content-type', 'application/json');
 				res.status(200).send(data)
 			});

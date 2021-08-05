@@ -47,7 +47,7 @@ function createLead() {
 }
 
 function logout() {
-    var redirectURL = "http://localhost:3000/app/signin.html"; //Add your app domain
+    var redirectURL = "http://localhost:3000/app/login.html"; //Add your app domain
     var auth = catalyst.auth;
     auth.signOut(redirectURL);
 }
@@ -143,7 +143,7 @@ function deleteLead() {
 }
 
 function showEditPopup(leadID) {
-
+    console.log(leadID);
     $.ajax({
         url: "/server/crm_crud/crmData/" + leadID,
         type: "get",
@@ -238,8 +238,8 @@ function getRequiredData(data) {
             "Phone": data[i].Phone,
             "Email": data[i].Email,
             "Company": data[i].Company,
-			"Edit": `<center><a href="javascript:showEditPopup('&quot;' + data[i].id + '&quot;)">&#9998;︎</a></center>`,
-            "Delete": `<center><a href="javascript:showDeletePopup(&quot;' + data[i].id + '&quot;)">&#128465;︎</a></center>`
+			"Edit": `<center><a href="javascript:showEditPopup(&quot;` + data[i].id + `&quot;)">&#9998;︎</a></center>`,
+            "Delete": `<center><a href="javascript:showDeletePopup(&quot;` + data[i].id + `&quot;)">&#128465;︎</a></center>`
         }
         resp.push(gulp);
     }
