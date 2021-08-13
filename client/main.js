@@ -1,6 +1,6 @@
 // YOUR JAVASCRIPT CODE FOR INDEX.HTML GOES HERE
 function createLead() {
-    debugger;
+    //debugger;
     $("#loader").show();
     var firstName = $("#firstName").val();
     var lastName = $("#lastName").val();
@@ -29,7 +29,7 @@ function createLead() {
             "Lead_Source": leadSource,
         }),
         success: function (data) {
-            debugger;
+            //debugger;
             $('#leads').trigger("reset");
             $("#myModalLabel").html("Success");
             $("#message").html("Lead Created Successfully");
@@ -64,6 +64,7 @@ function getUserDetails() {
                 $("#loader").hide();
                 if (data.userId) {
                     $("#main").show();
+                    getModules();
                     $("#connect").hide();
                 } else {
                     $("#connect").show();
@@ -85,10 +86,33 @@ function getUserDetails() {
     });
 }
 
+function getRecords(module) {
+    //debugger;
+    var tableContainer = document.getElementById("showData");
+    tableContainer.innerHTML = "";
+    $("#loaders").show();
+    console.log(module.id);
+    $.ajax({
+        url: "/server/crm_crud/module/"+module.id,
+        type: "get",
+        success: function (data) {
+            debugger;
+            $("#loaders").hide();
+            //renderTable(data.data);
+            checkColumn(module,data.data);
+        },
+        error: function (error) {
+            $("#myModalLabel").html("Failure");
+            $("#message").html("Please try again after Sometime");
+            $("#loader").hide();
+            $('#myModal').modal('show');
+        }
+    });
+}
 
 
 function getLeads() {
-    debugger;
+    //debugger;
     var tableContainer = document.getElementById("showData");
     tableContainer.innerHTML = "";
     $("#loaders").show();
@@ -96,7 +120,7 @@ function getLeads() {
         url: "/server/crm_crud/crmData",
         type: "get",
         success: function (data) {
-            debugger;
+            //debugger;
             var reqData = getRequiredData(data.data);
             $("#loaders").hide();
             renderTable(reqData);
@@ -108,9 +132,32 @@ function getLeads() {
             $('#myModal').modal('show');
         }
     });
-
-
 }
+
+function getModules() {
+    //debugger;
+    var tableContainer = document.getElementById("showData");
+    tableContainer.innerHTML = "";
+    $("#loaders").show();
+    $.ajax({
+        url: "/server/crm_crud/module",
+        type: "get",
+        success: function (data) {
+            //debugger;
+            console.log(data.modules);
+            var reqData = getModuleData(data.modules);
+            $("#loaders").hide();
+            navBar(reqData);
+        },
+        error: function (error) {
+            $("#myModalLabel").html("Failure");
+            $("#message").html("Please try again after Sometime");
+            $("#loader").hide();
+            $('#myModal').modal('show');
+        }
+    });
+}
+
 
 function showDeletePopup(leadID) {
     $('#ModalDanger').modal('show');
@@ -124,7 +171,7 @@ function deleteLead() {
         url: "/server/crm_crud/crmData/" + leadID,
         type: "delete",
         success: function (data) {
-            debugger;
+            //debugger;
             $('#ModalDanger').modal('toggle');
             $("#myModalLabel").html("Success");
             $("#message").html("Lead Deleted Successfully");
@@ -148,7 +195,7 @@ function showEditPopup(leadID) {
         url: "/server/crm_crud/crmData/" + leadID,
         type: "get",
         success: function (data) {
-            debugger;
+            //debugger;
             var respData = data.data;
             $('#editfirstName').val(respData[0].First_Name);
             $('#editlastName').val(respData[0].Last_Name);
@@ -206,7 +253,7 @@ function editLead() {
             "Lead_Source": leadSource
         }),
         success: function (data) {
-            debugger;
+            //debugger;
             $('#editForm').modal('toggle');
             $("#myModalLabel").html("Success");
             $("#message").html("Lead Edited Successfully");
@@ -226,6 +273,21 @@ function editLead() {
 
 }
 
+//Get all module to set navbar
+function getModuleData(data) {
+
+    var i;
+    var resp = [];
+    for (i = 0; i < data.length; i++) {
+        var gulp = {
+            "Module": data[i].singular_label,
+            "api_name": data[i].api_name
+        }
+        resp.push(gulp);
+    }
+    console.log(resp);
+    return resp;
+}
 
 function getRequiredData(data) {
 
@@ -246,7 +308,64 @@ function getRequiredData(data) {
     console.log(resp);
     return resp;
 }
-function renderTable(respData) {
+
+function navBar(respData) {
+ 
+    for(var i = 1; i < respData.length; i++)
+    {
+        var list = document.createElement("li");
+        list.className ="nav-item";
+        var link = document.createElement("a");
+        link.className = "nav-link";
+        link.id = respData[i].api_name;
+        link.setAttribute('onclick','getRecords('+respData[i].api_name+')');
+        link.innerHTML = respData[i].Module;
+        list.appendChild(link);
+        var bar = document.getElementById("navbar");
+        bar.appendChild(list);
+        if(i > 14)
+        {
+            break;
+        }
+    }
+    if(i <= respData.length)
+    {
+        for(var i = i+1; i < respData.length;i++)
+        {
+            $("#navbarDropdownMenuLink").show();
+            var otherModule = document.createElement("a");
+            otherModule.className = "dropdown-item";
+            otherModule.href = "#";
+            otherModule.innerHTML = respData[i].Module;
+            var list = document.getElementById("dropdown-menu")
+            list.prepend(otherModule);
+        }
+    }
+}
+
+//Show table 
+function renderTable(module,respData,column) {
+    var user = column.User;
+    column = column.Field;
+    console.log(user.role_details)
+    var role = user.role_details.role_name
+    console.log(role);
+    if(role.includes("User"))
+    {
+        if(column.length !== 0)
+        {
+            for(var i = 0; i < column.length; i++)
+            {
+                console.log(column[i].Field.Field_name);
+                hideCol = column[i].Field.Field_name;
+                for(var j = 0; j < respData.length; j++)
+                {
+                    delete respData[j][hideCol];
+                    console.log(respData[j]);
+                }
+            }
+        }   
+    }
     var col = [];
     for (var i = 0; i < respData.length; i++) {
         for (var key in respData[i]) {
@@ -262,20 +381,112 @@ function renderTable(respData) {
 
     for (var i = 0; i < col.length; i++) {
         var th = document.createElement("th");
-        th.innerHTML = col[i];
+        if(role.includes("Administrator"))
+        {
+            var checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = col[i];
+            checkbox.setAttribute('onchange','hideColumn('+col[i]+','+module.id+')');
+            if(column.length !== 0)
+            {
+                for(var j = 0; j < column.length; j++)
+                {
+                    if(col[i] == column[j].Field.Field_name)
+                    {
+                        checkbox.className = column[j].Field.ROWID;
+                        checkbox.setAttribute('checked','checked');
+                        console.log(checkbox);
+                    }
+                }   
+            }
+            th.appendChild(checkbox);    
+        }
+        var label = document.createElement("label");
+        label.innerHTML = "<br>"+col[i];
+        th.appendChild(label)
         tr.appendChild(th);
     }
     for (var i = 0; i < respData.length; i++) {
 
         tr = table.insertRow(-1);
 
+        // Owner Email == current user email => show data
+
         for (var j = 0; j < col.length; j++) {
             var tabCell = tr.insertCell(-1);
             tabCell.innerHTML = respData[i][col[j]];
         }
     }
+    var recordsTable = document.getElementById("main");
+    recordsTable.replaceChild(table, recordsTable.firstElementChild);
+}
 
-    var divContainer = document.getElementById("showData");
-    divContainer.innerHTML = "";
-    divContainer.appendChild(table);
+function hideColumn(col,module)
+{
+    var field = document.getElementById(col.id);
+    console.log(field);
+    if(field.checked)
+    {
+        console.log(col.id);
+        $.ajax({
+            url: "/server/crm_crud/record/"+col.id,
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify({
+                "Column": col.id,
+            }),
+            success: function (data) {
+                //debugger;
+                console.log(data);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+        getRecords(module);
+    }
+    else
+    {
+        $.ajax({
+            url: "/server/crm_crud/record/"+col.className,
+            type: "delete",
+            contentType: "application/json",
+            success: function (data) {
+                //debugger;
+                console.log(data);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+}
+
+function checkColumn(module,record)
+{
+    $.ajax({
+        url: "/server/crm_crud/record/checkColumn",
+        type: "get",
+        success: function (data) {
+            //debugger;
+            renderTable(module,record,data);
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+function getColumn(data) {
+
+    var i;
+    var resp = [];
+    for (i = 0; i < data.length; i++) {
+        var gulp = {
+            "Field name": data[i].Field.Field_name,
+            "id": data[i].Field.ROWID,
+        }
+        resp.push(gulp);
+    }
+    return resp;
 }
