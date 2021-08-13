@@ -10,6 +10,8 @@ const PORT = 443;
 const fetch = require('node-fetch');
 const CLIENTID = '1000.IYF7J63XV0A53M4ETIBX0VOW390GRU';
 const CLIENT_SECRET = '395daade4fea147b9bdb37e0e9f84f2f00c223ee74';
+const userController = require('../crm_crud/Controller/userController.js');
+const tokenController = require('./Controller/TokenController.js');
 
 
 app.use("/module",require("./routes/CRM/module.js"));
@@ -22,8 +24,8 @@ app.get('/crmData', async (req, res) => {
 
 	try {
 		const catalystApp = catalyst.initialize(req);
-		const userDetails = await getUserDetails(catalystApp);
-		const accessToken = await getAccessToken(catalystApp, userDetails);
+		const userDetails = await userController.getUserDetails(catalystApp);
+		const accessToken = await tokenController.getAccessToken(catalystApp, userDetails);
 		const options = {
 			'hostname': HOST,
 			'port': PORT,
@@ -59,8 +61,8 @@ app.get('/crmData/:id', async (req, res) => {
 
 	try {
 		const catalystApp = catalyst.initialize(req);
-		const userDetails = await getUserDetails(catalystApp);
-		const accessToken = await getAccessToken(catalystApp, userDetails);
+		const userDetails = await userController.getUserDetails(catalystApp);
+		const accessToken = await tokenController.getAccessToken(catalystApp, userDetails);
 		const options = {
 			'hostname': HOST,
 			'port': PORT,
@@ -103,8 +105,8 @@ app.post('/crmData', async (req, res) => {
 		if (!createData) {
 			res.status(400).send({ 'message': 'Data Not Found' });
 		}
-		const userDetails = await getUserDetails(catalystApp);
-		const accessToken = await getAccessToken(catalystApp, userDetails);
+		const userDetails = await userController.getUserDetails(catalystApp);
+		const accessToken = await tokenController.getAccessToken(catalystApp, userDetails);
 		const options = {
 			'hostname': HOST,
 			'port': PORT,
@@ -143,8 +145,8 @@ app.put('/crmData/:id', async (req, res) => {
 		if (!updateData) {
 			res.status(400).send({ 'message': 'Update Data Not Found' });
 		}
-		const userDetails = await getUserDetails(catalystApp);
-		const accessToken = await getAccessToken(catalystApp, userDetails);
+		const userDetails = await userController.getUserDetails(catalystApp);
+		const accessToken = await tokenController.getAccessToken(catalystApp, userDetails);
 		const options = {
 			'hostname': HOST,
 			'port': PORT,
@@ -177,8 +179,8 @@ app.delete('/crmData/:id', async (req, res) => {
 	console.log(`/crm/v2/Leads/${req.params.id}`);
 	try {
 		const catalystApp = catalyst.initialize(req);
-		const userDetails = await getUserDetails(catalystApp);
-		const accessToken = await getAccessToken(catalystApp, userDetails);
+		const userDetails = await userController.getUserDetails(catalystApp);
+		const accessToken = await tokenController.getAccessToken(catalystApp, userDetails);
 		const options = {
 			'hostname': HOST,
 			'port': PORT,
