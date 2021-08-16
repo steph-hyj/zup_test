@@ -14,6 +14,7 @@ const userController = require('../crm_crud/Controller/userController.js');
 const tokenController = require('./Controller/TokenController.js');
 
 
+app.use("/list",require("./routes/CRM/list.js"));
 app.use("/module",require("./routes/CRM/module.js"));
 app.use("/",require('./routes/CRM/user.js'));
 app.use("/record",require('./routes/CRM/records.js'));

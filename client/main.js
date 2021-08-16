@@ -20,6 +20,21 @@ var email = {
     }
 }
 
+var zoho_id = {
+    userZohoID: "",
+    getUserZohoID() {
+        return this.userEmail
+    },
+
+    setUserZohoID(zoho_id){
+        this.userZohoID = zoho_id;
+    }
+}
+
+function profile() {
+    window.location.href = "profile.html"; //Add your app domain
+}
+
 function createLead() {
     //debugger;
     $("#loader").show();
@@ -88,10 +103,12 @@ function getUserDetails() {
                     role.setUserRole(result.content.role_details.role_name);
                     email.setUserEmail(result.content.email_id);
                     getModules();
+                    getUserZohoID();
                     console.log("Role => " + JSON.stringify(role));
                     console.log("Email => " + JSON.stringify(email));
                     $("#connect").hide();
                 } else {
+                    console.log("ADMINISTRATOR");
                     $("#connect").show();
                     $("#main").hide();
                 }
@@ -157,6 +174,53 @@ function getRecords(module) {
     }
 }
 
+function getListDeals() {
+    //debugger;
+    var tableContainer = document.getElementById("showData");
+    tableContainer.innerHTML = "";
+    $("#loaders").show();
+    // console.log(module.id);
+
+    $.ajax({
+        url: "/server/crm_crud/list/getListDeals/"+zoho_id.userZohoID,
+        type: "get",
+        success: function (data) {
+            debugger;
+            $("#loaders").hide();
+            console.log("data => " + JSON.stringify(data));
+            checkColumn("Deals",data.data);
+        },
+        error: function (error) {
+            $("#myModalLabel").html("Failure");
+            $("#message").html("Please try again after Sometime");
+            $("#loader").hide();
+            $('#myModal').modal('show');
+        }
+    });
+}
+
+function getUserZohoID() {
+    //debugger;
+    var tableContainer = document.getElementById("showData");
+    tableContainer.innerHTML = "";
+    $("#loaders").show();
+    console.log("EMAIL ICI = " + email.userEmail);
+    $.ajax({
+        url: "/server/crm_crud/getUserZohoID/"+email.userEmail,
+        type: "get",
+        success: function (id) {
+            debugger;
+            zoho_id.setUserZohoID(id);
+            $("#loaders").hide();
+        },
+        error: function (error) {
+            $("#myModalLabel").html("Failure");
+            $("#message").html("Please try again after Sometime");
+            $("#loader").hide();
+            $('#myModal').modal('show');
+        }
+    });
+}
 
 function getLeads() {
     //debugger;

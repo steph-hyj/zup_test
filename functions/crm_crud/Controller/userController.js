@@ -1,6 +1,9 @@
 'use strict';
 const catalyst = require('zcatalyst-sdk-node');
 const tokenController = require('./TokenController.js');
+const HOST = 'www.zohoapis.eu';
+const PORT = 443;
+const http = require('https')
 
 exports.generateToken = async(req, res) => {
     try {
@@ -37,5 +40,40 @@ exports.getUserDetails = async(req, res) => {
 	catch (err) {
 		console.log(err);
 		res.status(500).send({ message: 'Internal Server Error in Getting User Details. Please try again after sometime.', error: err })
+	}
+};
+
+exports.getUserZohoID = async(req, res) => {
+	try {
+		const catalystApp = catalyst.initialize(req);
+		const userDetails = await tokenController.getUserDetails(catalystApp);
+		const accessToken = await tokenController.getAccessToken(catalystApp, userDetails);
+
+		const options = {
+			'hostname': HOST,
+			'port': PORT,
+			'method': 'GET',
+			'path': `/crm/v2/Contacts/search?email=${req.params.email}`,
+			'headers': {
+				'Authorization': `Zoho-oauthtoken ${accessToken}`
+			}
+		};
+		var data = "";
+		const request = http.request(options, function (response) {
+			response.on('data', function (chunk) {
+				data += chunk;
+			});
+			response.on('end', function () {
+				var mydatas= JSON.parse(data);
+				console.log("\nWelcome", "\x1b[32m\x1b[1m", req.params.email, "\x1b[0m", "your zoho id is :", "\x1b[34m\x1b[1m", mydatas.data[0].id, "\x1b[0m", "\n\n\t\t\t", "\x1b[1m\x1b[7m", "Have a happy day !", "\x1b[0m"); //// WELCOME MESSAGE
+				res.status(200).send(mydatas.data[0].id)
+			});
+		});
+		request.end();
+
+		}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.' })
 	}
 };

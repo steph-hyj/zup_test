@@ -94,6 +94,8 @@ exports.getRecord = async(req, res) => {
 			response.on('end', function () {
 				res.setHeader('content-type', 'application/json');
 				var zcrm_id = JSON.parse(LAST_REQUEST_DATA);
+				// // console.log(req.params.email);
+				// console.log(zcrm_id);
 				CLIENT_ZOHO_ID = zcrm_id.data[0].id;
 				res.status(200).send(data)
 			});

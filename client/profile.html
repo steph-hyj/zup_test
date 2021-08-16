@@ -26,19 +26,6 @@
     <script src="/__catalyst/sdk/init.js"></script>
 
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-
-    <style>
-        #connect {
-            height: 260px;
-            width: 500px;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            margin: auto;
-        }
-    </style>
 </head>
 
 <body onload="getUserDetails()">
@@ -46,20 +33,7 @@
     <br>
     <center>
         <h1>CRM Lead Manager</h1><br>
-    </center>
-
-    <div id="connect">
-
-        <center>
-            <p>Click here to connect to Zoho CRM</p>
-            <button onclick='navigate()'>
-                <img src="https://www.zohowebstatic.com/sites/default/files/styles/product-home-page/public/icon-crm_blue.png"
-                    style="width: 180px;height: 130px;">
-            </button>
-        </center>
-    </div>
-
-        
+    </center>        
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
@@ -74,14 +48,11 @@
           </ul>
         </div>
         <div style="width: 200px;float: right; margin-right: 30px;"><label for="logoutbtn"
-            class="btn btn-success btn-block btn-outlined">profile</label>
-        <button id="logoutbtn" onclick="profile()" style="display: none;"></button>
-        </div>
-        <div style="width: 200px;float: right; margin-right: 30px;"><label for="logoutbtn"
             class="btn btn-success btn-block btn-outlined">Logout</label>
         <button id="logoutbtn" onclick="logout()" style="display: none;"></button>
         </div>
     </nav>
+    
     <div id="main">
         <p id="records"></p>
         <div class="container">
@@ -90,9 +61,13 @@
                     <a class="nav-link active" id="check-tab" data-toggle="tab" href="#check" role="tab"
                         aria-controls="check" aria-selected="true">Add a Lead</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="report-tab" data-toggle="tab" href="#report" onclick="getLeads()" role="tab"
+                <!-- <li class="nav-item">
+                    <a class="nav-link" id="report-tab" data-toggle="tab" href="#report" onclick="getRelatedList()" role="tab"
                         aria-controls="report" aria-selected="false">Manage Leads</a>
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link" id="report-tab" data-toggle="tab" href="#report" onclick="getListDeals()" role="tab"
+                        aria-controls="report" aria-selected="false">getListDeals</a>
                 </li>
             </ul><br>
             <div class="tab-content" id="myTabContent">
@@ -307,11 +282,4 @@
         </div>
     </div>
 </body>
-<script>
-    //Add Your Client ID and Redirect URL here
-    function navigate() {
-        window.location.href = 'https://accounts.zoho.eu/oauth/v2/auth?scope=ZohoCRM.modules.ALL,ZohoCRM.settings.ALL,ZohoBooks.fullaccess.all&client_id=1000.IYF7J63XV0A53M4ETIBX0VOW390GRU&response_type=code&access_type=offline&redirect_uri=http://localhost:3000/server/crm_crud/generateToken';
-    }
-</script>
-
 </html>
