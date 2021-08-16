@@ -4,7 +4,7 @@ const PORT = 443;
 const catalyst = require('zcatalyst-sdk-node');
 const tokenController = require('./TokenController.js');
 
-exports.getAllModule = async (req, res) => {
+exports.getAllModules = async (req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
 		const userDetails = await tokenController.getUserDetails(catalystApp);
@@ -37,7 +37,7 @@ exports.getAllModule = async (req, res) => {
 	}
 };
 
-exports.getRecord = async(req, res) => {
+exports.getAllRecords = async(req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
 		const userDetails = await tokenController.getUserDetails(catalystApp);
@@ -70,16 +70,38 @@ exports.getRecord = async(req, res) => {
 	}
 };
 
-async function getUserDetails(catalystApp) {
+exports.getRecord = async(req, res) => {
+	try {
+		const catalystApp = catalyst.initialize(req);
+		const userDetails = await tokenController.getUserDetails(catalystApp);
+		const accessToken = await tokenController.getAccessToken(catalystApp, userDetails);
+		const options = {
+			'hostname': HOST,
+			'port': PORT,
+			'method': 'GET',
+			'path': `/crm/v2/${req.params.module}/search?email=${req.params.email}`,
+			'headers': {
+				'Authorization': `Zoho-oauthtoken ${accessToken}`
+			}
+		};
+		var data = "";
+		const request = http.request(options, function (response) {
+			response.on('data', function (chunk) {
+				data += chunk;
+				LAST_REQUEST_DATA = data;
+			});
 
-	let userManagement = catalystApp.userManagement();
-	let userDetails = await userManagement.getCurrentUser();
-	let query = 'SELECT * FROM Token where UserId=' + userDetails.user_id;
-	let zcql = catalystApp.zcql();
-	let userDetail = await zcql.executeZCQLQuery(query);
-	//console.log("User => "+ JSON.stringify(userDetails));
-	//console.log("User type => " + userDetails.user_type);
-
-	return userDetail;
-
-}
+			response.on('end', function () {
+				res.setHeader('content-type', 'application/json');
+				var zcrm_id = JSON.parse(LAST_REQUEST_DATA);
+				CLIENT_ZOHO_ID = zcrm_id.data[0].id;
+				res.status(200).send(data)
+			});
+		});
+		request.end();
+	}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.' })
+	}
+};
