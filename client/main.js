@@ -1,4 +1,25 @@
-// YOUR JAVASCRIPT CODE FOR INDEX.HTML GOES HERE
+var role = {
+    userRole: "",
+    getUserRole() {
+        return this.userRole
+    },
+
+    setUserRole(role){
+        this.userRole = role;
+    }
+}
+
+var email = {
+    userEmail: "",
+    getUserEmail() {
+        return this.userEmail
+    },
+
+    setUserEmail(email){
+        this.userEmail = email;
+    }
+}
+
 function createLead() {
     //debugger;
     $("#loader").show();
@@ -64,7 +85,11 @@ function getUserDetails() {
                 $("#loader").hide();
                 if (data.userId) {
                     $("#main").show();
+                    role.setUserRole(result.content.role_details.role_name);
+                    email.setUserEmail(result.content.email_id);
                     getModules();
+                    console.log("Role => " + JSON.stringify(role));
+                    console.log("Email => " + JSON.stringify(email));
                     $("#connect").hide();
                 } else {
                     $("#connect").show();
@@ -92,22 +117,44 @@ function getRecords(module) {
     tableContainer.innerHTML = "";
     $("#loaders").show();
     console.log(module.id);
-    $.ajax({
-        url: "/server/crm_crud/module/"+module.id,
-        type: "get",
-        success: function (data) {
-            debugger;
-            $("#loaders").hide();
-            //renderTable(data.data);
-            checkColumn(module,data.data);
-        },
-        error: function (error) {
-            $("#myModalLabel").html("Failure");
-            $("#message").html("Please try again after Sometime");
-            $("#loader").hide();
-            $('#myModal').modal('show');
-        }
-    });
+    if(role.userRole.includes("User"))
+    {
+        $.ajax({
+            url: "/server/crm_crud/module/"+module.id+"/"+email.userEmail,
+            type: "get",
+            success: function (data) {
+                debugger;
+                $("#loaders").hide();
+                //renderTable(data.data);
+                checkColumn(module,data.data);
+            },
+            error: function (error) {
+                $("#myModalLabel").html("Failure");
+                $("#message").html("Please try again after Sometime");
+                $("#loader").hide();
+                $('#myModal').modal('show');
+            }
+        });
+    }
+    else
+    {
+        $.ajax({
+            url: "/server/crm_crud/module/"+module.id,
+            type: "get",
+            success: function (data) {
+                debugger;
+                $("#loaders").hide();
+                //renderTable(data.data);
+                checkColumn(module,data.data);
+            },
+            error: function (error) {
+                $("#myModalLabel").html("Failure");
+                $("#message").html("Please try again after Sometime");
+                $("#loader").hide();
+                $('#myModal').modal('show');
+            }
+        });
+    }
 }
 
 
@@ -345,12 +392,8 @@ function navBar(respData) {
 
 //Show table 
 function renderTable(module,respData,column) {
-    var user = column.User;
     column = column.Field;
-    console.log(user.role_details)
-    var role = user.role_details.role_name
-    console.log(role);
-    if(role.includes("User"))
+    if(role.userRole.includes("User"))
     {
         if(column.length !== 0)
         {
@@ -381,7 +424,7 @@ function renderTable(module,respData,column) {
 
     for (var i = 0; i < col.length; i++) {
         var th = document.createElement("th");
-        if(role.includes("Administrator"))
+        if(role.userRole.includes("Administrator"))
         {
             var checkbox = document.createElement("input");
             checkbox.type = "checkbox";
