@@ -506,7 +506,7 @@ function renderTable(module,respData,column) {
                     }
                 }   
             }
-            th.appendChild(checkbox);    
+            th.appendChild(checkbox);
         }
         var label = document.createElement("label");
         label.innerHTML = "<br>"+col[i];
@@ -521,7 +521,8 @@ function renderTable(module,respData,column) {
 
         for (var j = 0; j < col.length; j++) {
             var tabCell = tr.insertCell(-1);
-            tabCell.innerHTML = respData[i][col[j]];
+            tabCell.innerHTML = JSON.stringify(respData[i][col[j]]);
+            // tabCell.innerHTML = respData[i][col[j]];
         }
     }
     var recordsTable = document.getElementById("main");
