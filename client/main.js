@@ -103,6 +103,7 @@ function getUserDetails() {
                     role.setUserRole(result.content.role_details.role_name);
                     email.setUserEmail(result.content.email_id);
                     getModules();
+                    getModulesProfile();
                     getUserZohoID();
                     console.log("Role => " + JSON.stringify(role));
                     console.log("Email => " + JSON.stringify(email));
@@ -128,51 +129,6 @@ function getUserDetails() {
     });
 }
 
-function getRecords(module) {
-    //debugger;
-    var tableContainer = document.getElementById("showData");
-    tableContainer.innerHTML = "";
-    $("#loaders").show();
-    console.log(module.id);
-    if(role.userRole.includes("User"))
-    {
-        $.ajax({
-            url: "/server/crm_crud/module/"+module.id+"/"+email.userEmail,
-            type: "get",
-            success: function (data) {
-                debugger;
-                $("#loaders").hide();
-                //renderTable(data.data);
-                checkColumn(module,data.data);
-            },
-            error: function (error) {
-                $("#myModalLabel").html("Failure");
-                $("#message").html("Please try again after Sometime");
-                $("#loader").hide();
-                $('#myModal').modal('show');
-            }
-        });
-    }
-    else
-    {
-        $.ajax({
-            url: "/server/crm_crud/module/"+module.id,
-            type: "get",
-            success: function (data) {
-                debugger;
-                $("#loaders").hide();
-                //renderTable(data.data);
-                checkColumn(module,data.data);
-            },
-            error: function (error) {
-                $("#myModalLabel").html("Failure");
-                $("#message").html("Please try again after Sometime");
-                $("#loader").hide();
-                $('#myModal').modal('show');
-            }
-        });
-    }
-}
 
 function getListDeals() {
     //debugger;
@@ -420,40 +376,6 @@ function getRequiredData(data) {
     return resp;
 }
 
-function navBar(respData) {
- 
-    for(var i = 1; i < respData.length; i++)
-    {
-        var list = document.createElement("li");
-        list.className ="nav-item";
-        var link = document.createElement("a");
-        link.className = "nav-link";
-        link.id = respData[i].api_name;
-        link.setAttribute('onclick','getRecords('+respData[i].api_name+')');
-        link.innerHTML = respData[i].Module;
-        list.appendChild(link);
-        var bar = document.getElementById("navbar");
-        bar.appendChild(list);
-        if(i > 14)
-        {
-            break;
-        }
-    }
-    if(i <= respData.length)
-    {
-        for(var i = i+1; i < respData.length;i++)
-        {
-            $("#navbarDropdownMenuLink").show();
-            var otherModule = document.createElement("a");
-            otherModule.className = "dropdown-item";
-            otherModule.href = "#";
-            otherModule.innerHTML = respData[i].Module;
-            var list = document.getElementById("dropdown-menu")
-            list.prepend(otherModule);
-        }
-    }
-}
-
 //Show table 
 function renderTable(module,respData,column) {
     column = column.Field;
@@ -529,46 +451,6 @@ function renderTable(module,respData,column) {
     recordsTable.replaceChild(table, recordsTable.firstElementChild);
 }
 
-function hideColumn(col,module)
-{
-    var field = document.getElementById(col.id);
-    console.log(field);
-    if(field.checked)
-    {
-        console.log(col.id);
-        $.ajax({
-            url: "/server/crm_crud/record/"+col.id,
-            type: "post",
-            contentType: "application/json",
-            data: JSON.stringify({
-                "Column": col.id,
-            }),
-            success: function (data) {
-                //debugger;
-                console.log(data);
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });
-        getRecords(module);
-    }
-    else
-    {
-        $.ajax({
-            url: "/server/crm_crud/record/"+col.className,
-            type: "delete",
-            contentType: "application/json",
-            success: function (data) {
-                //debugger;
-                console.log(data);
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });
-    }
-}
 
 function checkColumn(module,record)
 {
@@ -597,4 +479,361 @@ function getColumn(data) {
         resp.push(gulp);
     }
     return resp;
+}
+
+function navBar(respData) {
+ 
+    for(var i = 1; i < respData.length; i++)
+    {
+        var list = document.createElement("li");
+        list.className ="nav-item";
+        var link = document.createElement("a");
+        link.className = "nav-link";
+        link.id = respData[i].api_name;
+        link.setAttribute('onclick','getRecordsAll('+respData[i].api_name+')');
+        link.innerHTML = respData[i].Module;
+        list.appendChild(link);
+        var bar = document.getElementById("navbar");
+        bar.appendChild(list);
+        if(i > 14)
+        {
+            break;
+        }
+    }
+    if(i <= respData.length)
+    {
+        for(var i = i+1; i < respData.length;i++)
+        {
+            $("#navbarDropdownMenuLink").show();
+            var otherModule = document.createElement("a");
+            otherModule.className = "dropdown-item";
+            otherModule.href = "#";
+            otherModule.innerHTML = respData[i].Module;
+            var list = document.getElementById("dropdown-menu")
+            list.prepend(otherModule);
+        }
+    }
+}
+
+function getRecordsAll(module) {
+    //debugger;
+    var tableContainer = document.getElementById("showData");
+    tableContainer.innerHTML = "";
+    $("#loaders").show();
+    console.log(module.id);
+    if(role.userRole.includes("User"))
+    {
+        $.ajax({
+            url: "/server/crm_crud/module/"+module.id,
+            type: "get",
+            success: function (data) {
+                debugger;
+                $("#loaders").hide();
+                //renderTable(data.data);
+                checkColumn(module,data.data);
+            },
+            error: function (error) {
+                $("#myModalLabel").html("Failure");
+                $("#message").html("Please try again after Sometime");
+                $("#loader").hide();
+                $('#myModal').modal('show');
+            }
+        });
+    }
+    else
+    {
+        $.ajax({
+            url: "/server/crm_crud/module/"+module.id,
+            type: "get",
+            success: function (data) {
+                debugger;
+                $("#loaders").hide();
+                //renderTable(data.data);
+                checkColumn(module,data.data);
+            },
+            error: function (error) {
+                $("#myModalLabel").html("Failure");
+                $("#message").html("Please try again after Sometime");
+                $("#loader").hide();
+                $('#myModal').modal('show');
+            }
+        });
+    }
+}
+
+function hideColumn(col,module)
+{
+    var field = document.getElementById(col.id);
+    console.log(field);
+    if(field.checked)
+    {
+        console.log(col.id);
+        $.ajax({
+            url: "/server/crm_crud/record/"+col.id,
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify({
+                "Column": col.id,
+            }),
+            success: function (data) {
+                //debugger;
+                console.log(data);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+        getRecordsAll(module);
+    }
+    else
+    {
+        $.ajax({
+            url: "/server/crm_crud/record/"+col.className,
+            type: "delete",
+            contentType: "application/json",
+            success: function (data) {
+                //debugger;
+                console.log(data);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+}
+
+//////////////////////// PROFILE /////////////////////////
+
+function navbarProfile(respData) {
+ 
+    for(var i = 1; i < respData.length; i++)
+    {
+        var list = document.createElement("li");
+        list.className ="nav-item";
+        var link = document.createElement("a");
+        link.className = "nav-link";
+        link.id = respData[i].api_name;
+        link.setAttribute('onclick','getRecordsProfile('+respData[i].api_name+')');
+        link.innerHTML = respData[i].Module;
+        list.appendChild(link);
+        var bar = document.getElementById("navbarProfile");
+        bar.appendChild(list);
+        if(i > 14)
+        {
+            break;
+        }
+    }
+    if(i <= respData.length)
+    {
+        for(var i = i+1; i < respData.length;i++)
+        {
+            $("#navbarDropdownMenuLink").show();
+            var otherModule = document.createElement("a");
+            otherModule.className = "dropdown-item";
+            otherModule.href = "#";
+            otherModule.innerHTML = respData[i].Module;
+            var list = document.getElementById("dropdown-menu")
+            list.prepend(otherModule);
+        }
+    }
+}
+
+function getRecordsProfile(module) {
+    //debugger;
+    var tableContainer = document.getElementById("showData");
+    tableContainer.innerHTML = "";
+    $("#loaders").show();
+    console.log(module.id);
+    if(role.userRole.includes("User"))
+    {
+        $.ajax({
+            url: "/server/crm_crud/module/"+module.id+"/"+email.userEmail,
+            type: "get",
+            success: function (data) {
+                debugger;
+                $("#loaders").hide();
+                //renderTable(data.data);
+                checkColumnProfile(module,data.data);
+            },
+            error: function (error) {
+                $("#myModalLabel").html("Failure");
+                $("#message").html("Please try again after Sometime");
+                $("#loader").hide();
+                $('#myModal').modal('show');
+            }
+        });
+    }
+    else
+    {
+        $.ajax({
+            url: "/server/crm_crud/module/"+module.id,
+            type: "get",
+            success: function (data) {
+                debugger;
+                $("#loaders").hide();
+                //renderTable(data.data);
+                checkColumnProfile(module,data.data);
+            },
+            error: function (error) {
+                $("#myModalLabel").html("Failure");
+                $("#message").html("Please try again after Sometime");
+                $("#loader").hide();
+                $('#myModal').modal('show');
+            }
+        });
+    }
+}
+
+function hideColumnProfile(col,module)
+{
+    var field = document.getElementById(col.id);
+    console.log(field);
+    if(field.checked)
+    {
+        console.log(col.id);
+        $.ajax({
+            url: "/server/crm_crud/record/"+col.id,
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify({
+                "Column": col.id,
+            }),
+            success: function (data) {
+                //debugger;
+                console.log(data);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+        getRecordsProfile(module);
+    }
+    else
+    {
+        $.ajax({
+            url: "/server/crm_crud/record/"+col.className,
+            type: "delete",
+            contentType: "application/json",
+            success: function (data) {
+                //debugger;
+                console.log(data);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+}
+
+function renderTableProfile(module,respData,column) {
+    column = column.Field;
+    if(role.userRole.includes("User"))
+    {
+        if(column.length !== 0)
+        {
+            for(var i = 0; i < column.length; i++)
+            {
+                console.log(column[i].Field.Field_name);
+                hideCol = column[i].Field.Field_name;
+                for(var j = 0; j < respData.length; j++)
+                {
+                    delete respData[j][hideCol];
+                    console.log(respData[j]);
+                }
+            }
+        }   
+    }
+    var col = [];
+    for (var i = 0; i < respData.length; i++) {
+        for (var key in respData[i]) {
+            if (col.indexOf(key) === -1) {
+                col.push(key);
+            }
+        }
+    }
+    var table = document.createElement("table");
+    table.id = "dataTable";
+
+    var tr = table.insertRow(-1);
+
+    for (var i = 0; i < col.length; i++) {
+        var th = document.createElement("th");
+        if(role.userRole.includes("Administrator"))
+        {
+            var checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = col[i];
+            checkbox.setAttribute('onchange','hideColumnProfile('+col[i]+','+module.id+')');
+            if(column.length !== 0)
+            {
+                for(var j = 0; j < column.length; j++)
+                {
+                    if(col[i] == column[j].Field.Field_name)
+                    {
+                        checkbox.className = column[j].Field.ROWID;
+                        checkbox.setAttribute('checked','checked');
+                        console.log(checkbox);
+                    }
+                }   
+            }
+            th.appendChild(checkbox);
+        }
+        var label = document.createElement("label");
+        label.innerHTML = "<br>"+col[i];
+        th.appendChild(label)
+        tr.appendChild(th);
+    }
+    for (var i = 0; i < respData.length; i++) {
+
+        tr = table.insertRow(-1);
+
+        // Owner Email == current user email => show data
+
+        for (var j = 0; j < col.length; j++) {
+            var tabCell = tr.insertCell(-1);
+            tabCell.innerHTML = JSON.stringify(respData[i][col[j]]);
+            // tabCell.innerHTML = respData[i][col[j]];
+        }
+    }
+    var recordsTable = document.getElementById("main");
+    recordsTable.replaceChild(table, recordsTable.firstElementChild);
+}
+
+function checkColumnProfile(module,record)
+{
+    $.ajax({
+        url: "/server/crm_crud/record/checkColumn",
+        type: "get",
+        success: function (data) {
+            //debugger;
+            renderTableProfile(module,record,data);
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+function getModulesProfile() {
+    //debugger;
+    var tableContainer = document.getElementById("showData");
+    tableContainer.innerHTML = "";
+    $("#loaders").show();
+    $.ajax({
+        url: "/server/crm_crud/module",
+        type: "get",
+        success: function (data) {
+            //debugger;
+            console.log(data.modules);
+            var reqData = getModuleData(data.modules);
+            $("#loaders").hide();
+            navbarProfile(reqData);
+        },
+        error: function (error) {
+            $("#myModalLabel").html("Failure");
+            $("#message").html("Please try again after Sometime");
+            $("#loader").hide();
+            $('#myModal').modal('show');
+        }
+    });
 }
