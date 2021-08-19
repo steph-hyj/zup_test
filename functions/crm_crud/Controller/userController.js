@@ -3,7 +3,7 @@ const catalyst = require('zcatalyst-sdk-node');
 const tokenController = require('./TokenController.js');
 const HOST = 'www.zohoapis.eu';
 const PORT = 443;
-const http = require('https')
+const http = require('https');
 
 exports.generateToken = async(req, res) => {
     try {

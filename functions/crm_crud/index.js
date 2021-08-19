@@ -5,19 +5,21 @@ const app = express();
 app.use(express.json());
 const catalyst = require('zcatalyst-sdk-node');
 const HOST = 'www.zohoapis.eu';
-const AUTH_HOST = 'https://accounts.zoho.eu/oauth/v2/token';
 const PORT = 443;
-const fetch = require('node-fetch');
-const CLIENTID = '1000.IYF7J63XV0A53M4ETIBX0VOW390GRU';
-const CLIENT_SECRET = '395daade4fea147b9bdb37e0e9f84f2f00c223ee74';
 const userController = require('../crm_crud/Controller/userController.js');
 const tokenController = require('./Controller/TokenController.js');
 
+/** Route to generate token, get user details and get user's id in ZCrm */
+app.use("/",require('./routes/user.js'));
 
+/** Route for records/modules/list of deals in ZCrm */
 app.use("/list",require("./routes/CRM/list.js"));
 app.use("/module",require("./routes/CRM/module.js"));
-app.use("/",require('./routes/CRM/user.js'));
 app.use("/record",require('./routes/CRM/records.js'));
+
+/** Route for ZBooks */
+app.use("/books",require('./routes/Books/organization.js'));
+app.use("/books/invoices",require('./routes/Books/invoice.js'));
 
 //Executes various APIs to access, add, or modify leads in CRM
 //Fetches all leads
