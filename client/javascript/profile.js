@@ -489,7 +489,7 @@ function getRecordsProfile(module) {
     if(role.userRole.includes("User"))
     {
         $.ajax({
-            url: "/server/crm_crud/module/"+module.id+"/"+email.userEmail,
+            url: "/server/crm_crud/module/"+module.id+"/"+zoho_id.userZohoID,
             type: "get",
             success: function (data) {
                 debugger;

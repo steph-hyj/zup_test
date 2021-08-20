@@ -3,6 +3,6 @@ const moduleController = require('../../Controller/CRM/ModuleController.js');
 
 router.get('/',moduleController.getAllModules);
 router.get('/:module',moduleController.getAllRecords);
-router.get('/:module/:email',moduleController.getRecord);
+router.get('/:module/:zoho_id',moduleController.getRecord);
 
 module.exports = router;

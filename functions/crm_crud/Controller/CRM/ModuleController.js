@@ -69,7 +69,8 @@ exports.getAllRecords = async(req, res) => {
 		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.' })
 	}
 };
-
+// 'path': `/crm/v2/${req.params.module}/search?email=${req.params.email}`,
+// https://www.zohoapis.com/crm/v2/Leads/410888000000698006/Notes"
 exports.getRecord = async(req, res) => {
 	try {
 		const catalystApp = catalyst.initialize(req);
@@ -79,12 +80,13 @@ exports.getRecord = async(req, res) => {
 			'hostname': HOST,
 			'port': PORT,
 			'method': 'GET',
-			'path': `/crm/v2/${req.params.module}/search?email=${req.params.email}`,
+			'path': `/crm/v2/Contacts/${req.params.zoho_id}/${req.params.module}`,
 			'headers': {
 				'Authorization': `Zoho-oauthtoken ${accessToken}`
 			}
 		};
 		var data = "";
+		console.log(options);
 		const request = http.request(options, function (response) {
 			response.on('data', function (chunk) {
 				data += chunk;
@@ -94,7 +96,7 @@ exports.getRecord = async(req, res) => {
 				res.setHeader('content-type', 'application/json');
 				var zcrm_id = JSON.parse(data);
 				// // console.log(req.params.email);
-				// console.log(zcrm_id);
+				console.log(zcrm_id);
 				// CLIENT_ZOHO_ID = zcrm_id.data[0].id;
 				res.status(200).send(zcrm_id)
 			});
