@@ -69,8 +69,8 @@ exports.getAllRecords = async(req, res) => {
 		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.' })
 	}
 };
-// 'path': `/crm/v2/${req.params.module}/search?email=${req.params.email}`,
-// https://www.zohoapis.com/crm/v2/Leads/410888000000698006/Notes"
+
+
 exports.getRecord = async(req, res) => {
 	try {
 		const catalystApp = catalyst.initialize(req);
@@ -86,20 +86,19 @@ exports.getRecord = async(req, res) => {
 			}
 		};
 		var data = "";
-		console.log(options);
 		const request = http.request(options, function (response) {
 			response.on('data', function (chunk) {
 				data += chunk;
 			});
-
-			response.on('end', function () {
+		response.on('end', function () {
+			if (data) {
+				console.log(JSON.parse(data));
 				res.setHeader('content-type', 'application/json');
 				var zcrm_id = JSON.parse(data);
-				// // console.log(req.params.email);
-				console.log(zcrm_id);
-				// CLIENT_ZOHO_ID = zcrm_id.data[0].id;
 				res.status(200).send(zcrm_id)
-			});
+			} else {
+				res.status(500).send({ message: 'Internal Server Error. List is empty.' })
+			}});
 		});
 		request.end();
 	}

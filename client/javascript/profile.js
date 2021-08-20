@@ -59,7 +59,7 @@ function getUserDetailsProfile() {
                     $("#main").show();
                     role.setUserRole(result.content.role_details.role_name);
                     email.setUserEmail(result.content.email_id);
-                    getModulesProfile();
+                    getRelatedListProfile();
                     getUserZohoID();
                     //checkModule();
                     console.log("Role => " + JSON.stringify(role));
@@ -499,7 +499,7 @@ function getRecordsProfile(module) {
             },
             error: function (error) {
                 $("#myModalLabel").html("Failure");
-                $("#message").html("Please try again after Sometime");
+                $("#message").html("List is empty.");
                 $("#loader").hide();
                 $('#myModal').modal('show');
             }
@@ -656,18 +656,18 @@ function checkColumnProfile(module,record)
     });
 }
 
-function getModulesProfile() {
+function getRelatedListProfile() {
     //debugger;
     var tableContainer = document.getElementById("showData");
     tableContainer.innerHTML = "";
     $("#loaders").show();
     $.ajax({
-        url: "/server/crm_crud/module",
+        url: "/server/crm_crud/list/getRelatedList",
         type: "get",
         success: function (data) {
             //debugger;
             console.log(data.modules);
-            var reqData = getModuleData(data.modules);
+            var reqData = getModuleData(data.related_lists);
             $("#loaders").hide();
             navbarProfile(reqData);
         },
@@ -686,7 +686,7 @@ function getModuleData(data) {
     var resp = [];
     for (i = 0; i < data.length; i++) {
         var gulp = {
-            "Module": data[i].singular_label,
+            "Module": data[i].module,
             "api_name": data[i].api_name
         }
         resp.push(gulp);
