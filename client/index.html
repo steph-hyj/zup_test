@@ -38,20 +38,7 @@
     </head>
 
     <body onload="getUserDetails()">
-
-        <br>
-
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">  
-            <center>
-                <h1 class="text-center">Zoho Unified Portal</h1>
-            </center>
-
-            <button class="btn btn-primary me-md-2" onclick="profile()" id="profile" type="button">Profile</button>
-            <button class="btn btn-primary" onclick="logout()" id="logout" type="button">Logout</button>
-        </div>
-
         <div id="connect">
-
             <center>
                 <p>Click here to connect to Zoho CRM</p>
                 <button onclick='navigate()'>
@@ -63,158 +50,134 @@
 
         <div class="container-fluid">
             <div class="row">
-                <nav class="navbar navbar-expand-lg navbar-light bg-light" style="width: 100%;">
-                    <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                        <ul class="nav nav-pills nav-fill" id="navbar">
-                            <li></li>
-                        </ul>
-                    </div>
-                </nav>
-                <div class="col-sm-auto bg-light sticky-top">
-                    <div class="d-flex flex-sm-column flex-row flex-nowrap bg-light align-items-center sticky-top">
-                        <ul class="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-center align-items-center">
+                <nav class="navbar navbar-dark bg-dark" aria-label="navbar">
+                    <div class="container-fluid sticky-top">
+                      <a class="navbar-brand" href="#">Zoho Unified Portal</a>
+                      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarApp" aria-controls="navbarApp" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                      </button>
+                      <div class="collapse navbar-collapse" id="navbarApp">
+                        <ul class="navbar-nav me-auto mb-2">
                             <li class="nav-item">
-                                <a onclick="getModules()" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">
-                                    <img src="logo/zcrm_logo.png" style="width: 50px;height: 50px;"></img>
+                                <a onclick="getModules()" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="ZCrm">
+                                    Zoho CRM
                                 </a>
                             </li>
                             <li>
-                                <a onclick="getOrganizationID()" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Dashboard">
-                                    <img src="logo/zbooks_logo.png" style="width: 50px;height: 50px;"></img>
+                                <a onclick="getOrganizationID()" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Books">
+                                    Zoho Books
                                 </a>
                             </li>
+                            <li>
+                                <a onclick="profile()" id="profile" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="profile">
+                                   Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a onclick="logout()" class="nav-link py-3 px-2" id="logout" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="logout">
+                                    Logout
+                                </a>
+                            </li>
+                        </ul>
+                      </div>
+                    </div>
+                </nav>
+                
+                <div class="col-sm-auto bg-light sticky-top">
+                    <div class="d-flex flex-sm-column flex-row flex-nowrap bg-light align-items-center sticky-top" id="navbarNavDropdown">
+                        <ul class="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-center align-items-center" id="navbar">
+                            <li id="first"></li>
+                            <li id="second"></li>
+                        </ul>
+                        <ul class="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-center align-items-center" id="navbar2">
+                            <li id="first"></li>
+                            <li id="second"></li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-sm p-3 min-vh-100">
                     <div id="main">
-                        <div id="module">
-                            
-                        </div>
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">  
-                            <button class="btn btn-primary" onclick="" id="add" type="button" style="display: none;"></button>
-                        </div>
-                        <div id="table" class="table-responsive">
-                            <p id="records"></p>
-                        </div>
-                        
-                        <div class="container">
-                            <ul class="nav nav-tabs nav-justified mb-3" id="myTab" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" id="check-tab" data-toggle="tab" href="#check" role="tab"
-                                        aria-controls="check" aria-selected="true">Add a Lead</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="report-tab" data-toggle="tab" href="#report" onclick="getLeads()" role="tab"
-                                        aria-controls="report" aria-selected="false">Manage Leads</a>
-                                </li>
-                            </ul><br>
-                            <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane fade show active" id="check" role="tabpanel" aria-labelledby="check-tab">
-                                    <div class="tab-pane fade show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1">
-                                        <div style="margin-left: 100px; margin-right:100px;">
-                                            <form id="leads">
-                                                <!-- 2 column grid layout with text inputs for the first and last names -->
-                                                <div class="row mb-4">
-                                                    <div class="col">
-                                                        <div class="form-outline">
-                                                            <label class="form-label" for="form6Example1">First name</label>
-                                                            <input type="text" id="firstName" class="form-control" />
-                
-                                                        </div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="form-outline">
-                                                            <label class="form-label" for="form6Example2">Last name</label>
-                                                            <input type="text" id="lastName" class="form-control" required />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                
-                                                <!-- Text input -->
-                                                <div class="form-outline mb-4">
-                                                    <label class="form-label" for="form6Example3">Company name</label>
-                                                    <input type="text" id="companyName" class="form-control" />
-                
-                                                </div>
-                
-                                                <!-- Email input -->
-                                                <div class="form-outline mb-4">
-                                                    <label class="form-label" for="form6Example5">Email</label>
-                                                    <input type="email" id="email" class="form-control" />
-                
-                                                </div>
-                
-                                                <!-- Text input -->
-                                                <div class="form-outline mb-4">
-                                                    <label class="form-label" for="form6Example4">State</label>
-                                                    <input type="text" id="state" class="form-control" />
-                
-                                                </div>
-                
-                                                <!-- Number input -->
-                                                <div class="form-outline mb-4">
-                                                    <label class="form-label" for="form6Example6">Phone</label>
-                                                    <input type="number" id="phone" class="form-control" />
-                
-                                                </div>
-                
-                                                <!-- Number input -->
-                                                <div class="form-outline mb-4">
-                                                    <label class="form-label" for="form6Example6">Lead Source</label>
-                                                    <input type="text" id="leadSource" class="form-control" />
-                
-                                                </div>
-                                                <!-- Submit button -->
-                                                <center><button type="submit" onclick="createLead();return false;"
-                                                        class="btn btn-primary btn-block mb-4">Add Lead</button>
-                
-                                                    <div id="loader" style="display: none;">
-                                                        <div class="spinner-border" role="status">
-                                                            <span class="sr-only">Loading...</span>
-                                                        </div>
-                                                    </div>
-                                                </center>
-                                            </form>
-                                        </div>
-                                    </div>
+                        <div class="card">
+                            <div class="card-body" style="display: none;" id="cardBody">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">  
+                                    <button type="button" class="btn btn-primary" id="add" data-bs-toggle="modal" data-bs-target="#exampleModal" style="display: none;">
+                                    </button>
                                 </div>
-                
-                                <div class="tab-pane fade" id="report" role="tabpanel" aria-labelledby="report-tab">
-                                    <center>
-                                        <div id="loaders" style="display: none; padding-top: 200px;">
-                                            <div class="spinner-border" role="status">
-                                                <span class="sr-only">Loading...</span>
-                                            </div>
-                                        </div>
-                                    </center>
-                                    <p id="showData"></p>
+                                <div id="table" class="table-responsive">
+                                    <p id="records"></p>
+                                </div>
+                                <div id="ModuleTable" class="table">
+                                    <p id="p"></p>
                                 </div>
                             </div>
+                        </div>              
+                        <div class="tab-pane fade" id="report" role="tabpanel" aria-labelledby="report-tab">
+                            <center>
+                                <div id="loaders" style="display: none; padding-top: 200px;">
+                                    <div class="spinner-border" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            </center>
+                            <p id="showData"></p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-            <!-- Modal -->
-            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-                aria-hidden="true">
-                <div class="vertical-alignment-helper">
-                    <div class="modal-dialog vertical-align-center">
-                        <div class="modal-content">
-                            <center>
-                                <h4 class="modal-title" id="myModalLabel"></h4>
-                                <div class="modal-body" id="message"></div>
-                                <div class="modal-footer">
-                                    <button type="button" style="background-color: #007bff;color: white;"
-                                        class="btn btn-default" data-dismiss="modal">Close</button>
-                                </div>
-                            </center>
+        <!-- Create Form Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitle">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form>
+                        <div class="modal-body" id="modalBody">
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Email address</label>
+                                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputPassword1" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="exampleInputPassword1">
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                            </div>
                         </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Edit Form Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="vertical-alignment-helper">
+                <div class="modal-dialog vertical-align-center">
+                    <div class="modal-content">
+                        <center>
+                            <h4 class="modal-title" id="myModalLabel"></h4>
+                            <div class="modal-body" id="message"></div>
+                            <div class="modal-footer">
+                                <button type="button" style="background-color: #007bff;color: white;"
+                                    class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </center>
                     </div>
                 </div>
             </div>
+        </div>
 
             <div class="modal fade" id="editForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="vertical-alignment-helper">
@@ -324,6 +287,7 @@
                 </div>
             </div>
         </div>
+        
     </body>
 
 </html>

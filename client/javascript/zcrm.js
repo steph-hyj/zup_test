@@ -11,13 +11,9 @@ function getModules() {
             //debugger;
             console.log(data.modules);
             var reqData = getModuleData(data.modules);
+            module.setModule(reqData);
             $("#loaders").hide();
             navBar(reqData);
-            console.log(role.getUserRole());
-            if(role.getUserRole().includes("Administrator"))
-            {
-                ModuleTable(reqData);
-            }
         },
         error: function (error) {
             $("#myModalLabel").html("Failure");
@@ -45,54 +41,89 @@ function getModuleData(data) {
     return resp;
 }
 
-/*function getRequiredData(data) {
-
-    var i;
-    var resp = [];
-    for (i = 0; i < data.length; i++) {
-        var gulp = {
-            "First Name": data[i].First_Name,
-            "Last Name": data[i].Last_Name,
-            "Phone": data[i].Phone,
-            "Email": data[i].Email,
-            "Company": data[i].Company,
-			"Edit": `<center><a href="javascript:showEditPopup(&quot;` + data[i].id + `&quot;)">&#9998;︎</a></center>`,
-            "Delete": `<center><a href="javascript:showDeletePopup(&quot;` + data[i].id + `&quot;)">&#128465;︎</a></center>`
-        }
-        resp.push(gulp);
-    }
-    console.log(resp);
-    return resp;
-}*/
-
 /** CRM navbar */
 function navBar(respData) 
 {
+    /**Create Module option in navbar for admin */
+    var ul = document.createElement("ul");
+    ul.className = "nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-left align-items-left";
+    ul.id = "navbar";
+    if(role.getUserRole().includes("Administrator"))
+    {
+        var list = document.createElement("li");
+        list.className ="nav-item";
+        list.style = "padding:5%";
+        var link = document.createElement("a");
+        link.className = "navbar-toggler fs-6";
+        link.id = "Module";
+        link.setAttribute('onclick','setModuleTable()');
+        link.innerHTML = "Module";
+        list.appendChild(link);
+        ul.appendChild(list);
+    }
+
     for(var i = 1; i < respData.length; i++)
     {
         var list = document.createElement("li");
         list.className ="nav-item";
+        list.style = "padding:5%";
         var link = document.createElement("a");
-        link.className = "nav-link";
+        link.className = "navbar-toggler fs-6";
+        link.setAttribute('type','button');
+        link.setAttribute('data-bs-toggle','collapse');
+        link.setAttribute('data-bs-target','#navbar'+respData[i].api_name);
+        link.setAttribute('aria-controls','navbar'+respData[i].api_name);
+        link.setAttribute('aria-expanded','false');
+        link.setAttribute('aria-label','Toggle navigation');
         link.id = respData[i].api_name;
-        link.setAttribute('onclick','getRecords('+respData[i].api_name+')');
+        //link.setAttribute('onclick','getRecords('+respData[i].api_name+')');
         link.innerHTML = respData[i].Module;
-        list.appendChild(link);
-        console.log(list);
-        var bar = document.getElementById("navbar");
-        if(i == 1)
+        if(role.getUserRole().includes("Administrator"))
         {
-           bar.replaceChild(list,bar.firstElementChild); 
+            var div = document.createElement("div");
+            div.className = "collapse navbar-collapse";
+            div.id = "navbar"+respData[i].api_name;
+            var uList = document.createElement("ul");
+            uList.className = "navbar-nav me-auto mb-2";
+            var li = document.createElement("li");
+            li.className ="nav-item";
+            var a = document.createElement("a");
+            a.className = "nav-link ms-4";
+            a.setAttribute('data-bs-toggle','tooltip');
+            a.setAttribute('data-bs-placement','right');
+            a.setAttribute('data-bs-original-title',respData[i].api_name);
+            a.innerHTML = "Set Up";
+            a.setAttribute('onclick','setUp('+respData[i].api_name+')');
+            var a1 = document.createElement("a");
+            a1.className = "nav-link ms-4";
+            a1.setAttribute('data-bs-toggle','tooltip');
+            a1.setAttribute('data-bs-placement','right');
+            a1.setAttribute('data-bs-original-title',respData[i].api_name);
+            a1.setAttribute('onclick','getRecords('+respData[i].api_name+')');
+            a1.innerHTML = "Records";
+            li.appendChild(a);
+            li.appendChild(a1);
+            uList.appendChild(li);
+            div.appendChild(uList);
+            list.appendChild(link);
+            list.appendChild(div);
         }
         else
         {
-            bar.appendChild(list); 
+            link.setAttribute('onclick','getRecords('+respData[i].api_name+')');
+            list.appendChild(link);
         }
         if(i > 14)
         {
             break;
         }
+        ul.appendChild(list);
     }
+    var bar = document.getElementById("navbarNavDropdown");
+    bar.replaceChild(ul, bar.firstElementChild);
+    var ul = document.createElement("ul");
+    ul.className = "nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-left align-items-left";
+    ul.id = "navbar2";
     if(i <= respData.length)
     {
         var newList = document.createElement("li");
@@ -122,19 +153,53 @@ function navBar(respData)
             div.prepend(otherModule);
         }
         newList.appendChild(div);
-        var bar = document.getElementById("navbar");
-        bar.appendChild(newList);
+    }
+    ul.appendChild(newList);
+    var bar = document.getElementById("navbarNavDropdown");
+    bar.replaceChild(ul, bar.lastElementChild);
+    var records = document.getElementById("dataTable");
+    if(records !== null)
+    {
+        records.innerHTML ="";
+    }
+    var moduleTable = document.getElementById("moduleTable");
+    if(moduleTable !== null)
+    {
+        moduleTable.innerHTML = "";
     }
 }
 
-
+/** Get Field to set a form */
+function getRecordsField(module) {
+    //debugger;
+    var tableContainer = document.getElementById("showData");
+    tableContainer.innerHTML = "";
+    $("#loaders").show();
+    $.ajax({
+        url: "/server/crm_crud/module/"+module.id+"/"+email.userEmail,
+        type: "get",
+        success: function (data) {
+            debugger;
+            $("#loaders").hide();
+            //renderTable(data.data);
+            //checkColumn(module,data.data);
+            setForms(data.data);
+            console.log(data);
+        },
+        error: function (error) {
+            $("#myModalLabel").html("Failure");
+            $("#message").html("Please try again after Sometime");
+            $("#loader").hide();
+            $('#myModal').modal('show');
+        }
+    });
+}
 /** Get All Records of module selected */
 function getRecords(module) {
     //debugger;
     var tableContainer = document.getElementById("showData");
     tableContainer.innerHTML = "";
     $("#loaders").show();
-    console.log(module);
     if(role.userRole.includes("User"))
     {
         $.ajax({
@@ -174,7 +239,94 @@ function getRecords(module) {
         });
     }
 }
+/** Get All Fields of each records*/
+function setUp(module) {
+    //debugger;
+    var tableContainer = document.getElementById("showData");
+    tableContainer.innerHTML = "";
+    console.log(module);
+    $("#loaders").show();
+    $.ajax({
+        url: "/server/crm_crud/module/"+module.id,
+        type: "get",
+        success: function (data) {
+            debugger;
+            $("#loaders").hide();
+            //renderTable(data.data);
+            checkField(module,data.data);
+            //fieldTable(data.data);
+            console.log(data);
+        },
+        error: function (error) {
+            $("#myModalLabel").html("Failure");
+            $("#message").html("Please try again after Sometime");
+            $("#loader").hide();
+            $('#myModal').modal('show');
+        }
+    });
+}
 
+/**Create list of field */
+function fieldTable(module,field,respData)
+{
+    var col = [];
+    for(var key in field[0])
+    {
+        col.push(key);
+    }
+    $('#add').hide();
+    $('#cardBody').show();
+    var field = respData.Field;
+    var table = document.createElement("table");
+    table.className = "table table-borderless";
+    table.id = "moduleTable"
+    for(var i = 1; i < col.length; i++)
+    {
+        var tr = document.createElement("tr");
+        var div = document.createElement("div");
+        div.className = "switchToggle";
+        div.setAttribute('style','width: 100%');
+        var td = document.createElement("td");
+        var h6 = document.createElement("h6");
+        h6.innerHTML = col[i];
+        var label = document.createElement("label");
+        label.innerHTML = col[i];
+        label.id = col[i];
+        label.setAttribute('for',"switch"+i);
+        //label.className = "form-check-label";
+        var checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = "switch"+i;
+        checkbox.setAttribute('onchange','HideShowColumn('+col[i]+','+module.id+')');
+        if(field !== undefined)
+        {
+            if(field.length !== 0)
+            {
+                for(var j = 0; j < field.length;j++)
+                {                
+                    if(col[i] == field[j].Field.Field_name)
+                    {
+                        checkbox.className = field[j].ROWID;
+                        checkbox.setAttribute('checked','checked');
+                    }
+                }
+            }
+        }
+        div.appendChild(h6); 
+        div.appendChild(checkbox); 
+        div.appendChild(label);
+        td.appendChild(div);
+        tr.appendChild(td);
+        table.appendChild(tr);
+        var div = document.getElementById("ModuleTable");
+        div.replaceChild(table,div.firstElementChild);
+        var records = document.getElementById("dataTable");
+        if(records !== null)
+        {
+            records.innerHTML ="";
+        }
+    }
+}
 /*Create Record */
 function createLead() {
     //debugger;
@@ -320,5 +472,40 @@ function editLead() {
             $('#myModal').modal('show');
         }
     });
+}
 
+/**Set Form to add records */
+function setForms(data)
+{
+    var col = [];
+
+    for(var i = 0; i <data.length;i++)
+    {
+        for(var key in data[i])
+        {
+            if (col.indexOf(key) === -1) 
+            {
+                if(!key.includes("$"))
+                {
+                    if(!key.includes("clientportal"))
+                    {
+                        if(!key.includes("id"))
+                        {
+                             col.push(key); 
+                        }
+                    }
+                }
+            }
+        }
+    }
+    var modalBody = document.getElementById("modalBody");
+    for(var i = 0;i < col;i++)
+    {
+        var div = document.createElement("div");
+        div.className = "mb-3";
+        var label = document.createElement("label");
+    }
+    
+    
+    console.log(col);
 }
