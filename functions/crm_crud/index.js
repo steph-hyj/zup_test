@@ -6,7 +6,7 @@ app.use(express.json());
 const catalyst = require('zcatalyst-sdk-node');
 const HOST = 'www.zohoapis.eu';
 const PORT = 443;
-const userController = require('../crm_crud/Controller/userController.js');
+const userController = require('./Controller/userController.js');
 const tokenController = require('./Controller/TokenController.js');
 
 /** Route to generate token, get user details and get user's id in ZCrm */
