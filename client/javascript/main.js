@@ -171,32 +171,45 @@ function renderTable(module,respData,column) {
     add.innerHTML = "Add " + module.innerHTML;
     add.setAttribute('onclick','getRecordsField('+module.id+')');
     column = column.Field;
+    var col = [];
     if(column.length !== 0)
     {
         for(var i = 0; i < column.length; i++)
         {
-            console.log(column[i].Field.Field_name);
-            hideCol = column[i].Field.Field_name;
-            for(var j = 0; j < respData.length; j++)
+            console.log(respData);
+            for(var key in respData[0])
             {
-                delete respData[j][hideCol];
+                console.log(key);
+                if(key ==column[i].Field.Field_name)
+                {
+                    col.push(key);
+                }
             }
         }
     }   
-    var col = [];
+    /*
     for (var i = 0; i < respData.length; i++) {
         for (var key in respData[i]) {
-            if(key.includes("_Phone")|| key.includes("Currency") || key.includes("id") || key.includes("Score") || key.includes("$") || key.includes("_Time") || key.includes("clientportalplugin") || key.includes("Last_Name") || key.includes("First_Name") || key.includes("Image") || key.includes("Rate"))
-            {
-                delete respData[i][key];
-            }
-        }
-        for (var key in respData[i]) {
             if (col.indexOf(key) === -1) {
-                col.push(key);
+                if(column.length !== 0) {
+                    console.log(column);
+                    /*for(var i = 0; i < column.length; i++)
+                    {
+                        hideCol = column[i].Field.Field_name;
+                        for(var j = 0; j < respData.length; j++)
+                        {
+                            delete respData[j][hideCol];
+                        }
+                        for(var j = 0; j < respData.length; j++)
+                        {
+                            col.push(hideCol);
+                        }
+                    }
+                }
+                //col.push(key);
             }
         }
-    }
+    }*/
     var table = document.createElement("table");
     table.id = "dataTable";
 
@@ -240,6 +253,7 @@ function HideShowColumn(col,module)
 {
     var label = document.getElementById(col.id);
     var field = document.getElementById(label.htmlFor);
+    console.log(field);
     if(field.checked)
     {
         $.ajax({
@@ -262,7 +276,7 @@ function HideShowColumn(col,module)
     else
     {
         $.ajax({
-            url: "/server/crm_crud/record/"+col.className,
+            url: "/server/crm_crud/record/"+field.className,
             type: "delete",
             contentType: "application/json",
             success: function (data) {
@@ -347,7 +361,7 @@ function ModuleTable(module)
     var table = document.createElement("table");
     table.className = "table table-borderless";
     
-    for(var i = 1; i < module.length; i++)
+    for(var i = 0; i < module.length; i++)
     {
         var tr = document.createElement("tr");
         var div = document.createElement("div");

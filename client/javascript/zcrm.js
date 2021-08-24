@@ -280,7 +280,7 @@ function fieldTable(module,field,respData)
     var table = document.createElement("table");
     table.className = "table table-borderless";
     table.id = "moduleTable"
-    for(var i = 1; i < col.length; i++)
+    for(var i = 0; i < col.length; i++)
     {
         var tr = document.createElement("tr");
         var div = document.createElement("div");
@@ -306,7 +306,7 @@ function fieldTable(module,field,respData)
                 {                
                     if(col[i] == field[j].Field.Field_name)
                     {
-                        checkbox.className = field[j].ROWID;
+                        checkbox.className = field[j].Field.ROWID;
                         checkbox.setAttribute('checked','checked');
                     }
                 }
