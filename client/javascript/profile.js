@@ -387,31 +387,85 @@ function ModuleTable(module)
 
 function navbarProfile(respData) 
 {
+    /**Create Module option in navbar for admin */
+    var ul = document.createElement("ul");
+    ul.className = "nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-left align-items-left";
+    ul.id = "navbar";
+    if(role.getUserRole().includes("Administrator"))
+    {
+        var list = document.createElement("li");
+        list.className ="nav-item";
+        list.style = "padding:5%";
+        var link = document.createElement("a");
+        link.className = "navbar-toggler fs-6";
+        link.id = "Module";
+        link.setAttribute('onclick','setModuleTable()');
+        link.innerHTML = "Module";
+        list.appendChild(link);
+        ul.appendChild(list);
+    }
+
     for(var i = 1; i < respData.length; i++)
     {
         var list = document.createElement("li");
         list.className ="nav-item";
+        list.style = "padding:5%";
         var link = document.createElement("a");
-        link.className = "nav-link";
+        link.className = "navbar-toggler fs-6";
+        link.setAttribute('type','button');
+        link.setAttribute('data-bs-toggle','collapse');
+        link.setAttribute('data-bs-target','#navbar'+respData[i].api_name);
+        link.setAttribute('aria-controls','navbar'+respData[i].api_name);
+        link.setAttribute('aria-expanded','false');
+        link.setAttribute('aria-label','Toggle navigation');
         link.id = respData[i].api_name;
-        link.setAttribute('onclick','getRecordsProfile('+respData[i].api_name+')');
         link.innerHTML = respData[i].Module;
-        list.appendChild(link);
-        console.log(list);
-        var bar = document.getElementById("navbarProfile");
-        if(i == 1)
+        if(role.getUserRole().includes("Administrator"))
         {
-           bar.replaceChild(list,bar.firstElementChild); 
+            var div = document.createElement("div");
+            div.className = "collapse navbar-collapse";
+            div.id = "navbar"+respData[i].api_name;
+            var uList = document.createElement("ul");
+            uList.className = "navbar-nav me-auto mb-2";
+            var li = document.createElement("li");
+            li.className ="nav-item";
+            var a = document.createElement("a");
+            a.className = "nav-link ms-4";
+            a.setAttribute('data-bs-toggle','tooltip');
+            a.setAttribute('data-bs-placement','right');
+            a.setAttribute('data-bs-original-title',respData[i].api_name);
+            a.innerHTML = "Set Up";
+            a.setAttribute('onclick','setUp('+respData[i].api_name+')');
+            var a1 = document.createElement("a");
+            a1.className = "nav-link ms-4";
+            a1.setAttribute('data-bs-toggle','tooltip');
+            a1.setAttribute('data-bs-placement','right');
+            a1.setAttribute('data-bs-original-title',respData[i].api_name);
+            a1.setAttribute('onclick','getRecordsProfile('+respData[i].api_name+')');
+            a1.innerHTML = "Records";
+            li.appendChild(a);
+            li.appendChild(a1);
+            uList.appendChild(li);
+            div.appendChild(uList);
+            list.appendChild(link);
+            list.appendChild(div);
         }
         else
         {
-            bar.appendChild(list); 
+            link.setAttribute('onclick','getRecordsProfile('+respData[i].api_name+')');
+            list.appendChild(link);
         }
         if(i > 14)
         {
             break;
         }
+        ul.appendChild(list);
     }
+    var bar = document.getElementById("navbarNavDropdown");
+    bar.replaceChild(ul, bar.firstElementChild);
+    var ul = document.createElement("ul");
+    ul.className = "nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-left align-items-left";
+    ul.id = "navbar2";
     if(i <= respData.length)
     {
         var newList = document.createElement("li");
@@ -441,8 +495,19 @@ function navbarProfile(respData)
             div.prepend(otherModule);
         }
         newList.appendChild(div);
-        var bar = document.getElementById("navbarProfile");
-        bar.appendChild(newList);
+    }
+    ul.appendChild(newList);
+    var bar = document.getElementById("navbarNavDropdown");
+    bar.replaceChild(ul, bar.lastElementChild);
+    var records = document.getElementById("dataTable");
+    if(records !== null)
+    {
+        records.innerHTML ="";
+    }
+    var moduleTable = document.getElementById("moduleTable");
+    if(moduleTable !== null)
+    {
+        moduleTable.innerHTML = "";
     }
 }
 
