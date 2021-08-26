@@ -698,8 +698,17 @@ function renderTableProfile(module,respData,column) {
 
         for (var j = 0; j < col.length; j++) {
             var tabCell = tr.insertCell(-1);
-            tabCell.innerHTML = JSON.stringify(respData[i][col[j]]);
-            // tabCell.innerHTML = respData[i][col[j]];
+            if(col[j] == "Owner")
+            {
+                tabCell.innerHTML = respData[i][col[j]].name;
+            }
+            else
+            {
+                // tabCell.innerHTML = respData[i][col[j]];
+                if (JSON.stringify(respData[i][col[j]]) != "null") {
+                    tabCell.innerHTML = JSON.stringify(respData[i][col[j]]);
+                }
+            }
         }
     }
     var recordsTable = document.getElementById("main");
