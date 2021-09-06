@@ -50,23 +50,45 @@ function navBar(respData)
     ul.id = "navbar";
     if(role.getUserRole().includes("Administrator"))
     {
-        var list = document.createElement("li");
-        list.className ="nav-item";
-        list.style = "padding:5%";
+        var zCrm = document.createElement("li");
+        zCrm.className ="nav-item";
+        //zCrm.style = "padding:5%";
         var link = document.createElement("a");
         link.className = "navbar-toggler fs-6";
-        link.id = "Module";
-        link.setAttribute('onclick','setModuleTable()');
-        link.innerHTML = "Module";
-        list.appendChild(link);
-        ul.appendChild(list);
+        link.setAttribute('type','button');
+        link.setAttribute('data-bs-toggle','collapse');
+        link.setAttribute('data-bs-target','#navbar'+"zCrm");
+        link.setAttribute('aria-controls','navbar'+"zCrm");
+        link.setAttribute('aria-expanded','false');
+        link.setAttribute('aria-label','Toggle navigation');
+        link.id = "zCrm";
+        link.innerHTML = "Zoho CRM";
+        var zCrmDiv = document.createElement("div");
+        zCrmDiv.className = "collapse navbar-collapse";
+        zCrmDiv.id = "navbar"+"zCrm";
+        var zCrmList = document.createElement("ul");
+        zCrmList.className = "navbar-nav me-auto mb-2";
+        var li = document.createElement("li");
+        li.className ="nav-item";
+        var a = document.createElement("a");
+        a.className = "nav-link ms-4";
+        a.setAttribute('data-bs-toggle','tooltip');
+        a.setAttribute('data-bs-placement','right');
+        a.setAttribute('data-bs-original-title',"zCrm");
+        a.innerHTML = "Module";
+        a.setAttribute('onclick','setModuleTable()');
+        li.appendChild(a);
+        zCrmList.appendChild(li);
+        zCrmDiv.appendChild(zCrmList);
+        zCrm.appendChild(link);
+        zCrm.appendChild(zCrmDiv);
     }
 
     for(var i = 1; i < respData.length; i++)
     {
         var list = document.createElement("li");
         list.className ="nav-item";
-        list.style = "padding:5%";
+        //list.style = "padding:5%";
         var link = document.createElement("a");
         link.className = "navbar-toggler fs-6";
         link.setAttribute('type','button');
@@ -107,17 +129,19 @@ function navBar(respData)
             div.appendChild(uList);
             list.appendChild(link);
             list.appendChild(div);
+            zCrmList.appendChild(list);
+            ul.appendChild(zCrm);
         }
         else
         {
             link.setAttribute('onclick','getRecords('+respData[i].api_name+')');
             list.appendChild(link);
+            ul.appendChild(link);
         }
         if(i > 14)
         {
             break;
         }
-        ul.appendChild(list);
     }
     var bar = document.getElementById("navbarNavDropdown");
     bar.replaceChild(ul, bar.firstElementChild);

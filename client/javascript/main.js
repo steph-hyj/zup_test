@@ -167,6 +167,7 @@ function showEditPopup(leadID) {
 function renderTable(module,respData,column) {
     $('#add').show();
     $('#cardBody').show();
+    console.log(respData);
     var add = document.getElementById("add");
     add.innerHTML = "Add " + module.innerHTML;
     add.setAttribute('onclick','getRecordsField('+module.id+')');
