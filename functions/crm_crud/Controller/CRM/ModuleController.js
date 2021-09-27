@@ -80,7 +80,7 @@ exports.getRecord = async(req, res) => {
 			'hostname': HOST,
 			'port': PORT,
 			'method': 'GET',
-			'path': `/crm/v2/Contacts/${req.params.zoho_id}/${req.params.module}`,
+			'path': `/crm/v2/${req.params.module}/search?email=${req.params.email}`,
 			'headers': {
 				'Authorization': `Zoho-oauthtoken ${accessToken}`
 			}
@@ -94,8 +94,8 @@ exports.getRecord = async(req, res) => {
 			if (data) {
 				console.log(JSON.parse(data));
 				res.setHeader('content-type', 'application/json');
-				var zcrm_id = JSON.parse(data);
-				res.status(200).send(zcrm_id)
+				var zcrm_Record = JSON.parse(data);
+				res.status(200).send(zcrm_Record)
 			} else {
 				res.status(500).send({ message: 'Internal Server Error. List is empty.' })
 			}});
@@ -107,3 +107,58 @@ exports.getRecord = async(req, res) => {
 		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.' })
 	}
 };
+
+exports.showModule = async(req, res) => {
+    try {
+		const catalystApp = catalyst.initialize(req);
+		const Module_name = req.body.module;
+		const Scope = req.body.scope;
+		const catalystTable = catalystApp.datastore().table('Module');
+		await catalystTable.insertRow({
+			Module_name,
+			Scope
+		});
+		res.status(200);
+	}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
+	}
+}
+
+exports.checkModule = async(req, res) => {
+    try {
+		const catalystApp = catalyst.initialize(req);
+		const moduleDetail = await getModuleDetails(catalystApp);
+		let userManagement = catalystApp.userManagement();
+		let userDetail = await userManagement.getCurrentUser();
+		res.status(200).send({Module : moduleDetail, User : userDetail});
+	}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
+	}
+}
+
+exports.hideModule = async(req, res) => {
+    try{
+		const catalystApp = catalyst.initialize(req);
+		const catalystTable = catalystApp.datastore().table('Module');
+		var row_id = req.params.colID;
+        console.log(row_id);
+		await catalystTable.deleteRow(row_id);
+		res.status(200);
+	}
+	catch (err)
+	{
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
+	}
+}
+
+async function getModuleDetails(catalystApp) {
+	let query = 'SELECT * FROM Module';
+	let zcql = catalystApp.zcql();
+	let moduleDetail = await zcql.executeZCQLQuery(query);
+	return moduleDetail;
+}

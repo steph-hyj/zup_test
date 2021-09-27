@@ -46,9 +46,6 @@ module.exports = {
         let query = 'SELECT * FROM Token where UserId=' + userDetails.user_id;
         let zcql = catalystApp.zcql();
         let userDetail = await zcql.executeZCQLQuery(query);
-        //console.log("User => "+ JSON.stringify(userDetails));
-        //console.log("User type => " + userDetails.user_type);
-
         return userDetail;
 
     }

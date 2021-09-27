@@ -1,7 +1,9 @@
 const router = require('express').Router();
 const listController = require('../../Controller/CRM/ListController.js');
 
-router.get('/getListDeals/:zoho_id',listController.getListDeals);
-router.get('/getRelatedList',listController.getRelatedList);
+/**Get Related Lsit data */
+router.get('/getListData/:zoho_id/:module/:relatedListAPI',listController.getListData);
+/**Get Relates List Module */
+router.get('/getRelatedList/:module',listController.getRelatedList);
 
 module.exports = router;

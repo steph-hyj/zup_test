@@ -1,12 +1,15 @@
 const catalyst = require('zcatalyst-sdk-node');
 
-exports.hideColumn = async(req, res) => {
+/**Insert INTO Field(Table) to display col */
+exports.showColumn = async(req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
 		const Field_name = req.body.Column;
+		const Module = req.body.module;
 		const catalystTable = catalystApp.datastore().table('Field');
 		await catalystTable.insertRow({
-			Field_name
+			Field_name,
+			Module
 		});
 		res.status(200); //Add your app domain*/
 	}
@@ -16,13 +19,13 @@ exports.hideColumn = async(req, res) => {
 	}
 }
 
+/**Get Field(Table) to display col */
 exports.checkColumn = async(req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
-		const fieldDetail = await getFieldDetails(catalystApp);
+		const fieldDetail = await getFieldDetails(catalystApp,req.params.module);
 		let userManagement = catalystApp.userManagement();
 		let userDetail = await userManagement.getCurrentUser();
-		console.log("test => " + fieldDetail.length);
 		res.status(200).send({Field : fieldDetail, User : userDetail});
 	}
 	catch (err) {
@@ -31,12 +34,12 @@ exports.checkColumn = async(req, res) => {
 	}
 }
 
-exports.showColumn = async(req, res) => {
+/**Delete FROM Field(TAble) to hide col */
+exports.hideColumn = async(req, res) => {
     try{
 		const catalystApp = catalyst.initialize(req);
 		const catalystTable = catalystApp.datastore().table('Field');
 		var row_id = req.params.colID;
-        console.log(row_id);
 		await catalystTable.deleteRow(row_id);
 		res.status(200);
 	}
@@ -47,9 +50,8 @@ exports.showColumn = async(req, res) => {
 	}
 }
 
-async function getFieldDetails(catalystApp) {
-
-	let query = 'SELECT * FROM Field';
+async function getFieldDetails(catalystApp,module) {
+	let query = 'SELECT * FROM Field WHERE Module = '+module;
 	let zcql = catalystApp.zcql();
 	let fieldDetail = await zcql.executeZCQLQuery(query);
 	return fieldDetail;

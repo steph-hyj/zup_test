@@ -5,6 +5,7 @@ const HOST = 'www.zohoapis.eu';
 const PORT = 443;
 const http = require('https');
 
+/**Function to generate token to use Zoho API */
 exports.generateToken = async(req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
@@ -27,12 +28,15 @@ exports.generateToken = async(req, res) => {
 	}
 };
 
+/**Function to get User Details */
 exports.getUserDetails = async(req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
 		const userDetails = await tokenController.getUserDetails(catalystApp);
+		let userManagement = catalystApp.userManagement();
+		let user = await userManagement.getCurrentUser();
 		if (userDetails.length !== 0) {
-			res.status(200).send({ userId: userDetails[0].Token.userId, userRole: userDetails[0].Token.Role })
+			res.status(200).send({ user: user, userRole: user.role_details.role_name,userId: userDetails[0].Token.userId })
 		} else {
 			res.status(200).send({ userId: null })
 		}
@@ -43,6 +47,7 @@ exports.getUserDetails = async(req, res) => {
 	}
 };
 
+/**Not used */
 exports.getUserZohoID = async(req, res) => {
 	try {
 		const catalystApp = catalyst.initialize(req);
