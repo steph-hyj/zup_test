@@ -1,6 +1,6 @@
 {
-    "name": "ZUP",
-    "version": "0.0.1",
+    "name": "app",
+    "version": "1.0.0",
     "homepage": "login.html",
     "login_redirect": "index.html"
 }
