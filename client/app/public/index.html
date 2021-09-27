@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>Zoho Unified Portal</title>
+    <script>
+        function getUserDetails() {
+            $("#connect").hide();
+            var body = document.getElementById("body");
+            body.setAttribute("style","height:"+window.innerHeight+"px;");
+            catalyst.auth.isUserAuthenticated().then(result => {
+                $.ajax({
+                    url: "/server/crm_crud/getUserDetails",
+                    type: "get",
+                    success: function (data) {
+                        console.log(data)
+                        $("#connect").show();
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            }).catch(err => {
+                document.body.innerHTML = 'You are not logged in. Please log in to continue. Redirecting you to the login page..';
+                setTimeout(function () {
+                    window.location.href = "login.html";
+                }, 3000);
+            });
+        }
+    </script>
+  </head>
+  <body id="body" onload="getUserDetails()">
+    <div id="root" style="height: 100%;"></div>
+  </body>
+</html>

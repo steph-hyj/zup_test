@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>Zoho Unified Portal</title>
+    <script src="https://static.zohocdn.com/catalyst/sdk/js/2.0.0/catalystWebSDK.js"></script>
+    <script src="/__catalyst/sdk/init.js"></script>
+    <script>
+      function logout() {
+            var redirectURL = "http://localhost:3000/app/login.html"; //Add your app domain
+            var auth = catalyst.auth;
+            auth.signOut(redirectURL);
+        }
+    </script>
+  </head>
+  <body onload="logout()">
+    <div id="logout"></div>
+  </body>
+</html>
