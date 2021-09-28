@@ -19,7 +19,6 @@ module.exports = {
             }
         }
         const accessToken = await catalystApp.connection(credentials).getConnector(userId).getAccessToken();
-        console.log("Refresh token => " + refresh_token);
         return accessToken;
     },
 
@@ -27,7 +26,6 @@ module.exports = {
     async getRefreshToken(code, res) {
         try {
             const URL = `${AUTH_HOST}?code=${code}&client_id=${CLIENTID}&client_secret=${CLIENT_SECRET}&grant_type=authorization_code&redirect_uri=http://localhost:3000/server/crm_crud/generateToken`; //Add your app domain
-            console.log("URL => "+URL);
             const response = await fetch(URL, { method: 'post' })
             const data = await response.json();
             return data.refresh_token;

@@ -37,6 +37,39 @@ exports.getAllModules = async (req, res) => {
 	}
 };
 
+exports.getFields = async (req, res) => {
+    try {
+		const catalystApp = catalyst.initialize(req);
+		const userDetails = await tokenController.getUserDetails(catalystApp);
+		const accessToken = await tokenController.getAccessToken(catalystApp, userDetails);
+		const options = {
+			'hostname': HOST,
+			'port': PORT,
+			'method': 'GET',
+			'path': `/crm/v2/settings/fields?module=${req.params.module}`,
+			'headers': {
+				'Authorization': `Zoho-oauthtoken ${accessToken}`
+			}
+		};
+		var data = "";
+		const request = http.request(options, function (response) {
+			response.on('data', function (chunk) {
+				data += chunk;
+			});
+
+			response.on('end', function () {
+				res.setHeader('content-type', 'application/json');
+				res.status(200).send(data)
+			});
+		});
+		request.end();
+	}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.' })
+	}
+};
+
 exports.getAllRecords = async(req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
@@ -80,7 +113,7 @@ exports.getRecord = async(req, res) => {
 			'hostname': HOST,
 			'port': PORT,
 			'method': 'GET',
-			'path': `/crm/v2/${req.params.module}/search?email=${req.params.email}`,
+			'path': `/crm/v2/${req.params.module}/search?criteria=(${req.params.field}:equals:${req.params.value})`,
 			'headers': {
 				'Authorization': `Zoho-oauthtoken ${accessToken}`
 			}
@@ -92,7 +125,6 @@ exports.getRecord = async(req, res) => {
 			});
 		response.on('end', function () {
 			if (data) {
-				console.log(JSON.parse(data));
 				res.setHeader('content-type', 'application/json');
 				var zcrm_Record = JSON.parse(data);
 				res.status(200).send(zcrm_Record)
@@ -145,7 +177,6 @@ exports.hideModule = async(req, res) => {
 		const catalystApp = catalyst.initialize(req);
 		const catalystTable = catalystApp.datastore().table('Module');
 		var row_id = req.params.colID;
-        console.log(row_id);
 		await catalystTable.deleteRow(row_id);
 		res.status(200);
 	}

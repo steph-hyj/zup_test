@@ -47,7 +47,7 @@ exports.getUserDetails = async(req, res) => {
 	}
 };
 
-/**Not used */
+/**Get Zoho id  */
 exports.getUserZohoID = async(req, res) => {
 	try {
 		const catalystApp = catalyst.initialize(req);
@@ -69,9 +69,7 @@ exports.getUserZohoID = async(req, res) => {
 				data += chunk;
 			});
 			response.on('end', function () {
-				var mydatas= JSON.parse(data);
-				console.log("\nWelcome", "\x1b[32m\x1b[1m", req.params.email, "\x1b[0m", "your zoho id is :", "\x1b[34m\x1b[1m", mydatas.data[0].id, "\x1b[0m", "\n\n\t\t\t", "\x1b[1m\x1b[7m", "Have a happy day !", "\x1b[0m"); //// WELCOME MESSAGE
-				res.status(200).send(mydatas.data[0].id)
+				res.status(200).send(data)
 			});
 		});
 		request.end();

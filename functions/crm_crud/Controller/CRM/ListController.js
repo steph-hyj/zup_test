@@ -15,7 +15,7 @@ exports.getListData = async(req, res) => {
 			'hostname': HOST,
 			'port': PORT,
 			'method': 'GET',
-			'path': `/crm/v2/${req.params.module}/${req.params.zoho_id}/${req.params.relatedListAPI}`,
+			'path': `/crm/v2/contacts/${req.params.zoho_id}/accounts`,
 			'headers': {
 				'Authorization': `Zoho-oauthtoken ${accessToken}`
 			}
