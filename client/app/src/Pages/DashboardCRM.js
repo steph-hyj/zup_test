@@ -105,19 +105,19 @@ class DashboardCRM extends React.Component {
                             {this.props.modules.map(module => (
                                 <StyledTableRow>
                                     <TableCell>
-                                        {module.singular_label}
+                                        {module.plural_label}
                                     </TableCell>
                                     <TableCell>
-                                    <Switch onChange={(checked) => this.userUpdate(checked,"Create",module.singular_label)}/>
+                                    <Switch onChange={(checked) => this.userUpdate(checked,"Create",module.plural_label)}/>
                                     </TableCell>
                                     <TableCell>
-                                    <Switch defaultChecked={this.setCheck(module.singular_label)} onChange={(checked) => this.userUpdate(checked,"Read",module.singular_label)}/>
+                                    <Switch defaultChecked={this.setCheck(module.plural_label)} onChange={(checked) => this.userUpdate(checked,"Read",module.plural_label)}/>
                                     </TableCell>
                                     <TableCell>
-                                    <Switch onChange={(checked) => this.userUpdate(checked,"Update",module.singular_label)}/>
+                                    <Switch onChange={(checked) => this.userUpdate(checked,"Update",module.plural_label)}/>
                                     </TableCell>
                                     <TableCell>
-                                    <Switch onChange={(checked) => this.userUpdate(checked,"Delete",module.singular_label)}/>
+                                    <Switch onChange={(checked) => this.userUpdate(checked,"Delete",module.plural_label)}/>
                                     </TableCell>
                                 </StyledTableRow>
                             ))} 

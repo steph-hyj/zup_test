@@ -92,7 +92,6 @@ const styles = theme => ({
   toolbar: {
     display: "flex",
     alignItems: "center",
-    marginTop: theme.spacing.unit,
     justifyContent: "flex-end",
     padding: "0 8px",
     ...theme.mixins.toolbar 
@@ -104,7 +103,8 @@ const styles = theme => ({
     maxWidth: 1000
   },
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
+    marginLeft: 5
   }
 });
 
@@ -113,7 +113,8 @@ class Navbar extends React.Component {
     open: false,
     anchorEl: null,
     role : null,
-    userEmail : null
+    userEmail : null,
+    user : []
   };
 
   handleDrawerOpen = () => {
@@ -138,112 +139,191 @@ class Navbar extends React.Component {
       this.setState({ role : response.data.userRole, userEmail : response.data.user.email_id});
       }).catch((err) => {
           console.log(err);
-      });
-    }
+    });
+  }
 
   render() {
     const { classes, theme } = this.props;
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
-    return (
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar
-          position="fixed"
-          className={classes.appBar}
-          fooJon={classNames(classes.appBar, {
-            [classes.appBarShift]: this.state.open
-          })}
-        >
-          <Toolbar disableGutters={true}>
-            <IconButton
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={this.handleDrawerOpen}
-              className={classes.menuButton}
-            >
-              <MenuIcon
-                classes={{
-                  root: this.state.open
-                    ? classes.menuButtonIconOpen
-                    : classes.menuButtonIconClosed
-                }}
-              />
-            </IconButton>
-            <Typography
-              variant="h6"
-              color="inherit"
-              className={classes.grow}
-              noWrap
-            >
-              Zoho Unified Portal
-            </Typography>
-            <div>
-              <IconButton
-                aria-owns={open ? "menu-appbar" : undefined}
-                aria-haspopup="true"
-                onClick={this.handleMenu}
+    if(this.state.role === "App Administrator") {
+      return (
+        <div className={classes.root}>
+          <CssBaseline />
+          <AppBar
+            position="fixed"
+            className={classes.appBar}
+            fooJon={classNames(classes.appBar, {
+              [classes.appBarShift]: this.state.open
+            })}
+          >
+            <Toolbar disableGutters={true}>
+              {this.state.role === "App Administrator" ? 
+                <IconButton
+                  color="inherit"
+                  aria-label="Open drawer"
+                  onClick={this.handleDrawerOpen}
+                  className={classes.menuButton}
+                >
+                  <MenuIcon
+                    classes={{
+                      root: this.state.open
+                        ? classes.menuButtonIconOpen
+                        : classes.menuButtonIconClosed
+                    }}
+                  />
+                </IconButton>
+                :
+                <div>
+                </div>
+              }
+              <Typography
+                variant="h6"
                 color="inherit"
+                className={classes.grow}
+                noWrap
               >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right"
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right"
-                }}
-                open={open}
-                onClose={this.handleClose}
-              >
-                <MenuItem onClick={() => {window.location.href = "logout.html";}}>Logout</MenuItem>
-              </Menu>
-            </div>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          variant="permanent"
-          className={classNames(classes.drawer, {
-            [classes.drawerOpen]: this.state.open,
-            [classes.drawerClose]: !this.state.open
-          })}
-          classes={{
-            paper: classNames({
+                Zoho Unified Portal
+              </Typography>
+              <div>
+                <IconButton
+                  aria-owns={open ? "menu-appbar" : undefined}
+                  aria-haspopup="true"
+                  onClick={this.handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right"
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right"
+                  }}
+                  open={open}
+                  onClose={this.handleClose}
+                >
+                  <MenuItem onClick={() => {window.location.href = "logout.html";}}>Logout</MenuItem>
+                </Menu>
+              </div>
+            </Toolbar>
+          </AppBar>
+            <Drawer
+              variant="permanent"
+              className={classNames(classes.drawer, {
               [classes.drawerOpen]: this.state.open,
               [classes.drawerClose]: !this.state.open
-            })
-          }}
-          open={this.state.open}
-        >
-        
-          <div className={classes.toolbar} />
-          <List>
-            {["Zoho CRM", "Zoho Books"].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? 
-                  <Button href="index.html#/crm" startIcon={<CardMedia component="img" height="40" image='https://www.zohowebstatic.com/sites/default/files/styles/product-home-page/public/icon-crm_blue.png' />}/> : 
-                  <Button startIcon={<CardMedia component="img" height="40" image='https://www.zoho.com/books/blue-logo.svg' />}/>}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-        </Drawer>
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <div>
-            {this.props.app === "crm" ? <NavbarCRM userEmail={this.state.userEmail} userRole={this.state.role}/> : <App />}
+              })}
+              classes={{
+              paper: classNames({
+              [classes.drawerOpen]: this.state.open,
+              [classes.drawerClose]: !this.state.open
+              })
+              }}
+              open={this.state.open}
+            >
+              <div className={classes.toolbar} />
+              <List>
+                {["Zoho CRM", "Zoho Books"].map((text, index) => (
+                <ListItem button key={text}>
+                  <ListItemIcon>
+                    {index % 2 === 0 ? 
+                    <Button href="index.html#/crm" startIcon={<CardMedia component="img" height="40" image='https://www.zohowebstatic.com/sites/default/files/styles/product-home-page/public/icon-crm_blue.png' />}/> : 
+                    <Button startIcon={<CardMedia component="img" height="40" image='https://www.zoho.com/books/blue-logo.svg' />}/>}
+                  </ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItem>
+                ))}
+              </List>
+              <Divider />
+            </Drawer>
+            <main className={classes.content}>
+              <div className={classes.toolbar} />
+              {this.props.app === "crm" ? <NavbarCRM userEmail={this.state.userEmail} userRole={this.state.role}/> : <App />}
+            </main>
+        </div>
+      );
+    }
+    else
+    {
+        return(
+          <div className={classes.root}>
+          <CssBaseline />
+          <AppBar
+            position="fixed"
+            className={classes.appBar}
+            fooJon={classNames(classes.appBar, {
+              [classes.appBarShift]: this.state.open
+            })}
+          >
+            <Toolbar disableGutters={true}>
+              {this.state.role === "App Administrator" ? 
+                <IconButton
+                  color="inherit"
+                  aria-label="Open drawer"
+                  onClick={this.handleDrawerOpen}
+                  className={classes.menuButton}
+                >
+                  <MenuIcon
+                    classes={{
+                      root: this.state.open
+                        ? classes.menuButtonIconOpen
+                        : classes.menuButtonIconClosed
+                    }}
+                  />
+                </IconButton>
+                :
+                <div>
+                </div>
+              }
+              <Typography
+                variant="h6"
+                color="inherit"
+                className={classes.grow}
+                noWrap
+              >
+                Zoho Unified Portal
+              </Typography>
+              <div>
+                <IconButton
+                  aria-owns={open ? "menu-appbar" : undefined}
+                  aria-haspopup="true"
+                  onClick={this.handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right"
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right"
+                  }}
+                  open={open}
+                  onClose={this.handleClose}
+                >
+                  <MenuItem onClick={() => {window.location.href = "logout.html";}}>Logout</MenuItem>
+                </Menu>
+              </div>
+            </Toolbar>
+          </AppBar>
+          <main className={classes.content}>
+            <div className={classes.toolbar} />
+            <NavbarCRM userEmail={this.state.userEmail} userRole={this.state.role}/>
+          </main> 
           </div>
-        </main>
-      </div>
-    );
+        )
+    }
   }
 }
 

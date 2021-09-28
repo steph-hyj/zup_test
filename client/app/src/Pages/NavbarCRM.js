@@ -22,7 +22,7 @@ const styles = theme => ({
       backgroundColor : 'white',
       marginRight: '20px',
     },
-    dashbord: {
+    dashboard: {
       height: '100%',
       float: 'left',
       width: '100%',
@@ -41,10 +41,12 @@ class NavCRM extends React.Component {
         records : [],
         moduleDetails : [],
         relatedList : [],
+        fields : [],
         data : false,
         label : null,
         moduleAPI : null,
         relatedListAPI : null,
+        userID : null,
     }
 
     /**Execute the function when the component is called */
@@ -63,12 +65,23 @@ class NavCRM extends React.Component {
         this.setState ({ data : data});
     }
 
+    setData(module) {
 
-    setData(data, label) {
-        this.setState({ label : label });
+        let userID = axios.get(baseUrl+"getUserZohoID/"+this.props.userEmail).then((response) => {
+                        return response.data.data[0]
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+
+        let fields = axios.get(baseUrl+'module/getFields/'+module.api_name).then((response) => {
+            return response.data.fields
+        }).catch((err) => {
+            console.log(err)
+        })
+        this.setState({ label : module.plural_label });
         if(this.props.userRole === "App Administrator") {
             /**Get All records data of specific module */
-            axios.get(baseUrl+"module/getRecords/"+data).then((response) => {
+            axios.get(baseUrl+"module/getRecords/"+module.api_name).then((response) => {
                 const recordsData = response.data.data;
                 this.setState ({ records : recordsData });
             }).catch((err) => {
@@ -77,25 +90,69 @@ class NavCRM extends React.Component {
         }
         else
         {
-            /**Get user's records data of specific module */
-            axios.get(baseUrl+"module/"+data+"/"+this.props.userEmail).then((response) => {
-                const recordsData = response.data.data;
-                this.setState ({ records : recordsData });
-            }).catch((err) => {
-                console.log(err);
-            });
+            if(module.api_name === "Accounts") {
+                var parentModule = "Accounts"
+                var field = "id"
+                userID.then((userID) => {
+                    /**Get user's records data of specific module */
+                    axios.get(baseUrl+"module/"+parentModule+"/"+field+"/"+userID.Account_Name.id).then((response) => {
+                        const recordsData = response.data.data;
+                        this.setState ({ records : recordsData });
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+                })
+            } else {
+                fields.then((fields) => {
+                    var fieldTab = [];
+                    fields.forEach((field) => {
+                        if(field.api_name === "Email" || field.api_name === "Contact_Name") {
+                            fieldTab.push(field.api_name);
+                        }
+                    })
+                    console.log(fieldTab);
+                    if(fieldTab.length === 0) {
+                        /**Get All records data of specific module */
+                        axios.get(baseUrl+"module/getRecords/"+module.api_name).then((response) => {
+                            const recordsData = response.data.data;
+                            this.setState ({ records : recordsData });
+                        }).catch((err) => {
+                            console.log(err);
+                        });
+                    } else {
+                        if(fieldTab[0] === "Email") {
+                            /**Get user's records data of specific module*/ 
+                            axios.get(baseUrl+"module/"+module.api_name+"/"+fieldTab[0]+"/"+this.props.userEmail).then((response) => {
+                                const recordsData = response.data.data;
+                                this.setState ({ records : recordsData });
+                            }).catch((err) => {
+                                console.log(err);
+                            });
+                        } else if(fieldTab[0] === "Contact_Name") {
+                            userID.then((userID) => {
+                                /**Get user's records data of specific module */
+                                axios.get(baseUrl+"module/"+module.api_name+"/"+fieldTab[0]+"/"+userID.id).then((response) => {
+                                    const recordsData = response.data.data;
+                                    console.log(recordsData);
+                                    this.setState ({ records : recordsData });
+                                }).catch((err) => {
+                                    console.log(err);
+                                });
+                            })
+                        }
+                    }
+                });
+            }
         }
-
          /**Get Related List of specific module */
-         axios.get(baseUrl+"list/getRelatedList/"+data).then((response)=> {
-            this.setState({relatedList : response.data.related_lists, moduleAPI : data});
+         axios.get(baseUrl+"list/getRelatedList/"+module.api_name).then((response)=> {
+            this.setState({relatedList : response.data.related_lists, moduleAPI : module.api_name});
         }).catch((err) => {
             console.log(err);
         });
 
         /**Check Column for records tab */
-        axios.get(baseUrl+"record/checkColumn/"+label).then((response) => {
-            console.log(response);
+        axios.get(baseUrl+"record/checkColumn/"+module.plural_label).then((response) => {
             this.setState({ column : response.data.Field });
         }).catch((err) => {
             console.log(err);
@@ -128,12 +185,15 @@ class NavCRM extends React.Component {
         const { classes, theme } = this.props;
         const modules = this.state.modules;
         var mod = [];
-        if(modules !== undefined && this.state.moduleDetails !== undefined) {
+        if(this.state.moduleDetails !== undefined) {
             modules.forEach(module => {
                 this.state.moduleDetails.forEach(key => {
                     if(key.Module.Module_name === module.plural_label)
                     {
-                        mod.push(module);
+                        if(module.api_name !== "Home")
+                        {
+                            mod.push(module)
+                        }
                     }
                 })
             });
@@ -148,29 +208,29 @@ class NavCRM extends React.Component {
                                     this.getModule();
                                     this.handleClick(false);
                                 }}>
-                                    <ListItemText primary={"CRM"}/>
+                                    {this.props.userRole === "App Administrator" ? <ListItemText primary={"CRM"}/> : <ListItemText primary={"Dashboard"}/> }
                             </ListItem>
                             <Divider />
                             {mod.map(module => (
                                 <ListItem button onClick={() => {
-                                    this.setData(module.api_name, module.plural_label);
+                                    this.setData(module);
                                     this.handleClick(true);
                                 }}>
                                     <ListItemText primary={module.plural_label}/>
                                 </ListItem>
                             ))}
                             <Divider />
-                            {this.state.relatedList.map(relatedList => (
+                            {/*{this.state.relatedList.map(relatedList => (
                                 <ListItem button onClick={() => {
                                     this.getRelatedData(relatedList.api_name,this.state.moduleAPI,relatedList.display_label);
                                     this.handleClick(true);
                                 }}>
                                     <ListItemText key={relatedList.api_name} primary={relatedList.display_label}/>
                                 </ListItem>
-                            ))}
+                            ))}*/}
                         </List>
                     </div>
-                    <div className={classes.dashbord}>
+                    <div className={classes.dashboard}>
                         {this.state.data ? <h2>{this.state.label}</h2> : <h2>Tableau de bord</h2>}
                         {this.state.data ? 
                         <CRMPage role={this.props.userRole} records={this.state.records} module={this.state.label} columns={this.state.column}/> : 
