@@ -8,8 +8,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Switch } from '@material-ui/core';
+import { Button, Switch } from '@material-ui/core';
 import axios from 'axios';
+import AddIcon from '@mui/icons-material/Add';
+import { Stack } from '@mui/material';
+import CreatePage from './CreatePage';
 
 var baseUrl = "http://localhost:3000/server/crm_crud/";
 
@@ -151,18 +154,24 @@ class CRMPage extends React.Component {
                 /**Customer's View */
                 return (
                     <div>
-                        <TableContainer component={Paper}>
-                            <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                                <TableHead>
-                                    <TableRow>
-                                        {records.length > 0 ? this.getHeader() : <Typography></Typography>}
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {records.length > 0 ? this.getRowsData() : <Typography></Typography>}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                        <Stack  sx={{ m: 2 }} direction="row">
+                            <Button variant="contained" startIcon={<AddIcon />} onClick={() => {window.location.href = "index.html#/create";} }>
+                                Create
+                            </Button>
+                        </Stack>
+                            <TableContainer component={Paper}>
+                                <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                                    <TableHead>
+                                        <TableRow>
+                                            {records.length > 0 ? this.getHeader() : <Typography></Typography>}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {records.length > 0 ? this.getRowsData() : <Typography></Typography>}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        
                     </div>
                 );
             }

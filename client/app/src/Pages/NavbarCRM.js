@@ -162,7 +162,11 @@ class NavCRM extends React.Component {
     /**Get module dto display */
     getModule() {
         axios.get(baseUrl+"module/checkModule").then((response) => {
-            this.setState({ moduleDetails : response.data.Module});
+            response.data.Module.forEach((moduleDetails) => {
+                if(moduleDetails.Module.Scope === "Read") {
+                    this.setState({ moduleDetails : response.data.Module});
+                }
+            })
         }).catch((err) => {
             console.log(err);
         })
@@ -188,11 +192,11 @@ class NavCRM extends React.Component {
         if(this.state.moduleDetails !== undefined) {
             modules.forEach(module => {
                 this.state.moduleDetails.forEach(key => {
-                    if(key.Module.Module_name === module.plural_label)
-                    {
-                        if(module.api_name !== "Home")
-                        {
-                            mod.push(module)
+                    if(key.Module.Scope === "Read") {
+                        if(key.Module.Module_name === module.plural_label) {
+                            if(module.api_name !== "Home") {
+                                mod.push(module)
+                            }
                         }
                     }
                 })
@@ -220,14 +224,6 @@ class NavCRM extends React.Component {
                                 </ListItem>
                             ))}
                             <Divider />
-                            {/*{this.state.relatedList.map(relatedList => (
-                                <ListItem button onClick={() => {
-                                    this.getRelatedData(relatedList.api_name,this.state.moduleAPI,relatedList.display_label);
-                                    this.handleClick(true);
-                                }}>
-                                    <ListItemText key={relatedList.api_name} primary={relatedList.display_label}/>
-                                </ListItem>
-                            ))}*/}
                         </List>
                     </div>
                     <div className={classes.dashboard}>
