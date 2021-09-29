@@ -4,6 +4,7 @@ import React from 'react';
 import {HashRouter as Router,Route,} from 'react-router-dom';
 
 import Navbar from './Navbar';
+import CreatePage from './CreatePage';
 
 var baseUrl = "http://localhost:3000/server/crm_crud/";
 
@@ -29,6 +30,7 @@ class Routes extends React.Component {
                 <Router>
                     <Route exact path="/" render={(props) => <Navbar app={"index"} {...props}/>} />
                     <Route path="/crm" render={(props) => <Navbar app={"crm"}  {...props}/>} />
+                    <Route path="/create" render={(props) => <CreatePage app={"crm"}  {...props}/>} />
                 </Router>
             )
         }
