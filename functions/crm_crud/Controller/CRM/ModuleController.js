@@ -176,7 +176,7 @@ exports.hideModule = async(req, res) => {
     try{
 		const catalystApp = catalyst.initialize(req);
 		const catalystTable = catalystApp.datastore().table('Module');
-		var row_id = req.params.colID;
+		var row_id = req.params.modID;
 		await catalystTable.deleteRow(row_id);
 		res.status(200);
 	}
