@@ -9,24 +9,30 @@ import CRMPage from './CRMPage';
 import { Divider, withStyles } from '@material-ui/core';
 import DashboardCRM from './DashboardCRM';
 
+//Version dev
 var baseUrl = "http://localhost:3000/server/crm_crud/";
+
+//Version deployment
+//var baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 
 /**NavbarCRM Design */
 const styles = theme => ({
     navBar: {
-      height: '100%',
+      height: window.innerHeight - 64,
       float: 'left',
       width: '100%',
       maxWidth: 200,
       minWidth: 200,
-      backgroundColor : 'white',
+      backgroundColor : '#226EB3',
+      color: 'white',
       marginRight: '20px',
     },
     dashboard: {
       height: '100%',
       float: 'left',
       width: '100%',
-      maxWidth : window.innerWidth
+      maxWidth : window.innerWidth,
+      padding: '3%'
     },
     displayFlex: {
         display: 'flex'
@@ -74,6 +80,7 @@ class NavCRM extends React.Component {
                     });
 
         let fields = axios.get(baseUrl+'module/getFields/'+module.api_name).then((response) => {
+            this.setState({ fields : response.data.fields});
             return response.data.fields
         }).catch((err) => {
             console.log(err)
@@ -229,7 +236,7 @@ class NavCRM extends React.Component {
                     <div className={classes.dashboard}>
                         {this.state.data ? <h2>{this.state.label}</h2> : <h2>Tableau de bord</h2>}
                         {this.state.data ? 
-                        <CRMPage role={this.props.userRole} records={this.state.records} module={this.state.label} columns={this.state.column}/> : 
+                        <CRMPage fields={this.state.fields} role={this.props.userRole} records={this.state.records} module={this.state.label} moduleAPI={this.state.moduleAPI} columns={this.state.column}/> : 
                         <DashboardCRM modules={modules} moduleDetails={this.state.moduleDetails} role={this.props.userRole} />}
                     </div>
                 </div>

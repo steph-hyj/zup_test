@@ -8,7 +8,8 @@ import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
+//import Divider from "@material-ui/core/Divider";
+import Divider from '@mui/material/Divider';
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
@@ -18,12 +19,18 @@ import ListItemText from "@material-ui/core/ListItemText";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { Button, CardMedia } from "@material-ui/core";
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 import axios from 'axios';
 
 import App from "../App";
 import NavbarCRM from "./NavbarCRM";
 
+//Version dev
 var baseUrl = "http://localhost:3000/server/crm_crud/";
+
+//Version deployment
+//var baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 
 const drawerWidth = 180;
 
@@ -35,7 +42,9 @@ const styles = theme => ({
     height: "100%",
   },
   appBar: {
-    zIndex: theme.zIndex.drawer + 1
+    zIndex: theme.zIndex.drawer + 1,
+    background: "white",
+    color: "black"
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -220,15 +229,23 @@ class Navbar extends React.Component {
               [classes.drawerClose]: !this.state.open
               })}
               classes={{
-              paper: classNames({
-              [classes.drawerOpen]: this.state.open,
-              [classes.drawerClose]: !this.state.open
-              })
+                paper: classNames({
+                    [classes.drawerOpen]: this.state.open,
+                    [classes.drawerClose]: !this.state.open
+                  })
               }}
               open={this.state.open}
             >
               <div className={classes.toolbar} />
               <List>
+                {this.state.open ? 
+                  <Divider textAlign="left">
+                    <h2>Applications</h2>
+                  </Divider>
+                : 
+                  <Divider textAlign="left">
+                  </Divider>
+                }
                 {["Zoho CRM", "Zoho Books"].map((text, index) => (
                 <ListItem button key={text}>
                   <ListItemIcon>
@@ -249,7 +266,7 @@ class Navbar extends React.Component {
         </div>
       );
     }
-    else
+    else if (this.state.role !== "App Administrator" && this.state.role !== null)
     {
         return(
           <div className={classes.root}>
@@ -262,25 +279,6 @@ class Navbar extends React.Component {
             })}
           >
             <Toolbar disableGutters={true}>
-              {this.state.role === "App Administrator" ? 
-                <IconButton
-                  color="inherit"
-                  aria-label="Open drawer"
-                  onClick={this.handleDrawerOpen}
-                  className={classes.menuButton}
-                >
-                  <MenuIcon
-                    classes={{
-                      root: this.state.open
-                        ? classes.menuButtonIconOpen
-                        : classes.menuButtonIconClosed
-                    }}
-                  />
-                </IconButton>
-                :
-                <div>
-                </div>
-              }
               <Typography
                 variant="h6"
                 color="inherit"
@@ -323,6 +321,14 @@ class Navbar extends React.Component {
           </main> 
           </div>
         )
+    }
+    else
+    {
+      return (
+        <Box sx={{ display: 'flex' }}>
+            <CircularProgress />
+        </Box>
+      )
     }
   }
 }
