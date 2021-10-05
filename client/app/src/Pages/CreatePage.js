@@ -30,6 +30,7 @@ const CreatePage = ({ handleClose }) => {
     console.log(data);
   };
 
+
   return (
     <form className={classes.root} onSubmit={handleSubmit(onSubmit)}>
       <Controller
@@ -99,7 +100,7 @@ const CreatePage = ({ handleClose }) => {
         rules={{ required: 'Password required' }}
       />
       <div>
-        <Button variant="contained" onClick={handleClose}>
+        <Button variant="contained" onClick={onclose}>
           Cancel
         </Button>
         <Button type="submit" variant="contained" color="primary">
