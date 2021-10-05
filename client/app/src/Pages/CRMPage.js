@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Typography from "@material-ui/core/Typography";
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -11,11 +11,18 @@ import Paper from '@mui/material/Paper';
 import { Button, Switch } from '@material-ui/core';
 import axios from 'axios';
 import AddIcon from '@mui/icons-material/Add';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Stack } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+
 import CreatePage from './CreatePage';
 
+//Version Dev
 var baseUrl = "http://localhost:3000/server/crm_crud/";
 
+//Version deployment
+//var baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 
 /**Table Row Design */
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -43,8 +50,9 @@ class CRMPage extends React.Component {
 
     state = {
         open: false,
+        showForm: false,
+        fields : []
     };
-
     /**Get Related List data of specific module*/
     getRelatedData = function(){
         if(this.props.records.length > 0){
@@ -62,10 +70,15 @@ class CRMPage extends React.Component {
     getKeys = function(){
         var col = [];
         Object.keys(this.props.records[0]).forEach(key => {
-            this.props.columns.forEach(field => {
-                if(key === field.Field.Field_name && this.props.module === field.Field.Module)
+            this.props.columns.forEach(column => {
+                if(key === column.Field.Field_name && this.props.module === column.Field.Module)
                 {
-                    col.push(key);
+                    this.props.fields.forEach(fields => {
+                        if(key === fields.api_name) {
+                            console.log(fields.display_label);
+                            col.push(fields);
+                        }
+                    })
                 }
             })
         })
@@ -76,72 +89,51 @@ class CRMPage extends React.Component {
     getHeader = function(){
         var keys = this.getKeys();
         return keys.map((key)=>{
-            return <StyledTableCell key={key}>{key.toUpperCase()}</StyledTableCell>
+            return <StyledTableCell key={key.api_name}>{key.display_label.toUpperCase()}</StyledTableCell>
         })
     }
 
     /**Fill in the table with records */
-    getRowsData = function(){
-        var items = this.props.records;
-        var keys = this.getKeys();
-        return items.map((row)=>{
-            return <StyledTableRow key={row.name}><RenderRow data={row} keys={keys}/></StyledTableRow>
-        })
-    }
-
-    /**Execute a function according to the action of switch */
-    userUpdate = function(checked, col,id,module) {
-        if(checked.target.checked !== true)
-        {
-            this.deleteField(id);
-        }
-        else
-        {
-            this.addField(col,module);
+    getRowsData = function(column){
+        if(this.props.role !== "App Administrator") {
+            var items = this.props.records;
+            var keys = this.getKeys();
+            return items.map((row)=>{
+                return <StyledTableRow key={row.name}><RenderRow data={row} role={this.props.role} keys={keys}/></StyledTableRow>
+            })
+        } else {
+            var cols = ["Nom","Afficher"];
+            return column.map((row)=>{
+                return <StyledTableRow key={row}><RenderRow data={row} module={this.props.module} role={this.props.role} columns={this.props.columns} keys={cols}/></StyledTableRow>
+            })
         }
     }
 
-    /**Check into datastore of Zoho Catalyst to set at default the switch  */
-    setCheck = function(col, columns,module) {
-        var checked = false;
-        columns.forEach(columnDetail => {
-            if(columnDetail.Field.Field_name === col && columnDetail.Field.Module === module) {
-                checked = true;
-            }
+    showForm = function(boolean) {
+        this.setState({ showForm : boolean })
+    }
+
+    getFields = function() {
+        axios.get(baseUrl+"module/getFields/"+this.props.moduleAPI).then((response) => {
+            console.log(response.data);
+        }).catch((err) => {
+            console.log(err);
         })
-        return checked;
     }
 
-    /**Insert Into Field(Table) the col to display*/
-    addField = function(Column,module) {
-        axios.post(baseUrl+"record/"+Column, {
-            Column,
-            module
-        }).then((response) => {
-            console.log(response);
-        }).catch((err) => {
-            console.log(err);
-        });
-    }
-
-    /**Delete from Field(Table) the col to hide*/
-    deleteField = function(col) {
-        axios.delete(baseUrl+"record/"+col).then((response) => {
-            console.log(response);
-        }).catch((err) => {
-            console.log(err);
-        });
-    }
-
-    /**Get from Field(Table) the col to display */
-    getField = function(col,fields) {
-        var id;
-        fields.forEach(field => {
-            if(field.Field.Field_name === col) {
-                id = field.Field.ROWID;
-            }
-        });
-        return id;
+    getCheck = function(columns, col) {
+        var boolean = false;
+        try {
+            columns.forEach((column) => {
+                if(column.Field.Field_name === col) {
+                    boolean = true;
+                    throw boolean;
+                }
+            })
+        } catch(e) {
+            console.log(e)
+        }
+        this.setState({[col] : boolean}) 
     }
 
     /**render() is mandatory if create a react component */
@@ -154,24 +146,39 @@ class CRMPage extends React.Component {
                 /**Customer's View */
                 return (
                     <div>
-                        <Stack  sx={{ m: 2 }} direction="row">
-                            <Button variant="contained" startIcon={<AddIcon />} onClick={() => {window.location.href = "index.html#/create";} }>
-                                Create
-                            </Button>
-                        </Stack>
-                            <TableContainer component={Paper}>
-                                <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                                    <TableHead>
-                                        <TableRow>
-                                            {records.length > 0 ? this.getHeader() : <Typography></Typography>}
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {records.length > 0 ? this.getRowsData() : <Typography></Typography>}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        
+                        {this.state.showForm ? 
+                            <div>
+                                <Stack  sx={{ m: 2 }} direction="row">
+                                    <Button variant="contained" startIcon={<ArrowBackIcon />} onClick={() => this.showForm(false)}>
+                                        Return
+                                    </Button>
+                                </Stack>
+                                <CreatePage /> 
+                            </div>
+                        : 
+                            <div>
+                                <Stack  sx={{ m: 2 }} direction="row">
+                                    <Button variant="contained" startIcon={<AddIcon />} onClick={() => {
+                                            this.showForm(true)
+                                            this.getFields()
+                                    }}>
+                                        Create
+                                    </Button>
+                                </Stack>
+                                <TableContainer component={Paper}>
+                                    <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                                        <TableHead>
+                                            <TableRow>
+                                                {records.length > 0 ? this.getHeader() : <Typography></Typography>}
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {records.length > 0 ? this.getRowsData() : <Typography></Typography>}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </div>
+                        }
                     </div>
                 );
             }
@@ -193,19 +200,7 @@ class CRMPage extends React.Component {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {column.map(col => (
-                                    <StyledTableRow>
-                                        <TableCell>
-                                            {col}
-                                        </TableCell>
-                                        <TableCell>
-                                        <Switch
-                                            onChange={(checked) => this.userUpdate(checked, col,this.getField(col,this.props.columns),this.props.module)}
-                                            defaultChecked = {this.setCheck(col,this.props.columns,this.props.module)}
-                                        />
-                                        </TableCell>
-                                    </StyledTableRow>
-                                ))}
+                                {this.getRowsData(column)}
                             </TableBody>
                         </Table>
                     </TableContainer>
@@ -214,10 +209,11 @@ class CRMPage extends React.Component {
         }
         else
         {
-            /**Must have a return so if records is null return nothing */
+            /**Loading */
             return(
-                <Typography>
-                </Typography>
+                <Box sx={{ display: 'flex' }}>
+                    <CircularProgress />
+                </Box>
             )
         }
     }
@@ -226,17 +222,122 @@ class CRMPage extends React.Component {
 
 /**Data in Table Row */
 const RenderRow = (props) =>{
-    return props.keys.map(key=>{
-        if(props.data[key] === null)
+
+    const [state, setState] = useState([]);
+
+    useEffect(() => {
+
+        function getCheck() {
+            var boolean = false;
+            props.columns.forEach((column) => {
+                if(column.Field.Field_name === props.data) {
+                    boolean = true;
+                }
+            })
+            return boolean
+        }
+        setState({[props.data] : getCheck()});
+    },[props.data,props.columns]);
+
+    /**Change switch */
+    function handleChange(event, name) {
+        setState({ [name]: event.target.checked });
+        console.log(state[name]);
+    }
+
+    /**Execute a function according to the action of switch */
+    function userUpdate(checked, col, fieldID, module) {
+        if(checked.target.checked !== true)
         {
-            return <TableCell></TableCell>
+            deleteField(fieldID);
         }
         else
         {
-            return <TableCell key={props.data[key]}>{typeof props.data[key] == "string" ? props.data[key] : props.data[key].name}</TableCell>
+            addField(col,module);
         }
-        
-    })
+    }
+
+    /**Insert Into Field(Table) the col to display*/
+    function addField(Column, module) {
+        axios.post(baseUrl+"record/"+Column, {
+            Column,
+            module
+        }).then((response) => {
+            console.log(response);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+     /**Delete from Field(Table) the col to hide*/
+    function deleteField(fieldID) {
+        fieldID.then((fieldID) => {
+            axios.delete(baseUrl+"record/"+fieldID).then((response) => {
+                console.log(response);
+            }).catch((err) => {
+                console.log(err);
+            });
+        })
+    }
+
+    /**Get from Field(Table) the col to display */
+    function getIDField(col) {
+        let fieldsCol = axios.get(baseUrl+"record/checkColumn/"+props.module).then((response) => {
+            return response.data.Field;
+        }).catch((err) => {
+            console.log(err);
+        });
+        let fieldID = fieldsCol.then((fields) => {
+            var id;
+            fields.forEach(field => {
+                if(field.Field.Field_name === col) {
+                    id = field.Field.ROWID;
+                }
+            })
+            return id;
+        }).catch((err) => {
+            console.log(err);
+        })
+        return fieldID;
+    }
+
+    if(props.role !== "App Administrator") {
+        return props.keys.map(key=>{
+            if(props.data[key.api_name] === null)
+            {
+                return <TableCell></TableCell>
+            } else {
+                return <TableCell key={props.data[key.api_name]}>{typeof props.data[key.api_name] == "string" ? props.data[key.api_name] : props.data[key.api_name].name}</TableCell>
+            }
+            
+        })
+    } else {
+        return props.keys.map(key => {
+            if(props.keys.indexOf(key) === 0) {
+                return <TableCell>{props.data}</TableCell>
+            } else {
+                return (
+                    <TableCell>
+                    {state[props.data] !== undefined ? 
+                        <Switch checked={state[props.data]}
+                                onChange={(event) => {
+                                    handleChange(event, props.data)
+                                    userUpdate(event, props.data,getIDField(props.data),props.module)
+                                }}
+                        />
+                    :
+                        /**Loading */
+                        <Box sx={{ display: 'flex' }}>
+                            <CircularProgress />
+                        </Box>
+                    }
+                    </TableCell>
+                
+                )
+            }
+            
+        })
+    }
 }
 
 export default CRMPage;
