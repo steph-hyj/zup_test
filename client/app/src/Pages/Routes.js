@@ -1,13 +1,15 @@
 import { Typography } from '@material-ui/core';
 import axios from 'axios';
 import React from 'react';
-import {HashRouter as Router,Route,} from 'react-router-dom';
+import {HashRouter as Router,Route} from 'react-router-dom';
 
 import Navbar from './Navbar';
 import CreatePage from './CreatePage';
 
+//Version local
 var baseUrl = "http://localhost:3000/server/crm_crud/";
-
+//Version deployment
+//var baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 class Routes extends React.Component {
 
     state = {
@@ -22,7 +24,6 @@ class Routes extends React.Component {
               console.log(err);
         });
     }
-
     render() {
         if(this.state.user.userId) 
         {
@@ -37,10 +38,10 @@ class Routes extends React.Component {
         else
         {
             return(
-               <Typography><a href="/app/login.html">Login here</a></Typography>
+               <Typography></Typography>
             )
         }
     }
 }
-   
+
 export default Routes;
