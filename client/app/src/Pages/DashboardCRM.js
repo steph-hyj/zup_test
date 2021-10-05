@@ -2,9 +2,13 @@ import React from 'react';
 import axios from 'axios';
 
 import { Paper, styled, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
-import { tableCellClasses } from '@mui/material';
+import { Box ,CircularProgress, tableCellClasses } from '@mui/material';
 
+//Version dev
 var baseUrl = "http://localhost:3000/server/crm_crud/";
+
+//Version deployment
+//var baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 
 /**Table Row Design */
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -30,40 +34,19 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 class DashboardCRM extends React.Component {
 
     state = {
-        moduleDetails: []
-    }
-
-    /**Execute the function when the component is called */
-    componentDidMount = function(){
-        axios.get(baseUrl+"module/checkModule").then((response) => {
-            var moduleDetails = response.data.Module;
-            this.setState({moduleDetails : moduleDetails});
-        }).catch((err) => {
-            console.log(err);
-        })
+        moduleDetails: [],
     }
 
     /**Execute a function according to the action of switch */
-    userUpdate = function(checked, scope,module) {
+    userUpdate = function(checked, scope,module,moduleID) {
         if(checked.target.checked !== true)
         {
-            //this.deleteModule(id);
+            this.deleteModule(moduleID);
         }
         else
         {
             this.addModule(scope,module);
         }
-    }
-
-    /**Check into datastore of Zoho Catalyst to set at default the switch  */
-    setCheck = function(module) {
-        var check = false;
-        this.state.moduleDetails.forEach(moduleDetail => {
-            if(moduleDetail.Module.Module_name === module) {
-                check = true;
-            }
-        });
-        return check;
     }
     
     /**Insert Into Module(Table) the module to display*/
@@ -79,13 +62,57 @@ class DashboardCRM extends React.Component {
     }
 
     /**Delete from Module(Table) the module to hide*/
-    deleteModule = function(col) {
-        axios.delete(baseUrl+"module/"+col).then((response) => {
-            console.log(response);
+    deleteModule = function(moduleID) {
+        moduleID.then((moduleID) => {
+            axios.delete(baseUrl+"module/"+moduleID).then((response) => {
+                console.log(response);
+            }).catch((err) => {
+                console.log(err);
+            });
+        })
+    }
+
+    /**Get from Module(Table) the col to display */
+    getIDModule = function(scope,module) {
+        let moduleCol = axios.get(baseUrl+"module/checkModule").then((response) => {
+            return response.data.Module;
         }).catch((err) => {
             console.log(err);
         });
+        let moduleID = moduleCol.then((modules) => {
+            var id;
+            modules.forEach(mod => {
+                if(mod.Module.Module_name === module && scope === mod.Module.Scope) {
+                    id = mod.Module.ROWID;
+                }
+            })
+            return id;
+        }).catch((err) => {
+            console.log(err);
+        })
+        return moduleID;
     }
+
+    getCheck = function(modules, moduleScope) {
+        var boolean = false;
+        try {
+            modules.forEach((module) => {
+                var moduleData = module.Module.Module_name + module.Module.Scope;
+                if(moduleData === moduleScope) {
+                    boolean = true;
+                    throw boolean;
+                }
+            })
+        }catch(e) {
+            console.log(boolean);
+        }
+        return boolean
+        //return this.state[module];
+    }
+
+    handleChange = function(event, name) {
+        this.setState({ [name]: event.target.checked });
+    };
 
     render() {
         if(this.props.role === "App Administrator") {
@@ -101,27 +128,56 @@ class DashboardCRM extends React.Component {
                                 <StyledTableCell>Supprimer</StyledTableCell>
                             </TableRow>
                         </TableHead>
-                        <TableBody>
-                            {this.props.modules.map(module => (
-                                <StyledTableRow>
-                                    <TableCell>
-                                        {module.plural_label}
-                                    </TableCell>
-                                    <TableCell>
-                                    <Switch onChange={(checked) => this.userUpdate(checked,"Create",module.plural_label)}/>
-                                    </TableCell>
-                                    <TableCell>
-                                    <Switch defaultChecked={this.setCheck(module.plural_label)} onChange={(checked) => this.userUpdate(checked,"Read",module.plural_label)}/>
-                                    </TableCell>
-                                    <TableCell>
-                                    <Switch onChange={(checked) => this.userUpdate(checked,"Update",module.plural_label)}/>
-                                    </TableCell>
-                                    <TableCell>
-                                    <Switch onChange={(checked) => this.userUpdate(checked,"Delete",module.plural_label)}/>
-                                    </TableCell>
-                                </StyledTableRow>
-                            ))} 
-                        </TableBody>
+                        {this.props.modules ? 
+                            <TableBody>
+                                {this.props.modules.map(module => (
+                                    <StyledTableRow>
+                                        <TableCell>
+                                            {module.plural_label}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Switch defaultChecked={this.getCheck(this.props.moduleDetails,module.plural_label + "Create")}
+                                                    checked={this.state[module.plural_label + "Create"]}
+                                                    onChange={(checked) => this.userUpdate(checked,"Create",module.plural_label,this.getIDModule("Create",module.plural_label))}
+                                                    value= {module.plural_label + "Create"}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Switch defaultChecked={this.getCheck(this.props.moduleDetails,module.plural_label + "Read")}
+                                                    checked={this.state[module.plural_label + "Read"]}
+                                                    onClick={(checked) => {
+                                                        this.handleToggle(module.plural_label)
+                                                        this.userUpdate(checked,"Read",module.plural_label,this.getIDModule("Read",module.plural_label))
+                                                    }}
+                                                    value= {module.plural_label + "Read"}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Switch defaultChecked={this.getCheck(this.props.moduleDetails,module.plural_label + "Update")}
+                                                    checked={this.state[module.plural_label + "Update"]}
+                                                    onChange={(checked) => this.userUpdate(checked,"Update",module.plural_label,this.getIDModule("Update",module.plural_label))}
+                                                    value= {module.plural_label + "Update"}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Switch defaultChecked={this.getCheck(this.props.moduleDetails,module.plural_label + "Delete")}
+                                                    checked={this.state[module.plural_label]}
+                                                    onChange={(checked) => {
+                                                        this.handleChange(checked,module.plural_label)
+                                                        this.userUpdate(checked,"Delete",module.plural_label,this.getIDModule("Delete",module.plural_label))
+                                                    }}
+                                                    value= {module.plural_label + "Delete"}
+                                            />
+                                        </TableCell>
+                                    </StyledTableRow>
+                                ))} 
+                            </TableBody>
+                        :
+                            /**Loading */
+                            <Box sx={{ display: 'flex' }}>
+                                <CircularProgress />
+                            </Box>
+                        }
                     </Table>
                 </TableContainer>
             );
