@@ -1,8 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 
-import { Paper, styled, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
-import { Box ,CircularProgress, tableCellClasses } from '@mui/material';
+import { Paper, styled, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
+import { Box ,CircularProgress, tableCellClasses, Switch } from '@mui/material';
 
 //Version dev
 var baseUrl = "http://localhost:3000/server/crm_crud/";
@@ -110,8 +110,8 @@ class DashboardCRM extends React.Component {
         //return this.state[module];
     }
 
-    handleChange = function(event, name) {
-        this.setState({ [name]: event.target.checked });
+    handleChange = function(event, name,scope) {
+        this.setState({ [name+scope]: event.target.checked });
     };
 
     render() {
@@ -138,35 +138,45 @@ class DashboardCRM extends React.Component {
                                         <TableCell>
                                             <Switch defaultChecked={this.getCheck(this.props.moduleDetails,module.plural_label + "Create")}
                                                     checked={this.state[module.plural_label + "Create"]}
-                                                    onChange={(checked) => this.userUpdate(checked,"Create",module.plural_label,this.getIDModule("Create",module.plural_label))}
+                                                    onChange={(checked) => {
+                                                        this.handleChange(checked,module.plural_label,"Create")
+                                                        this.userUpdate(checked,"Create",module.plural_label,this.getIDModule("Create",module.plural_label))
+                                                    }}
                                                     value= {module.plural_label + "Create"}
+                                                    color="success"
                                             />
                                         </TableCell>
                                         <TableCell>
                                             <Switch defaultChecked={this.getCheck(this.props.moduleDetails,module.plural_label + "Read")}
                                                     checked={this.state[module.plural_label + "Read"]}
                                                     onClick={(checked) => {
-                                                        this.handleToggle(module.plural_label)
+                                                        this.handleChange(checked,module.plural_label,"Read")
                                                         this.userUpdate(checked,"Read",module.plural_label,this.getIDModule("Read",module.plural_label))
                                                     }}
                                                     value= {module.plural_label + "Read"}
+                                                    color="success" 
                                             />
                                         </TableCell>
                                         <TableCell>
                                             <Switch defaultChecked={this.getCheck(this.props.moduleDetails,module.plural_label + "Update")}
                                                     checked={this.state[module.plural_label + "Update"]}
-                                                    onChange={(checked) => this.userUpdate(checked,"Update",module.plural_label,this.getIDModule("Update",module.plural_label))}
+                                                    onChange={(checked) => {
+                                                        this.handleChange(checked,module.plural_label,"Update")
+                                                        this.userUpdate(checked,"Update",module.plural_label,this.getIDModule("Update",module.plural_label))
+                                                    }}
                                                     value= {module.plural_label + "Update"}
+                                                    color="success" 
                                             />
                                         </TableCell>
                                         <TableCell>
                                             <Switch defaultChecked={this.getCheck(this.props.moduleDetails,module.plural_label + "Delete")}
                                                     checked={this.state[module.plural_label]}
                                                     onChange={(checked) => {
-                                                        this.handleChange(checked,module.plural_label)
+                                                        this.handleChange(checked,module.plural_label,"Delete")
                                                         this.userUpdate(checked,"Delete",module.plural_label,this.getIDModule("Delete",module.plural_label))
                                                     }}
                                                     value= {module.plural_label + "Delete"}
+                                                    color="success" 
                                             />
                                         </TableCell>
                                     </StyledTableRow>

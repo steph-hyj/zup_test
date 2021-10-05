@@ -8,7 +8,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Button, Switch } from '@material-ui/core';
+import { Button } from '@material-ui/core';
+import Switch from '@mui/material/Switch';
 import axios from 'axios';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -324,6 +325,7 @@ const RenderRow = (props) =>{
                                     handleChange(event, props.data)
                                     userUpdate(event, props.data,getIDField(props.data),props.module)
                                 }}
+                                color="success" 
                         />
                     :
                         /**Loading */
