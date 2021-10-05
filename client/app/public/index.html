@@ -8,16 +8,12 @@
     <title>Zoho Unified Portal</title>
     <script>
         function getUserDetails() {
-            $("#connect").hide();
-            var body = document.getElementById("body");
-            body.setAttribute("style","height:"+window.innerHeight+"px;");
             catalyst.auth.isUserAuthenticated().then(result => {
                 $.ajax({
                     url: "/server/crm_crud/getUserDetails",
                     type: "get",
                     success: function (data) {
-                        console.log(data)
-                        $("#connect").show();
+                        console.log(data);
                     },
                     error: function (error) {
                         console.log(error);
