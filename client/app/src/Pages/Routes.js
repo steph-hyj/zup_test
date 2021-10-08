@@ -4,6 +4,8 @@ import React from 'react';
 import {HashRouter as Router,Route} from 'react-router-dom';
 
 import Navbar from './Navbar';
+import Layout from '../layouts/Layouts';
+import Sidebar from '../components/Sidebar/Sidebar';
 import CreatePage from './CreatePage';
 
 //Version local
@@ -31,7 +33,9 @@ class Routes extends React.Component {
                 <Router>
                     <Route exact path="/" render={(props) => <Navbar app={"index"} {...props}/>} />
                     <Route path="/crm" render={(props) => <Navbar app={"crm"}  {...props}/>} />
-                    <Route path="/create" render={(props) => <CreatePage app={"crm"}  {...props}/>} />
+                    <Route path="/role_permissions" render={(props) => <Navbar app={"role"}  {...props}/>} />
+                    <Route path="/connexion" render={(props) => <Navbar app={"roleConnexion"}  {...props}/>} />
+                    <Route path="/route" render={()=> <Layout />}/>
                 </Router>
             )
         }
