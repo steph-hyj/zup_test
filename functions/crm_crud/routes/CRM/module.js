@@ -9,9 +9,11 @@ router.get('/getFields/:module',moduleController.getFields);
 router.get('/getRecords/:module',moduleController.getAllRecords);
 router.get('/:module/:field/:value',moduleController.getRecord);
 /** Admin Action on Module*/
-router.post('/:mod', moduleController.showModule);
+router.post('/:mod', moduleController.hideModule);
 router.get('/checkModule', moduleController.checkModule);
-router.delete('/:modID', moduleController.hideModule);
+router.delete('/:modID', moduleController.showModule);
+/**Admin set/get permissions */
+router.get('/getPermissions/:roleId',moduleController.getPermissions);
 
 
 module.exports = router;

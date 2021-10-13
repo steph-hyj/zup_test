@@ -1,4 +1,5 @@
 const HOST = 'www.zohoapis.eu';
+const { cp } = require('fs');
 const http = require('https')
 const PORT = 443;
 const catalyst = require('zcatalyst-sdk-node');
@@ -140,17 +141,33 @@ exports.getRecord = async(req, res) => {
 	}
 };
 
-exports.showModule = async(req, res) => {
+exports.hideModule = async(req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
-		const Module_name = req.body.module;
-		const Scope = req.body.scope;
+		const Module_name = req.params.mod;
+		const Connection = false;
+		const Application = "crm"
 		const catalystTable = catalystApp.datastore().table('Module');
-		await catalystTable.insertRow({
+		const createModPermission = await catalystTable.insertRow({
 			Module_name,
-			Scope
+			Connection,
+			Application
 		});
-		res.status(200);
+		try {
+			const Module_ID = createModPermission.ROWID;
+			const Permission = req.body.permission;
+			const Role_ID = req.body.role;
+			const catalystTable = catalystApp.datastore().table('Role_Permission');
+			await catalystTable.insertRow({
+				Role_ID,
+				Permission,
+				Module_ID
+			})
+			res.status(200);
+		} catch (err) {
+			console.log(err);
+			res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
+		}
 	}
 	catch (err) {
 		console.log(err);
@@ -172,7 +189,7 @@ exports.checkModule = async(req, res) => {
 	}
 }
 
-exports.hideModule = async(req, res) => {
+exports.showModule = async(req, res) => {
     try{
 		const catalystApp = catalyst.initialize(req);
 		const catalystTable = catalystApp.datastore().table('Module');
@@ -187,8 +204,45 @@ exports.hideModule = async(req, res) => {
 	}
 }
 
+exports.getPermissions = async(req, res) => {
+	try {
+		const catalystApp = catalyst.initialize(req);
+		const permissionDetails = await getPermissionsDetails(catalystApp,req.params.roleId);
+		var moduleDetails = [];
+		/*permissionDetails.forEach(permissionDetail => {
+			const moduleDetail = await getModulePermission(catalystApp,permissionDetail);
+			moduleDetails.push(moduleDetail);
+		})*/
+		for(const permissionDetail of permissionDetails) {
+			const moduleDetail = await getModulePermission(catalystApp, permissionDetail);
+			moduleDetails.push(moduleDetail);
+		}
+		let userManagement = catalystApp.userManagement();
+		let userDetail = await userManagement.getCurrentUser();
+		res.status(200).send({Permissions : permissionDetails, Module : moduleDetails, User : userDetail});
+	}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
+	}
+}
+
 async function getModuleDetails(catalystApp) {
 	let query = 'SELECT * FROM Module';
+	let zcql = catalystApp.zcql();
+	let moduleDetail = await zcql.executeZCQLQuery(query);
+	return moduleDetail;
+}
+
+async function getPermissionsDetails(catalystApp,roleId) {
+	let query = 'SELECT * FROM Role_Permission WHERE Role_ID='+roleId;
+	let zcql = catalystApp.zcql();
+	let permissionDetail = await zcql.executeZCQLQuery(query);
+	return permissionDetail;
+}
+
+async function getModulePermission(catalystApp, permissionDetail) {
+	let query = 'SELECT * FROM Module WHERE ROWID='+permissionDetail.Role_Permission.Module_ID;
 	let zcql = catalystApp.zcql();
 	let moduleDetail = await zcql.executeZCQLQuery(query);
 	return moduleDetail;

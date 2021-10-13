@@ -28,6 +28,21 @@ exports.generateToken = async(req, res) => {
 	}
 };
 
+/**Function to get Role */
+exports.getRoleDetail = async(req, res) => {
+    try {
+		const catalystApp = catalyst.initialize(req);
+		const roleDetail = await getRoleDetail(catalystApp)
+		let userManagement = catalystApp.userManagement();
+		let userDetail = await userManagement.getCurrentUser();
+		res.status(200).send({Role : roleDetail, User : userDetail});
+	}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error in Getting User Details. Please try again after sometime.', error: err })
+	}
+};
+
 /**Function to get User Details */
 exports.getUserDetails = async(req, res) => {
     try {
@@ -80,3 +95,72 @@ exports.getUserZohoID = async(req, res) => {
 		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.' })
 	}
 };
+
+/**Create Connection*/
+exports.createConnection = async(req, res) => {
+	try {
+		const catalystApp = catalyst.initialize(req);
+		const Application = req.body.app;
+		const Module_name = req.body.moduleValue;
+		const Connection = req.body.connection;
+		const catalystTable = catalystApp.datastore().table('Module');
+		await catalystTable.insertRow({
+			Module_name,
+			Application,
+			Connection
+		});
+		res.status(200);
+	}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
+	}
+}
+
+/**Get Connection*/
+exports.getConnection = async(req, res) => {
+	try {
+		const catalystApp = catalyst.initialize(req);
+		const connectionModule = await getConnectionModule(catalystApp)
+		let userManagement = catalystApp.userManagement();
+		let userDetail = await userManagement.getCurrentUser();
+		res.status(200).send({module : connectionModule, User : userDetail});
+	}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error in Getting User Details. Please try again after sometime.', error: err })
+	}
+}
+
+/**Create Role*/
+exports.createRole = async(req, res) => {
+	try {
+		const catalystApp = catalyst.initialize(req);
+		const Role_name = req.body.roleName;
+		const catalystTable = catalystApp.datastore().table('Role');
+		await catalystTable.insertRow({
+			Role_name,
+		});
+		res.status(200);
+	}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
+	}
+}
+
+/**SQL Request to get role details */
+async function getRoleDetail(catalystApp) {
+	let query = 'SELECT * FROM Role';
+	let zcql = catalystApp.zcql();
+	let roleDetail = await zcql.executeZCQLQuery(query);
+	return roleDetail;
+}
+
+/**SQL Request to get connection module */
+async function getConnectionModule(catalystApp) {
+	let query = 'SELECT * FROM Module Where Connection=true';
+	let zcql = catalystApp.zcql();
+	let connectionModule = await zcql.executeZCQLQuery(query);
+	return connectionModule;
+}
