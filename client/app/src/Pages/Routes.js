@@ -34,7 +34,7 @@ class Routes extends React.Component {
                     <Route exact path="/" render={(props) => <Navbar app={"index"} {...props}/>} />
                     <Route path="/crm" render={(props) => <Navbar app={"crm"}  {...props}/>} />
                     <Route path="/role_permissions" render={(props) => <Navbar app={"role"}  {...props}/>} />
-                    <Route path="/connexion" render={(props) => <Navbar app={"roleConnexion"}  {...props}/>} />
+                    <Route path="/connection" render={(props) => <Navbar app={"roleConnection"}  {...props}/>} />
                     <Route path="/route" render={()=> <Layout />}/>
                 </Router>
             )

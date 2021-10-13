@@ -8,6 +8,7 @@ import axios from 'axios';
 import CRMPage from './CRMPage';
 import { Divider, withStyles } from '@material-ui/core';
 import DashboardCRM from './DashboardCRM';
+import AdminDashboardPage from '../views/TableList/AdminDashboardPage.js';
 
 //Version dev
 var baseUrl = "http://localhost:3000/server/crm_crud/";
@@ -237,7 +238,7 @@ class NavCRM extends React.Component {
                         {this.state.data ? <h2>{this.state.label}</h2> : <h2>Tableau de bord</h2>}
                         {this.state.data ? 
                         <CRMPage fields={this.state.fields} role={this.props.userRole} records={this.state.records} module={this.state.label} moduleAPI={this.state.moduleAPI} columns={this.state.column}/> : 
-                        <DashboardCRM modules={modules} moduleDetails={this.state.moduleDetails} role={this.props.userRole} />}
+                        <AdminDashboardPage modules={modules} moduleDetails={this.state.moduleDetails} role={this.props.userRole} />}
                     </div>
                 </div>
             );

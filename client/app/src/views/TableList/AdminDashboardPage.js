@@ -8,12 +8,12 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
 // core components
-import GridItem from "../components/Grid/GridItem.js";
-import GridContainer from "../components/Grid/GridContainer.js";
-import Table from "../components/Table/Table.js";
-import Card from "../components/Card/Card.js";
-import CardHeader from "../components/Card/CardHeader.js";
-import CardBody from "../components/Card/CardBody.js";
+import GridItem from "../../components/Grid/GridItem.js";
+import GridContainer from "../../components/Grid/GridContainer.js";
+import AdminDashboardTable from "../../components/Table/AdminDashboardTable.js";
+import Card from "../../components/Card/Card.js";
+import CardHeader from "../../components/Card/CardHeader.js";
+import CardBody from "../../components/Card/CardBody.js";
 
 import {  InputLabel } from "@material-ui/core";
 import FormControl from '@mui/material/FormControl';
@@ -60,7 +60,7 @@ const styles = {
     },
 };
 
-class DashboardCRM extends React.Component {
+class AdminDashboardPage extends React.Component {
 
     state = {
         moduleDetails: [],
@@ -199,14 +199,15 @@ class DashboardCRM extends React.Component {
                     <GridItem xs={12} sm={12} md={12}>
                         <Card>
                             <CardHeader color="info">
-                                <h4 className={styles.cardTitleWhite}>Dashboard</h4>
+                                <h4 className={styles.cardTitleWhite}>Tableau de bord</h4>
                             </CardHeader>
                             <CardBody> 
-                                <Table
+                                <AdminDashboardTable
                                     tableHeaderColor="info"
                                     tableHead={["Nom champs","Créer","Afficher","Modifier","Supprimer"]}
                                     tableData={this.props.modules}
-                                    tableApi={["plural_label"]}
+                                    tableSwitch={this.state}
+                                    tableApi={["plural_label","Create","Read","Update","Delete"]}
                                 />
                             </CardBody>
                         </Card>
@@ -292,4 +293,4 @@ class DashboardCRM extends React.Component {
             </Box>
         }
 */
-export default DashboardCRM;
+export default AdminDashboardPage;

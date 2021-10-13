@@ -227,7 +227,8 @@ const RenderRow = (props) =>{
     const [state, setState] = useState([]);
 
     useEffect(() => {
-
+        if(props.role === "App Administrator") {
+        /**Check if it's ticked */
         function getCheck() {
             var boolean = false;
             props.columns.forEach((column) => {
@@ -237,8 +238,9 @@ const RenderRow = (props) =>{
             })
             return boolean
         }
-        setState({[props.data] : getCheck()});
-    },[props.data,props.columns]);
+        setState({[props.data] : getCheck()});  
+    }
+    },[props.data, props.role,props.columns]);
 
     /**Change switch */
     function handleChange(event, name) {

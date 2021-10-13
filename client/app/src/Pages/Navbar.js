@@ -21,10 +21,14 @@ import Menu from "@material-ui/core/Menu";
 import { Button, CardMedia } from "@material-ui/core";
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import GroupIcon from '@mui/icons-material/Group';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import axios from 'axios';
 
 import App from "../App";
 import NavbarCRM from "./NavbarCRM";
+import RolePermission from '../views/TableList/RolePermissionPage';
+import ConnectionPage from '../views/TableList/ConnectionPage';
 
 //Version dev
 var baseUrl = "http://localhost:3000/server/crm_crud/";
@@ -32,7 +36,7 @@ var baseUrl = "http://localhost:3000/server/crm_crud/";
 //Version deployment
 //var baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 
-const drawerWidth = 180;
+const drawerWidth = 250;
 
 /**Navbar Design */
 const styles = theme => ({
@@ -151,10 +155,23 @@ class Navbar extends React.Component {
     });
   }
 
+  navbarView = (app, userEmail, role) => {
+    if(app === "crm") {
+      return <NavbarCRM userEmail={userEmail} userRole={role} />
+    } else if(app === "role") {
+      return <RolePermission />
+    } else if(app === "roleConnection") { 
+      return <ConnectionPage title="Connexion"/>
+    } else {
+      return <App />
+    }
+  }
+
   render() {
     const { classes, theme } = this.props;
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
+
     if(this.state.role === "App Administrator") {
       return (
         <div className={classes.root}>
@@ -167,7 +184,6 @@ class Navbar extends React.Component {
             })}
           >
             <Toolbar disableGutters={true}>
-              {this.state.role === "App Administrator" ? 
                 <IconButton
                   color="inherit"
                   aria-label="Open drawer"
@@ -182,10 +198,6 @@ class Navbar extends React.Component {
                     }}
                   />
                 </IconButton>
-                :
-                <div>
-                </div>
-              }
               <Typography
                 variant="h6"
                 color="inherit"
@@ -238,6 +250,18 @@ class Navbar extends React.Component {
             >
               <div className={classes.toolbar} />
               <List>
+                {["Users", "Roles & Permissions"].map((text, index) => (
+                  <ListItem button key={text}>
+                    <ListItemIcon>
+                      {index % 2 === 0 ?
+                        <Button href="index.html#/" startIcon={<GroupIcon />}/>
+                      :
+                        <Button href="index.html#/role_permissions" startIcon={<AdminPanelSettingsIcon />}/>
+                      }
+                    </ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItem>
+                ))}
                 {this.state.open ? 
                   <Divider textAlign="left">
                     <h2>Applications</h2>
@@ -261,7 +285,7 @@ class Navbar extends React.Component {
             </Drawer>
             <main className={classes.content}>
               <div className={classes.toolbar} />
-              {this.props.app === "crm" ? <NavbarCRM userEmail={this.state.userEmail} userRole={this.state.role}/> : <App />}
+              {this.navbarView(this.props.app, this.state.userEmail, this.state.role)}
             </main>
         </div>
       );
