@@ -6,7 +6,9 @@ import axios from 'axios';
 import MenuItem from '@mui/material/MenuItem';
 
 import Select from '@mui/material/Select';
-
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import Stack from '@mui/material/Stack';
 // core components
 import GridItem from "../../components/Grid/GridItem.js";
 import GridContainer from "../../components/Grid/GridContainer.js";
@@ -17,7 +19,6 @@ import CardBody from "../../components/Card/CardBody.js";
 
 import {  InputLabel } from "@material-ui/core";
 import FormControl from '@mui/material/FormControl';
-import { CircularProgress } from "@mui/material";
 
 //Version dev
 var baseUrl = "http://localhost:3000/server/crm_crud/";
@@ -77,7 +78,6 @@ class AdminDashboardPage extends React.Component {
         });
     }
 
-
     /**Execute a function according to the action of switch */
     userUpdate = function(checked,permission,role,module,moduleID) {
         if(checked.target.checked !== true)
@@ -132,12 +132,21 @@ class AdminDashboardPage extends React.Component {
         return moduleID;
     }
 
+    clearState = () => {
+        for(const [key, value] of Object.entries(this.state)) {
+            if(value === true) {
+                this.setState({ [key] : false});
+            }
+            console.log(key + " : " + value )
+        }
+    };
+
     getCheck = function(permissions,moduleDetails) {
         permissions.forEach((permission) => {
             moduleDetails.forEach(moduleDetail => {
                 const module = moduleDetail[0].Module.Module_name;
                 const scope = permission.Role_Permission.Permission;
-                this.setState({[module + scope] : true, [module + scope + "ID"] : permission.Role_Permission.Module_ID})
+                this.setState({[module + scope] : true, [module + scope + "ID"] : moduleDetail[0].Module.ROWID})
             })
         })
     }
@@ -155,7 +164,10 @@ class AdminDashboardPage extends React.Component {
           return (
             this.state.role.map(role => {
               return <MenuItem  value={role.Role.ROWID} 
-                                onClick={() => this.getPermissions(role.Role.ROWID)}
+                                onClick={() => {
+                                    this.clearState()
+                                    this.getPermissions(role.Role.ROWID)
+                                }}
                      >
                          {role.Role.Role_name}
                      </MenuItem>
@@ -184,11 +196,11 @@ class AdminDashboardPage extends React.Component {
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                         <InputLabel id="role">Role</InputLabel>
                         <Select
-                        labelId="role"
-                        id="role"
-                        value={this.state.roles}
-                        onChange={(event)=>this.handleSelectChange(event)}
-                        label="Role"
+                            labelId="role"
+                            id="role"
+                            value={this.state.roles}
+                            onChange={(event)=>this.handleSelectChange(event)}
+                            label="Role"
                         >
                         <MenuItem value="">
                             <em> - Choisir un role - </em>
@@ -201,14 +213,24 @@ class AdminDashboardPage extends React.Component {
                             <CardHeader color="info">
                                 <h4 className={styles.cardTitleWhite}>Tableau de bord</h4>
                             </CardHeader>
-                            <CardBody> 
-                                <AdminDashboardTable
-                                    tableHeaderColor="info"
-                                    tableHead={["Nom champs","Créer","Afficher","Modifier","Supprimer"]}
-                                    tableData={this.props.modules}
-                                    tableSwitch={this.state}
-                                    tableApi={["plural_label","Create","Read","Update","Delete"]}
-                                />
+                            <CardBody>
+                            {console.log(this.state)}
+                                {this.state.roles.length !== 0 ? 
+                                    <AdminDashboardTable
+                                        tableHeaderColor="info"
+                                        tableHead={["Nom champs","Créer","Afficher","Modifier","Supprimer"]}
+                                        tableData={this.props.modules}
+                                        tableState={this.state}
+                                        tableApi={["plural_label","Create","Read","Update","Delete"]}
+                                    />
+                                :
+                                    <Stack sx={{ width: '100%' }} spacing={2}>
+                                        <Alert severity="info">
+                                            <AlertTitle>Info</AlertTitle>
+                                            <strong>Veuillez choisir un rôle</strong>
+                                        </Alert>
+                                    </Stack>
+                                }
                             </CardBody>
                         </Card>
                     </GridItem>

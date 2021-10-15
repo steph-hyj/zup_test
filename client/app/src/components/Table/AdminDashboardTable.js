@@ -7,7 +7,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import Checkbox from '@mui/material/Checkbox';
 import { Switch } from '@mui/material';
 // core components
 import styles from "../../assets/jss/style/components/tableStyle.js";
@@ -17,53 +16,66 @@ const useStyles = makeStyles(styles);
 
 export default function CustomTable(props) {
   const classes = useStyles();
-  const [moduleCreate, setModuleCreate] = React.useState();
-  const [moduleRead, setModuleRead] = React.useState();
-  const [moduleUpdate, setModuleUpdate] = React.useState();
-  const [moduleDelete, setModuleDelete] = React.useState();
-  const { tableHead, tableData, tableHeaderColor, tableApi, tableSwitch } = props;
-
+  const [state, setState] = React.useState({});
+  const [role, setRole] = React.useState("");
+  const { tableHead, tableData, tableHeaderColor, tableApi, tableState } = props;
   var baseUrl = "http://localhost:3000/server/crm_crud/";
 
+  useEffect(() => {
+    if(tableState.roles){
+      setRole(tableState.roles)
+    }
+
+    console.log(tableState);
+
+    for(const [key, value] of Object.entries(tableState)) {
+      if(value === true || value === false) {
+        setState(state => ({
+          ...state,
+          [key] : value
+        }))
+      }
+    }
+  },[tableState])
+
+  /**Insert Into Module(Table) the module to display*/
+  function addModule (permission, role,module) {
+    axios.post(baseUrl+"module/"+module, {
+        role,
+        permission
+    }).then((response) => {
+        console.log(response);
+    }).catch((err) => {
+        console.log(err);
+    });
+  }
+
+  /**Delete from Module(Table) the module to hide*/
+  function deleteModule (moduleID) {
+      axios.delete(baseUrl+"module/"+moduleID).then((response) => {
+          console.log(response);
+      }).catch((err) => {
+          console.log(err);
+      });
+  }
+
   /**Execute a function according to the action of switch */
-  function userUpdate(checked,permission,role,module,moduleID) {
-        if(checked.target.checked !== true)
-        {
-            this.deleteModule(moduleID);
-        }
-        else
-        {
-            this.addModule(permission,role,module);
-        }
+  function moduleUpdate(checked,permission,role,module,moduleID) {
+      if(checked.target.checked)
+      {
+        addModule(permission,role,module);
+      }
+      else
+      {
+        deleteModule(moduleID);
+      }
     }
-
-    /**Insert Into Module(Table) the module to display*/
-    function addModule (permission, role,module) {
-        axios.post(baseUrl+"module/"+module, {
-            role,
-            permission
-        }).then((response) => {
-            console.log(response);
-        }).catch((err) => {
-            console.log(err);
-        });
-    }
-
-    /**Delete from Module(Table) the module to hide*/
-    function deleteModule (moduleID) {
-        axios.delete(baseUrl+"module/"+moduleID).then((response) => {
-            console.log(response);
-        }).catch((err) => {
-            console.log(err);
-        });
-    }
-
-    const handleChangeCreate = (event,name,scope) => {
-        setModuleCreate({[name + scope] : event.target.checked})
-    };
 
     const handleChange = (event,name,scope) => {
-        setModuleRead({[name + scope] : event.target.checked})
+        setState({
+          ...state,
+          [name + scope] : event.target.checked
+        });
     };
 
   return (
@@ -90,64 +102,22 @@ export default function CustomTable(props) {
             return (
               <TableRow key={key} className={classes.tableBodyRow}>
                 {tableApi.map(api => {
-                    if(api === "plural_label") {
-                        return (
-                            <TableCell className={classes.tableCell} key={api}>
-                                {prop[api]}
-                            </TableCell>
-                        )
-                    } else if (api === "Create") {
-                        return (
-                            <TableCell className={classes.tableCell} key={api}>
-                                <Switch id={prop["plural_label"]+api}
-                                        checked={moduleCreate}
-                                        onChange={(event) => {handleChangeCreate(event,prop["plural_label"],api) 
-                                                                console.log(moduleCreate)}}
-                                        value= {prop["plural_label"] + "Create"}
-                                        color="success"
-                                /> 
-                            </TableCell>
-                        )
-                    } else if (api === "Read") {
-                        return (
-                            <TableCell className={classes.tableCell} key={api}>
-                                <Switch id={prop["plural_label"]+api}
-                                        checked={moduleRead}
-                                        onChange={(event) => {handleChange(event,prop["plural_label"],api) 
-                                                                console.log(moduleRead)}}
-                                        value= {prop["plural_label"] + "Read"}
-                                        color="success"
-                                /> 
-                            </TableCell>
-                        )
-                        
-                    } else if (api === "Update") {
-                        return (
-                            <TableCell className={classes.tableCell} key={api}>
-                                <Switch id={prop["plural_label"]+api}
-                                        checked={moduleUpdate}
-                                        onChange={(event) => {handleChange(event,prop["plural_label"],api) 
-                                                                console.log(moduleUpdate)}}
-                                        value= {prop["plural_label"] + "Update"}
-                                        color="success"
-                                /> 
-                            </TableCell>
-                        )
-                        
-                    } else if (api === "Delete") {
-                        return (
-                            <TableCell className={classes.tableCell} key={api}>
-                                <Switch id={prop["plural_label"]+api}
-                                        checked={moduleDelete}
-                                        onChange={(event) => {handleChange(event,prop["plural_label"],api) 
-                                                                console.log(moduleDelete)}}
-                                        value= {prop["plural_label"] + "Delete"}
-                                        color="success"
-                                /> 
-                            </TableCell>
-                        )
-                        
-                    }
+                  return (
+                      <TableCell className={classes.tableCell} key={api}>
+                          {api === "plural_label" ? 
+                            prop[api] 
+                          : 
+                            <Switch id={prop["plural_label"]+api}
+                                    checked={state[prop["plural_label"]+api]}
+                                    onChange={(event) => {
+                                                handleChange(event,prop["plural_label"],api)
+                                                moduleUpdate(event,api,role,prop["plural_label"],tableState[prop["plural_label"]+api+"ID"])
+                                              }}
+                                    color="success"
+                            /> 
+                          }
+                      </TableCell>
+                  )
                 })}
               </TableRow>
             );
