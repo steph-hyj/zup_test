@@ -31,7 +31,7 @@ export default function CustomTable(props) {
                   >
                     {prop}
                   </TableCell>
-                );
+                )
               })}
             </TableRow>
           </TableHead>
@@ -45,10 +45,10 @@ export default function CustomTable(props) {
                       <TableCell className={classes.tableCell} key={api}>
                           {api !== "Connection" ? prop[api] : <Checkbox checked={prop[api]} />}
                       </TableCell>
-                    );
-                })};
+                    )
+                })}
               </TableRow>
-            );
+            )
           })}
         </TableBody>
       </Table>
