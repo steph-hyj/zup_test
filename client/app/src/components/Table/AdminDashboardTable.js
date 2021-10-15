@@ -26,8 +26,6 @@ export default function CustomTable(props) {
       setRole(tableState.roles)
     }
 
-    console.log(tableState);
-
     for(const [key, value] of Object.entries(tableState)) {
       if(value === true || value === false) {
         setState(state => ({
