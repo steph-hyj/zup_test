@@ -9,6 +9,8 @@ router.get('/getUserZohoID/:email',userController.getUserZohoID);
 /**Get Role */
 router.get('/getRoles',userController.getRoleDetail);
 router.post('/createRole',userController.createRole);
+router.put('/updateRole',userController.updateRole);
+router.delete('/deleteRole/:roleID',userController.deleteRole);
 /**Create Connexion*/
 router.post('/createConnection',userController.createConnection);
 router.get('/getConnection',userController.getConnection);
