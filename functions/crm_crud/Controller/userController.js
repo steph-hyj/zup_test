@@ -32,10 +32,28 @@ exports.generateToken = async(req, res) => {
 exports.getRoleDetail = async(req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
-		const roleDetail = await getRoleDetail(catalystApp)
-		let userManagement = catalystApp.userManagement();
-		let userDetail = await userManagement.getCurrentUser();
-		res.status(200).send({Role : roleDetail, User : userDetail});
+		const permissionDetails = await getRoleConnectionDetail(catalystApp);
+		var moduleRoleDetails = [];
+		for(const permissionDetail of permissionDetails) {
+			const moduleDetail = await getModulePermission(catalystApp, permissionDetail);
+			const roleDetail = await getRolePermission(catalystApp, permissionDetail);
+			var Role_name = "";
+			var Role_ID = "";
+			roleDetail.forEach(role => {
+				Role_name = role.Role.Role_name;
+				Role_ID = role.Role.ROWID;
+			});
+			var Module_name = "";
+			var Module_ID = "";
+			moduleDetail.forEach(module => {
+				Module_name = module.Module.Module_name;
+				Module_ID = module.Module.ROWID;
+			});
+			const permission_ID = permissionDetail.Role_Permission.ROWID;
+			const moduleRole = { Module_name: Module_name, Module_ID:  Module_ID , Role_name: Role_name, Role_ID: Role_ID, Permission_ID: permission_ID};
+			moduleRoleDetails.push(moduleRole);
+		}
+		res.status(200).send({ModuleRole : moduleRoleDetails});
 	}
 	catch (err) {
 		console.log(err);
@@ -43,6 +61,84 @@ exports.getRoleDetail = async(req, res) => {
 	}
 };
 
+/**Create Role*/
+exports.createRole = async(req, res) => {
+	try {
+		const catalystApp = catalyst.initialize(req);
+		const Role_name = req.body.roleName;
+		const catalystTable = catalystApp.datastore().table('Role');
+		const Role = await catalystTable.insertRow({
+			Role_name,
+		});
+		if(Role.ROWID) {
+			const catalystTable = catalystApp.datastore().table('Role_Permission');
+			const Role_ID = Role.ROWID;
+			const Module_ID = req.body.moduleValue;
+			const Permission = "Connection";
+			await catalystTable.insertRow({
+				Role_ID,
+				Module_ID,
+				Permission
+			});
+			res.status(200);
+		} else {
+			res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
+		}
+	}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
+	}
+}
+
+/**Update Role*/
+exports.updateRole = async(req, res) => {
+	try {
+		const catalystApp = catalyst.initialize(req);
+		const Role_name = req.body.roleName;
+		const ROWID = req.body.roleID;
+		if(Role_name && ROWID) {
+			const catalystTable = catalystApp.datastore().table('Role');
+			await catalystTable.updateRow({
+				Role_name,
+				ROWID
+			});
+			res.status(200);
+		} else {
+			res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
+		}
+
+		if(req.body.moduleValue) {
+			const Module_ID = req.body.moduleValue;
+			const ROWID = req.body.permissionID;
+			const catalystTable = catalystApp.datastore().table('Role_Permission');
+			await catalystTable.updateRow({
+				Module_ID,
+				ROWID
+			});
+			res.status(200);
+		}
+	}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
+	}
+}
+
+
+/**Delete Role*/
+exports.deleteRole = async(req, res) => {
+	try {
+		const catalystApp = catalyst.initialize(req);
+		const row_id = req.params.roleID;
+		const catalystTable = catalystApp.datastore().table('Role');
+		await catalystTable.deleteRow(row_id);
+		res.status(200);
+	} catch(err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
+	}
+}
 /**Function to get User Details */
 exports.getUserDetails = async(req, res) => {
     try {
@@ -132,26 +228,25 @@ exports.getConnection = async(req, res) => {
 	}
 }
 
-/**Create Role*/
-exports.createRole = async(req, res) => {
-	try {
-		const catalystApp = catalyst.initialize(req);
-		const Role_name = req.body.roleName;
-		const catalystTable = catalystApp.datastore().table('Role');
-		await catalystTable.insertRow({
-			Role_name,
-		});
-		res.status(200);
-	}
-	catch (err) {
-		console.log(err);
-		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
-	}
+/**SQL Request to get role ID in Role_Permission (Table) details */
+async function getRoleConnectionDetail(catalystApp) {
+	let query = 'SELECT * FROM Role_Permission WHERE Permission=Connection';
+	let zcql = catalystApp.zcql();
+	let roleDetail = await zcql.executeZCQLQuery(query);
+	return roleDetail;
+}
+
+/**SQL Request to get module details */
+async function getModulePermission(catalystApp, permissionDetail) {
+	let query = 'SELECT * FROM Module WHERE ROWID='+permissionDetail.Role_Permission.Module_ID;
+	let zcql = catalystApp.zcql();
+	let moduleDetail = await zcql.executeZCQLQuery(query);
+	return moduleDetail;
 }
 
 /**SQL Request to get role details */
-async function getRoleDetail(catalystApp) {
-	let query = 'SELECT * FROM Role';
+async function getRolePermission(catalystApp, permissionDetail) {
+	let query = 'SELECT * FROM Role WHERE ROWID='+permissionDetail.Role_Permission.Role_ID;
 	let zcql = catalystApp.zcql();
 	let roleDetail = await zcql.executeZCQLQuery(query);
 	return roleDetail;
