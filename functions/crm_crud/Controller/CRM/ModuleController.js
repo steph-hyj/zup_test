@@ -209,10 +209,6 @@ exports.getPermissions = async(req, res) => {
 		const catalystApp = catalyst.initialize(req);
 		const permissionDetails = await getPermissionsDetails(catalystApp,req.params.roleId);
 		var moduleDetails = [];
-		/*permissionDetails.forEach(permissionDetail => {
-			const moduleDetail = await getModulePermission(catalystApp,permissionDetail);
-			moduleDetails.push(moduleDetail);
-		})*/
 		for(const permissionDetail of permissionDetails) {
 			const moduleDetail = await getModulePermission(catalystApp, permissionDetail);
 			moduleDetails.push(moduleDetail);
