@@ -9,6 +9,8 @@ import Layout from '../layouts/Layouts';
 import Sidebar from '../components/Sidebar/Sidebar';
 import CreatePage from './CreatePage';
 import UsersPage from "../views/TableList/UsersPage";
+import InvoicePage from './InvoicePage'; 
+import QuotePage from './QuotePage';
 
 //Version local
 var baseUrl = "http://localhost:3000/server/crm_crud/";
@@ -39,6 +41,12 @@ class Routes extends React.Component {
                     <Route path="/role_permissions" render={(props) => <Navbar app={"role"}  {...props}/>} />
                     <Route path="/connection" render={(props) => <Navbar app={"roleConnection"}  {...props}/>} />
                     <Route path="/route" render={()=> <Layout />}/>
+                    <Route path="/invoice" render={(props) => <InvoicePage app={"invoice"}  {...props}/>} />
+                    <Route path="/quote" render={(props) => <QuotePage app={"quote"}  {...props}/>} />
+
+                    {/* <Route path="/role_permissions" render={(props) => <Navbar app={"role"}  {...props}/>} />
+                    <Route path="/connexion" render={(props) => <Navbar app={"roleConnexion"}  {...props}/>} />
+                    <Route path="/route" render={()=> <Layout />}/> */}
                 </Router>
             )
         }
