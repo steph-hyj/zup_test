@@ -17,7 +17,12 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 
+
+//Version dev
 var baseUrl = "http://localhost:3000/server/crm_crud/";
+
+//Version deployment
+//var baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 
 const styles = {
   cardCategoryWhite: {
@@ -72,7 +77,7 @@ export default function ConnectionPage(prop) {
       setModuleConnection(response.data.module);
     }).catch((err) => {
       console.log(err);
-    })
+    });
 
     let modules = axios.get(baseUrl+"module").then((response)=>{ 
       return response.data.modules
@@ -212,7 +217,8 @@ export default function ConnectionPage(prop) {
                 </FormControl>
               </DialogContent>
               <DialogActions>
-              <Button fullWidth onClick={() => createConnection()}>Valider</Button>
+                <Button fullWidth color="success" variant="contained" onClick={() => createConnection()}>Créer</Button>
+                <Button fullWidth color="error" variant="contained" onClick={handleClose}>Annuler</Button>
               </DialogActions>
             </Dialog>
           </Box>
@@ -228,9 +234,11 @@ export default function ConnectionPage(prop) {
                 {moduleConnection ? 
                   <Table
                     tableHeaderColor="info"
-                    tableHead={["Module","Application","Connexion"]}
+                    tableHead={["Module","Application","Connexion", " "]}
                     tableData={setTableData()}
-                    tableApi={["Module_name","Application","Connection"]}
+                    tableApi={["Module_name","Application","Connection", "Update/Delete"]}
+                    Module={modules}
+                    App={"connexion"}
                   />
                 :
                   /**Loading */

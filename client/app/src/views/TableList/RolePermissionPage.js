@@ -17,8 +17,11 @@ import { Box } from "@mui/system";
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
 
-
+//Version dev
 var baseUrl = "http://localhost:3000/server/crm_crud/";
+
+//Version deployment
+//var baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 
 const styles = {
   cardCategoryWhite: {
@@ -59,51 +62,30 @@ const useStyles = makeStyles(styles);
 
 export default function RolePermissionPage() {
   const classes = useStyles();
-  const [roles, setRoles] = React.useState('');
   const [roleName, setRoleName] = React.useState('');
-  const [modules, setModules] = React.useState('');
+  const [rolePage, setRolePage] = React.useState();
+  const [modulesConnection, setModulesConnection] = React.useState('');
   const [moduleValue, setModuleValue] = React.useState('');
   const [done, setDone] = React.useState(undefined);
   const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
-    axios.get(baseUrl+"getRoles").then((response)=>{ 
-      setRoles(response.data.Role);
+    axios.get(baseUrl+"getRoles").then((response)=>{
+      setRolePage(response.data.ModuleRole);
     }).catch((err) => {
       console.log(err)
     });
 
-    let modules = axios.get(baseUrl+"module").then((response)=>{ 
-      return response.data.modules
+    /**Get Connection Module */
+    axios.get(baseUrl+"getConnection").then((response) => {
+      setModulesConnection(response.data.module);
     }).catch((err) => {
-      console.log(err)
-    });
-
-    const moduleTab = [];
-
-    modules.then((modules)=>{
-        modules.forEach(module => {
-            axios.get(baseUrl+"module/getFields/"+module.api_name).then((response) => {
-                var status = response.data.status;
-                if(!status) {
-                    response.data.fields.forEach((field)=>{
-                        if(field.api_name === "Email") {
-                            moduleTab.push(module)
-                        }
-                    })
-                }
-                setModules(moduleTab);
-            }).catch((err)=> {
-                console.log(err);
-            })
-        });
-    }).catch((err)=>{
-        console.log(err);
+      console.log(err);
     });
 
     setTimeout(() => {
       setDone(true);
-    }, 3000);
+    }, 2000);
 
   },[])
 
@@ -119,33 +101,23 @@ export default function RolePermissionPage() {
     setOpen(false);
   };
 
-  function getRole() {
-    if(roles) {
-      console.log(roles);
-      return (
-        roles.map(role => {
-          return <MenuItem value={role.Role.ROWID}>{role.Role.Role_name}</MenuItem>
-        })
-      )
-    }
-  };
-
   function createRole() {
     axios.post(baseUrl+'createRole',{
-      roleName
+      roleName,
+      moduleValue
     }).then((response)=> {
       console.log(response);
-      setOpen(false);
     }).catch((err) => {
       console.log(err);
-    })
+    });
+    setOpen(false);
   };
 
   function getModule() {
-    if(modules) {
+    if(modulesConnection) {
       return(
-        modules.map(module => {
-          return <MenuItem value={module.api_name}>{module.plural_label}</MenuItem>
+        modulesConnection.map(moduleConnection => {
+          return <MenuItem value={moduleConnection.Module.ROWID}>{moduleConnection.Module.Module_name}</MenuItem>
         })
       )
     }
@@ -154,16 +126,6 @@ export default function RolePermissionPage() {
   const handleChangeModule = (event) => {
     setModuleValue(event.target.value);
   };
-
-  /**Set table header */
-  function setTableData() {
-    const roleTab = [];
-    roles.forEach(role => {
-      roleTab.push(role.Role);
-    })
-    return roleTab
-  }
-
 
   return (
     <>
@@ -213,7 +175,8 @@ export default function RolePermissionPage() {
                 </FormControl>
               </DialogContent>
               <DialogActions>
-                <Button fullWidth onClick={()=>createRole()}>Créer</Button>
+                <Button fullWidth color="error" onClick={handleClose}>Annuler</Button>
+                <Button fullWidth color="success" onClick={()=>createRole()}>Créer</Button>
               </DialogActions>
             </Dialog>
           </Box>
@@ -226,12 +189,14 @@ export default function RolePermissionPage() {
                 <Stack direction="row" spacing={2}>
                   <Button href="index.html#/connection">Connexion</Button>
                 </Stack>
-                {roles ?
+                {rolePage ?
                   <Table
                     tableHeaderColor="primary"
-                    tableHead={["Role", "Module"]}
-                    tableData={setTableData()}
-                    tableApi={["Role_name","Module_Name"]}
+                    tableHead={["Role", "Module"," "]}
+                    tableData={rolePage}
+                    tableApi={["Role_name","Module_name","Update/Delete"]}
+                    Module = {modulesConnection}
+                    App = {"rôle"}
                   />
                   : 
                   /**Loading */

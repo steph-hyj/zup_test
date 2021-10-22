@@ -72,7 +72,8 @@ class AdminDashboardPage extends React.Component {
 
     componentDidMount() {
         axios.get(baseUrl+"getRoles").then((response)=>{ 
-            this.setState({role : response.data.Role});
+            console.log(response.data);
+            this.setState({role : response.data.ModuleRole});
         }).catch((err) => {
             console.log(err)
         });
@@ -132,15 +133,6 @@ class AdminDashboardPage extends React.Component {
         return moduleID;
     }
 
-    clearState = () => {
-        for(const [key, value] of Object.entries(this.state)) {
-            if(value === true) {
-                this.setState({ [key] : false});
-            }
-            console.log(key + " : " + value )
-        }
-    };
-
     getCheck = function(permissions,moduleDetails) {
         permissions.forEach((permission) => {
             moduleDetails.forEach(moduleDetail => {
@@ -163,13 +155,12 @@ class AdminDashboardPage extends React.Component {
         if(this.state.role) {
           return (
             this.state.role.map(role => {
-              return <MenuItem  value={role.Role.ROWID} 
+              return <MenuItem  value={role.Role_ID} 
                                 onClick={() => {
-                                    this.clearState()
-                                    this.getPermissions(role.Role.ROWID)
+                                    this.getPermissions(role.Role_ID)
                                 }}
                      >
-                         {role.Role.Role_name}
+                         {role.Role_name}
                      </MenuItem>
             })
           )
@@ -214,7 +205,6 @@ class AdminDashboardPage extends React.Component {
                                 <h4 className={styles.cardTitleWhite}>Tableau de bord</h4>
                             </CardHeader>
                             <CardBody>
-                            {console.log(this.state)}
                                 {this.state.roles.length !== 0 ? 
                                     <AdminDashboardTable
                                         tableHeaderColor="info"
