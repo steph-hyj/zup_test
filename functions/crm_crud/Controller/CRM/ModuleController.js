@@ -145,12 +145,10 @@ exports.hideModule = async(req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
 		const Module_name = req.params.mod;
-		const Connection = false;
 		const Application = "crm"
 		const catalystTable = catalystApp.datastore().table('Module');
 		const createModPermission = await catalystTable.insertRow({
 			Module_name,
-			Connection,
 			Application
 		});
 		try {
@@ -231,7 +229,7 @@ async function getModuleDetails(catalystApp) {
 }
 
 async function getPermissionsDetails(catalystApp,roleId) {
-	let query = 'SELECT * FROM Role_Permission WHERE Role_ID='+roleId;
+	let query = 'SELECT * FROM Role_Permission WHERE Permission != Connection AND Role_ID='+roleId;
 	let zcql = catalystApp.zcql();
 	let permissionDetail = await zcql.executeZCQLQuery(query);
 	return permissionDetail;

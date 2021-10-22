@@ -105,7 +105,7 @@ exports.updateRole = async(req, res) => {
 			});
 			res.status(200);
 		} else {
-			res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
+			res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.'})
 		}
 
 		if(req.body.moduleValue) {
@@ -228,6 +228,42 @@ exports.getConnection = async(req, res) => {
 	}
 }
 
+/**Update Connection */
+exports.updateConnection = async(req, res) => {
+	try {
+		const catalystApp = catalyst.initialize(req);
+		const ROWID = req.body.moduleID;
+		const Module_name = req.body.moduleValue;
+		const Connection = req.body.connection;
+		const Application = req.body.app;
+		const catalystTable = catalystApp.datastore().table('Module');
+		await catalystTable.updateRow({
+			Module_name,
+			Application,
+			Connection,
+			ROWID
+		});
+		res.status(200).send({message : 'Update successfully'});
+	} catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error in Getting User Details. Please try again after sometime.', error: err })
+	}
+}
+
+/**Delete Connection */
+exports.deleteConnection = async(req, res) => {
+	try {
+		const catalystApp = catalyst.initialize(req);
+		const row_id = req.params.connectionID;
+		const catalystTable = catalystApp.datastore().table('Module');
+		await catalystTable.deleteRow(row_id);
+		res.status(200).send({message : 'Delete successfully'});
+	} catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error in Getting User Details. Please try again after sometime.', error: err })
+	}
+}
+
 /**SQL Request to get role ID in Role_Permission (Table) details */
 async function getRoleConnectionDetail(catalystApp) {
 	let query = 'SELECT * FROM Role_Permission WHERE Permission=Connection';
@@ -254,7 +290,7 @@ async function getRolePermission(catalystApp, permissionDetail) {
 
 /**SQL Request to get connection module */
 async function getConnectionModule(catalystApp) {
-	let query = 'SELECT * FROM Module Where Connection=true';
+	let query = 'SELECT * FROM Module Where Connection IS NOT NULL';
 	let zcql = catalystApp.zcql();
 	let connectionModule = await zcql.executeZCQLQuery(query);
 	return connectionModule;
