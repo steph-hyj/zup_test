@@ -29,7 +29,7 @@ import App from "../App";
 import NavbarCRM from "./NavbarCRM";
 import RolePermission from '../views/TableList/RolePermissionPage';
 import ConnectionPage from '../views/TableList/ConnectionPage';
-
+import UsersPage from '../views/TableList/UsersPage';
 //Version dev
 var baseUrl = "http://localhost:3000/server/crm_crud/";
 
@@ -155,12 +155,16 @@ class Navbar extends React.Component {
     });
   }
 
+
+  //Return contenu de la page cliqué
   navbarView = (app, userEmail, role) => {
     if(app === "crm") {
       return <NavbarCRM userEmail={userEmail} userRole={role} />
-    } else if(app === "role") {
+    }else if(app === "users") {
+      return <UsersPage />
+    }else if(app === "role") {
       return <RolePermission />
-    } else if(app === "roleConnection") { 
+    } else if(app === "roleConnection") {
       return <ConnectionPage title="Connexion"/>
     } else {
       return <App />
@@ -254,7 +258,7 @@ class Navbar extends React.Component {
                   <ListItem button key={text}>
                     <ListItemIcon>
                       {index % 2 === 0 ?
-                        <Button href="index.html#/" startIcon={<GroupIcon />}/>
+                        <Button href="index.html#/users" startIcon={<GroupIcon />}/>
                       :
                         <Button href="index.html#/role_permissions" startIcon={<AdminPanelSettingsIcon />}/>
                       }
