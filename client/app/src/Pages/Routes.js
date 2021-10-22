@@ -9,7 +9,7 @@ import Layout from '../layouts/Layouts';
 import Sidebar from '../components/Sidebar/Sidebar';
 import CreatePage from './CreatePage';
 import UsersPage from "../views/TableList/UsersPage";
-import InvoicePage from './InvoicePage'; 
+import InvoicePage from '../views/TableList/InvoicePage'; 
 import QuotePage from './QuotePage';
 
 //Version local

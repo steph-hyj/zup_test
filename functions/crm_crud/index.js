@@ -22,6 +22,7 @@ app.use("/record",require('./routes/CRM/records.js'));
 /** Route for ZBooks */
 app.use("/books",require('./routes/Books/organization.js'));
 app.use("/books/invoices",require('./routes/Books/invoice.js'));
+app.use("/books/quotes",require('./routes/Books/quote.js'));
 
 //Executes various APIs to access, add, or modify leads in CRM
 //Fetches all leads
