@@ -10,7 +10,7 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import CreatePage from './CreatePage';
 import UsersPage from "../views/TableList/UsersPage";
 import InvoicePage from '../views/TableList/InvoicePage'; 
-import QuotePage from './QuotePage';
+import QuotePage from '../views/TableList/QuotePage';
 
 //Version local
 var baseUrl = "http://localhost:3000/server/crm_crud/";

@@ -57,12 +57,12 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function InvoicePage() {
+export default function QuotePage() {
   const classes = useStyles();
-  const [invoices,setInvoices] = React.useState();
+  const [quotes,setQuotes] = React.useState();
   const [userInfo,setUser] = React.useState();
   const [customers,setCustomers] = React.useState();
-  const myinvoices = [];
+  const myquotes = [];
   const customerInfo = [];
 
   useEffect(() => {
@@ -93,16 +93,16 @@ export default function InvoicePage() {
     org.then((org) => {
         console.log(org);
         axios.get(baseUrl+"books/customers/getAllCustomers/"+org.organization_id).then((response) => {
+          console.log(response);
+          const allcustomer = response.data.contacts;
+          setCustomers(allcustomer);
+      }).catch((err) => {
+          console.log(err);
+      });
+        axios.get(baseUrl+"books/quotes/getAllQuotes/"+org.organization_id).then((response) => {
             console.log(response);
-            const allcustomer = response.data.contacts;
-            setCustomers(allcustomer);
-        }).catch((err) => {
-            console.log(err);
-        });
-        axios.get(baseUrl+"books/invoices/getAllInvoices/"+org.organization_id).then((response) => {
-            console.log(response);
-            const allinvoice = response.data.invoices;
-            setInvoices(allinvoice);
+            const allquote = response.data.estimates;
+            setQuotes(allquote);
         }).catch((err) => {
             console.log(err);
         });
@@ -121,38 +121,38 @@ export default function InvoicePage() {
     })
     : <div></div>}
     {/* {console.log(customerInfo)} */}
-    {invoices && customerInfo.length > 0 ?
-    invoices.forEach(invoice => {
+    {quotes && customerInfo.length > 0 ?
+    quotes.forEach(quote => {
+      var total = quote.currency_code + " " + quote.total;
+      quote.total = total;
       // console.log(invoice.customer_id);
       // console.log(customerInfo[0].contact_id);
-      if (invoice.customer_id == customerInfo[0].contact_id) {
-        myinvoices.push(invoice);
+      if (quote.customer_id == customerInfo[0].contact_id) {
+        myquotes.push(quote);
       }
     })
     : <div></div>}
-    {myinvoices ?
-    myinvoices.forEach(invoice => {
-      var total = invoice.total + " " + invoice.currency_symbol;
-      invoice.total = total;
-      var url = invoice.invoice_url;
-      invoice.invoice_url = <Button variant="outlined" href = {url} target = "_blank">VISUALIZE</Button>
+    {/* {myquotes ?
+    myquotes.forEach(quote => {
+      var url = quote.invoice_url;
+      quote.invoice_url = <Button variant="outlined" href = {url} target = "_blank">VISUALIZE</Button>
     })
-    : <div></div>}
-    {/* {console.log(invoices)}
-    {console.log(myinvoices)} */}
+    : <div></div>}} */}
+    {/* {console.log(quotes)}
+    {console.log(myquotes)} */}
     <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
         <Card>
             <CardHeader color="info">
-            <h4 className={classes.cardTitleWhite}>Invoices</h4>
+            <h4 className={classes.cardTitleWhite}>Quotes</h4>
             </CardHeader>
             <CardBody>
-                {myinvoices ? 
+                {myquotes ? 
                 <BooksTable
                 tableHeaderColor="info"
-                tableHead={["Customer","Date","Invoice","Link","Statut","Total"]}
-                tableData={myinvoices}
-                tableApi={["customer_name","date","invoice_number","invoice_url","status","total"]}
+                tableHead={["Customer","Date","Quote","Company","Statut","Total"]}
+                tableData={myquotes}
+                tableApi={["customer_name","date","estimate_number","company_name","status","total"]}
             />
             : 
             <div></div>} 
