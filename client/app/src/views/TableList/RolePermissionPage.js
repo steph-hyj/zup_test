@@ -1,13 +1,6 @@
 import React, { useEffect } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-// core components
-import GridItem from "../../components/Grid/GridItem.js";
-import GridContainer from "../../components/Grid/GridContainer.js";
-import Table from "../../components/Table/Table.js";
-import Card from "../../components/Card/Card.js";
-import CardHeader from "../../components/Card/CardHeader.js";
-import CardBody from "../../components/Card/CardBody.js";
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, TextField, Select, InputLabel } from "@material-ui/core";
@@ -15,6 +8,14 @@ import FormControl from '@mui/material/FormControl';
 import AddIcon from '@mui/icons-material/Add';
 import { Box } from "@mui/system";
 import { CircularProgress } from "@mui/material";
+// core components
+import GridItem from "../../components/Grid/GridItem.js";
+import GridContainer from "../../components/Grid/GridContainer.js";
+import Table from "../../components/Table/Table.js";
+import Card from "../../components/Card/Card.js";
+import CardHeader from "../../components/Card/CardHeader.js";
+import CardBody from "../../components/Card/CardBody.js";
+
 import axios from "axios";
 
 //Version dev

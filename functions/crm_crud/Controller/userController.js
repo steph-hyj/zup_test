@@ -139,7 +139,34 @@ exports.deleteRole = async(req, res) => {
 		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
 	}
 }
-/**Function to get User Details */
+
+exports.createUser = async(req, res) =>{
+	try{
+		const catalystApp = catalyst.initialize(req);
+		var signupConfig = {
+			platform_type: 'web',
+			zaid: 30003824257,
+			redirect_url: "https://zup-20078233842.development.catalystserverless.eu/index.html"
+		};
+		var userConfig = {
+			first_name: req.body.first_name,
+			last_name: req.body.last_name,
+			email_id: req.body.email_id,
+			role_id : 128000000004324
+		};
+		let userManagement = catalystApp.userManagement();
+		let registerPromise = userManagement.registerUser(signupConfig, userConfig); //Pass the JSON configration to the method
+		registerPromise.then(userDetails => {  //Returns a promise
+			console.log(userDetails);
+		});
+	}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
+	}
+}
+
+/**Function to get the current user Details */
 exports.getUserDetails = async(req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
@@ -295,3 +322,4 @@ async function getConnectionModule(catalystApp) {
 	let connectionModule = await zcql.executeZCQLQuery(query);
 	return connectionModule;
 }
+

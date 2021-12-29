@@ -1,13 +1,6 @@
 import React, { useEffect } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-// core components
-import GridItem from "../../components/Grid/GridItem.js";
-import GridContainer from "../../components/Grid/GridContainer.js";
-import Table from "../../components/Table/Table.js";
-import Card from "../../components/Card/Card.js";
-import CardHeader from "../../components/Card/CardHeader.js";
-import CardBody from "../../components/Card/CardBody.js";
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, TextField, Select, InputLabel } from "@material-ui/core";
@@ -15,10 +8,21 @@ import FormControl from '@mui/material/FormControl';
 import AddIcon from '@mui/icons-material/Add';
 import { Box } from "@mui/system";
 import { CircularProgress } from "@mui/material";
+// core components
+import GridItem from "../../components/Grid/GridItem.js";
+import GridContainer from "../../components/Grid/GridContainer.js";
+import Table from "../../components/Table/TableUser.js";
+import Card from "../../components/Card/Card.js";
+import CardHeader from "../../components/Card/CardHeader.js";
+import CardBody from "../../components/Card/CardBody.js";
+
 import axios from "axios";
 
-
+//Version dev
 var baseUrl = "http://localhost:3000/server/crm_crud/";
+
+//Version deployment
+//var baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 
 const styles = {
     cardCategoryWhite: {
@@ -57,84 +61,95 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function UsersPage() {
+export default function RolePermissionPage() {
     const classes = useStyles();
-    //-----CREATION CONST
-    // const [get-User, set-USer] = React.useState('');
-    const [roles, setRoles] = React.useState('');
-    //Pop-up formulaire
+    const [roleName, setRoleName] = React.useState('');
+    const [userPage, setUserPage] = React.useState();
+    const [modulesConnection, setModulesConnection] = React.useState('');
+    const [last_name, setUserName] = React.useState('');
+    const [first_name, setUserFirstName] = React.useState('');
+    const [email_id, setUserEmail] = React.useState('');
+    const [role_id, setRoleValue] = React.useState('');
+    const [moduleValue, setModuleValue] = React.useState('');
     const [done, setDone] = React.useState(undefined);
     const [open, setOpen] = React.useState(false);
-    // Variable - formulaire
-    const [roleName, setRoleName] = React.useState('');
-    const [modules, setModules] = React.useState('');
-    const [moduleValue, setModuleValue] = React.useState('');
 
-    //Appel automatique de l'api(avec axios) au moment de l'arriver
     useEffect(() => {
         axios.get(baseUrl+"getRoles").then((response)=>{
-            setRoles(response.data.Role);
+            setUserPage(response.data.ModuleRole);
         }).catch((err) => {
             console.log(err)
         });
 
-        //Temps de chargmnt
+        /**Get Connection Module */
+        axios.get(baseUrl+"getConnection").then((response) => {
+            setModulesConnection(response.data.module);
+        }).catch((err) => {
+            console.log(err);
+        });
+
         setTimeout(() => {
             setDone(true);
-        }, 3000);
+        }, 2000);
+
     },[])
 
-    //onclick affiche popup
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    //onclick close popup
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    //Récup nom role - formulaire
     const handleChange = (event) => {
         setRoleName(event.target.value);
     };
 
-    //Récup module contenant email, liste déroulante - formulaire
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleChangeModule = (event) => {
+        setModuleValue(event.target.value);
+    };
+
+    const handleChangeName = (event) => {
+        setUserName(event.target.value);
+    }
+
+    const handleChangeEmail = (event) => {
+        setUserEmail(event.target.value);
+    }
+
+    const handleChangeFirstName = (event) => {
+        setUserFirstName(event.target.value);
+    }
+
+    const handleChangeRole = (event) => {
+        setRoleValue(event.target.value);
+    }
+
+    function createUser() {
+        axios.post(baseUrl+'createUser',{
+            last_name,
+            first_name,
+            email_id,
+            role_id,
+        }).then((response)=> {
+            console.log(response);
+        }).catch((err) => {
+            console.log(err);
+        });
+        setOpen(false);
+    };
+
     function getModule() {
-        if(modules) {
+        if(modulesConnection) {
             return(
-                modules.map(module => {
-                    return <MenuItem value={module.api_name}>{module.plural_label}</MenuItem>
+                modulesConnection.map(moduleConnection => {
+                    return <MenuItem value={moduleConnection.Module.ROWID}>{moduleConnection.Module.Module_name}</MenuItem>
                 })
             )
         }
     }
 
-    //recup choix module
-    const handleChangeModule = (event) => {
-        setModuleValue(event.target.value);
-    };
-
-    //Enregistrement Role ds API
-    function createRole() {
-        axios.post(baseUrl+'createRole',{
-            roleName
-        }).then((response)=> {
-            console.log(response);
-            setOpen(false);
-        }).catch((err) => {
-            console.log(err);
-        })
-    };
-
-    //Création tableau
-    function setTableData() {
-        const roleTab = [];
-        roles.forEach(role => {
-            roleTab.push(role.Role);
-        })
-        return roleTab
-    }
 
 
     return (
@@ -153,22 +168,71 @@ export default function UsersPage() {
                                     startIcon={<AddIcon />}
                                     onClick={handleClickOpen}
                             >
-                                Créer un role
+                                Créer un utilisateur
                             </Button>
                             <Dialog open={open} onClose={handleClose}>
-                                <DialogTitle>Créer un role</DialogTitle>
+                                <DialogTitle>Créer un utilisateur</DialogTitle>
                                 <DialogContent>
                                     <FormControl sx={{ m: 1, minWidth: "90%" }} >
                                         <TextField
                                             autoFocus
                                             margin="dense"
-                                            id="role_name"
+                                            id="roleName"
                                             label="Nom du role"
                                             type="text"
                                             fullWidth
                                             variant="standard"
                                             onChange={handleChange}
                                         />
+                                    </FormControl>
+                                    <FormControl sx={{ m: 1, minWidth: "90%" }} >
+                                        <TextField
+                                            autoFocus
+                                            margin="dense"
+                                            id="last_name"
+                                            label="Nom"
+                                            type="text"
+                                            fullWidth
+                                            variant="standard"
+                                            onChange={handleChangeName}
+                                        />
+                                    </FormControl>
+                                    <FormControl sx={{ m: 1, minWidth: "90%" }} >
+                                        <TextField
+                                            autoFocus
+                                            margin="dense"
+                                            id="first_name"
+                                            label="Prénom"
+                                            type="text"
+                                            fullWidth
+                                            variant="standard"
+                                            onChange={handleChangeFirstName}
+                                        />
+                                    </FormControl>
+                                    <FormControl sx={{ m: 1, minWidth: "90%" }} >
+                                        <TextField
+                                            autoFocus
+                                            margin="dense"
+                                            id="email_id"
+                                            label="Email"
+                                            type="email"
+                                            fullWidth
+                                            variant="standard"
+                                            onChange={handleChangeEmail}
+                                        />
+                                    </FormControl>
+                                    <FormControl sx={{ m: 1, minWidth: "90%" }} >
+                                        <InputLabel id="module">Role</InputLabel>
+                                        <Select
+                                            value={role_id}
+                                            label="module"
+                                            onChange={handleChangeRole}
+                                        >
+                                            <MenuItem value="">
+                                                <em> - Choisir le role - </em>
+                                            </MenuItem>
+                                            {getModule()}
+                                        </Select>
                                     </FormControl>
                                     <FormControl sx={{ m: 1, minWidth: "90%" }} >
                                         <InputLabel id="module">Module</InputLabel>
@@ -185,25 +249,25 @@ export default function UsersPage() {
                                     </FormControl>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button fullWidth onClick={()=>createRole()}>Créer</Button>
+                                    <Button fullWidth color="error" onClick={handleClose}>Annuler</Button>
+                                    <Button fullWidth color="success" onClick={()=>createUser()}>Créer</Button>
                                 </DialogActions>
                             </Dialog>
                         </Box>
                         <GridItem xs={12} sm={12} md={12}>
                             <Card>
                                 <CardHeader color="info">
-                                    <h4 className={classes.cardTitleWhite}>Role & Permission</h4>
+                                    <h4 className={classes.cardTitleWhite}>Liste des utilisateurs</h4>
                                 </CardHeader>
                                 <CardBody>
-                                    <Stack direction="row" spacing={2}>
-                                        <Button href="index.html#/connection">Connexion</Button>
-                                    </Stack>
-                                    {roles ?
+                                    {userPage ?
                                         <Table
                                             tableHeaderColor="primary"
-                                            tableHead={["Role", "Module"]}
-                                            tableData={setTableData()}
-                                            tableApi={["Role_name","Module_Name"]}
+                                            tableHead={["Nom", "Prénom","Email", "Module", "Rôle", "Actions"]}
+                                            tableData={userPage}
+                                            tableApi={[" ", " ", " ", "Module_name", "Role_name", "Update/Delete"]}
+                                            Module = {modulesConnection}
+                                            App = {"rôle"}
                                         />
                                         :
                                         /**Loading */

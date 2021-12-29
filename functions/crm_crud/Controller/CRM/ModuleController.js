@@ -1,4 +1,4 @@
-const HOST = 'www.zohoapis.eu';
+const HOST = 'www.zohoapis.eu'; //api.catalyst.zoho.eu
 const { cp } = require('fs');
 const http = require('https')
 const PORT = 443;
