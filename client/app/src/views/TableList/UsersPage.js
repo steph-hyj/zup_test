@@ -75,8 +75,8 @@ export default function RolePermissionPage() {
     const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
-        axios.get(baseUrl+"getRoles").then((response)=>{
-            setUserPage(response.data.ModuleRole);
+        axios.get(baseUrl+"getAllUser").then((response)=>{
+            setUserPage(response.data.allUser);
         }).catch((err) => {
             console.log(err)
         });
@@ -225,13 +225,14 @@ export default function RolePermissionPage() {
                                         <InputLabel id="module">Role</InputLabel>
                                         <Select
                                             value={role_id}
-                                            label="module"
+                                            label="Role"
                                             onChange={handleChangeRole}
                                         >
                                             <MenuItem value="">
                                                 <em> - Choisir le role - </em>
                                             </MenuItem>
-                                            {getModule()}
+                                            <MenuItem value="128000000004014">APP Administrator</MenuItem>
+                                            <MenuItem value="128000000004016">APP User</MenuItem>
                                         </Select>
                                     </FormControl>
                                     <FormControl sx={{ m: 1, minWidth: "90%" }} >
@@ -263,9 +264,9 @@ export default function RolePermissionPage() {
                                     {userPage ?
                                         <Table
                                             tableHeaderColor="primary"
-                                            tableHead={["Nom", "Prénom","Email", "Module", "Rôle", "Actions"]}
+                                            tableHead={["Nom", "Prénom","Email", "Module", "Rôle", "Statut", "Actions"]}
                                             tableData={userPage}
-                                            tableApi={[" ", " ", " ", "Module_name", "Role_name", "Update/Delete"]}
+                                            tableApi={["last_name", "first_name", "email", "Module_name", "role","status", "Update/Delete"]}
                                             Module = {modulesConnection}
                                             App = {"rôle"}
                                         />

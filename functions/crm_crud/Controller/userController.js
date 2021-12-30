@@ -140,24 +140,47 @@ exports.deleteRole = async(req, res) => {
 	}
 }
 
+/*-----------------------------USER---------------------*/
 exports.createUser = async(req, res) =>{
-	try{
-		const catalystApp = catalyst.initialize(req);
 		var signupConfig = {
 			platform_type: 'web',
-			zaid: 30003824257,
-			redirect_url: "https://zup-20078233842.development.catalystserverless.eu/index.html"
+			zaid: 30003824257
 		};
 		var userConfig = {
-			first_name: req.body.first_name,
 			last_name: req.body.last_name,
+			first_name: req.body.first_name,
 			email_id: req.body.email_id,
-			role_id : 128000000004324
+			role_details: {role_id: req.body.role_id},
+			zaaid : 30003824257
 		};
+		console.log(req.body.role_id);
+	const catalystApp = catalyst.initialize(req);
+	let userManagement = catalystApp.userManagement();
+	let registerPromise = userManagement.registerUser(signupConfig, userConfig); //Pass the JSON configration to the method
+	registerPromise.then(userDetails => {  //Returns a promise
+		console.log(userDetails);
+	});
+}
+exports.getAllUserDetails = async(req, res) => {
+	try{
+		const catalystApp = catalyst.initialize(req);
 		let userManagement = catalystApp.userManagement();
-		let registerPromise = userManagement.registerUser(signupConfig, userConfig); //Pass the JSON configration to the method
-		registerPromise.then(userDetails => {  //Returns a promise
-			console.log(userDetails);
+		let allUserPromise = userManagement.getAllUsers();
+		var allUser = [];
+		allUserPromise.then(allUserDetails => {
+			//console.log(allUserDetails);
+			for (const user of allUserDetails){
+				var userData = {
+					"first_name" : user.first_name,
+					"last_name" : user.last_name,
+					"email" : user.email_id,
+					"role" : user.role_details.role_name,
+					"status" : user.status
+				}
+				allUser.push(userData);
+			}
+			//console.log(allUser);
+			res.status(200).send({allUser});
 		});
 	}
 	catch (err) {
@@ -165,6 +188,8 @@ exports.createUser = async(req, res) =>{
 		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
 	}
 }
+//TODO suppression, modification
+
 
 /**Function to get the current user Details */
 exports.getUserDetails = async(req, res) => {
@@ -219,6 +244,9 @@ exports.getUserZohoID = async(req, res) => {
 	}
 };
 
+
+
+/*---------------------- CONNEXION -----------------------------*/
 /**Create Connection*/
 exports.createConnection = async(req, res) => {
 	try {
