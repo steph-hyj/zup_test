@@ -8,6 +8,7 @@ router.get('/generateToken',userController.generateToken);
 /**API User Details */
 router.get('/getAllUser', userController.getAllUserDetails);
 router.post('/createUser', userController.createUser);
+router.get('/getAllUser', userController.getAllUserDetails);
 router.get('/getUserDetails',userController.getUserDetails);
 router.get('/getUserZohoID/:email',userController.getUserZohoID);
 /**API Role */
