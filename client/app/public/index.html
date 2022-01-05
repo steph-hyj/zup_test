@@ -6,6 +6,8 @@
     <meta name="theme-color" content="#000000" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Zoho Unified Portal</title>
+    <script src="https://static.zohocdn.com/catalyst/sdk/js/2.0.0/catalystWebSDK.js"></script>
+    <script src="/__catalyst/sdk/init.js"></script>
     <script>
         function getUserDetails() {
             catalyst.auth.isUserAuthenticated().then(result => {
@@ -19,12 +21,7 @@
                         console.log(error);
                     }
                 });
-            }).catch(err => {
-                document.body.innerHTML = 'You are not logged in. Please log in to continue. Redirecting you to the login page..';
-                setTimeout(function () {
-                    window.location.href = "login.html";
-                }, 3000);
-            });
+            })
         }
     </script>
   </head>
@@ -32,3 +29,10 @@
     <div id="root" style="height: 100%;"></div>
   </body>
 </html>
+
+<!-- <script>
+  //Add Your Client ID and Redirect URL here
+  function navigate() {
+      window.location.href = 'https://accounts.zoho.eu/oauth/v2/auth?scope=ZohoCRM.modules.ALL,ZohoCRM.settings.ALL,ZohoBooks.fullaccess.all&client_id=1000.IYF7J63XV0A53M4ETIBX0VOW390GRU&response_type=code&access_type=offline&redirect_uri=http://localhost:3000/server/crm_crud/generateToken';
+  }
+</script> -->

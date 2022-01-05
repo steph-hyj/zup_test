@@ -73,7 +73,6 @@ class NavCRM extends React.Component {
     }
 
     setData(module) {
-
         let userID = axios.get(baseUrl+"getUserZohoID/"+this.props.userEmail).then((response) => {
                         return response.data.data[0]
                     }).catch((err) => {

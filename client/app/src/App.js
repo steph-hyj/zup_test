@@ -1,11 +1,85 @@
-import React from 'react';
-import Navbar from './Pages/Navbar';
+import { useState, useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 
-function App() {
+import Sidenav from "./examples/Sidenav";
+import theme from "./assets/theme";
+import routes from "./routes";
+import { useMaterialUIController, setMiniSidenav } from "./context";
 
-  return (
-    <h1>CRM</h1>
-  );
+export default function App() {
+  const [controller, dispatch] = useMaterialUIController();
+  const {
+    miniSidenav,
+    direction,
+    layout,
+    sidenavColor,
+  } = controller;
+  const [onMouseEnter, setOnMouseEnter] = useState(false);
+  const { pathname } = useLocation();
+
+  const handleOnMouseEnter = () => {
+    if (miniSidenav && !onMouseEnter) {
+      setMiniSidenav(dispatch, false);
+      setOnMouseEnter(true);
+    }
+  };
+
+  const handleOnMouseLeave = () => {
+    if (onMouseEnter) {
+      setMiniSidenav(dispatch, true);
+      setOnMouseEnter(false);
+    }
+  };
+
+  useEffect(() => {
+    document.body.setAttribute("dir", direction);
+  }, [direction]);
+
+  useEffect(() => {
+    document.documentElement.scrollTop = 0;
+    document.scrollingElement.scrollTop = 0;
+  }, [pathname]);
+
+  const modulesRoutes = routes();
+ 
+  const getRoutes = (allRoutes) =>
+    allRoutes.map((route) => {
+      if (route.collapse) {
+        return getRoutes(route.collapse);
+      }
+
+      if (route.route) {
+        return <Route exact path={route.route} element={route.component} key={route.key} />;
+      }
+
+      return null;
+    });
+  if(modulesRoutes)
+  {
+    if(modulesRoutes.length > 1 )
+    {
+      return (
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          {layout === "dashboard" && (
+            <>
+              <Sidenav
+                color={sidenavColor}
+                brandName="TranZition"
+                routes={modulesRoutes}
+                onMouseEnter={handleOnMouseEnter}
+                onMouseLeave={handleOnMouseLeave}
+              />
+            </>
+          )}
+          <Routes>
+            {getRoutes(modulesRoutes)}
+            <Route path="/" />
+          </Routes>
+        </ThemeProvider>
+      );
+    }
+  }
 }
-
-export default App;
