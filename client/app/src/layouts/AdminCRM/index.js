@@ -53,7 +53,7 @@ function DataTables(props) {
       }
     });
   };
-  console.log(module);
+
   if(module) {
     AdminCRMData = AdminCRMPageData(module);
   } else {
@@ -76,7 +76,7 @@ function DataTables(props) {
             />
           </MDBox>
             {
-              role ?
+              role || module ?
                 <DataTable table={AdminCRMData} canSearch />
               :
                 <h1>Selectionner un rôle</h1>
