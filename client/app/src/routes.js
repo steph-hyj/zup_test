@@ -32,20 +32,7 @@ export default function ModuleRoutes() {
       setModules(response.data.modules);
     }).catch((err) => {
         console.log(err);
-    });
-
-    //Call API to get module where scope == Read
-    axios.get(baseUrl+"module/checkModule").then((response) => {
-      var module = [];
-      response.data.Module.forEach((moduleDetails) => {
-            if(moduleDetails.Module.Scope === "Read") {
-                module.push(moduleDetails);
-            }
-        })
-      setModulesDetails(module);
-      }).catch((err) => {
-          console.log(err);
-    });
+    });    
 
     axios.get(baseUrl+"getUserDetails").then((response) => {
       // this.setState({ role : response.data.userRole, userEmail : response.data.user.email_id});
@@ -55,6 +42,25 @@ export default function ModuleRoutes() {
           console.log(err);
     });
   },[]);
+
+  useEffect(() => {
+    //Call API to get module where scope == Read
+    axios.get(baseUrl+"module/checkModule").then((response) => {
+      var module = [];
+      response.data.Module.forEach((moduleDetails) => {
+            if(moduleDetails.Module.Scope === "Read") {
+                modules.forEach(mod => {
+                  if(mod.plural_label === moduleDetails.Module.Module_name) {
+                    module.push(mod);
+                  }
+                });
+            }
+        })
+      setModulesDetails(module);
+      }).catch((err) => {
+          console.log(err);
+    });
+  },[modules])
 
 
   var moduleRoute = [];
@@ -77,13 +83,14 @@ export default function ModuleRoutes() {
         route: String,
         component: String
       }
-      routeObj.name = module.Module.Module_name;
-      routeObj.key = module.Module.Module_name;
-      routeObj.route = "/app/CRM/"+module.Module.Module_name;
+
+      routeObj.name = module.plural_label;
+      routeObj.key = module.plural_label;
+      routeObj.route = "/app/CRM/"+module.plural_label;
       if(userRole === "App Administrator") {
-        routeObj.component = <AdminCRM module={module.Module.Module_name}/>
+        routeObj.component = <AdminCRM module={module.api_name}/>
       } else {
-        routeObj.component = <CRMPage module={module.Module.Module_name}/>
+        routeObj.component = <CRMPage module={module.api_name}/>
       }
       moduleRoute.push(routeObj);
     });
