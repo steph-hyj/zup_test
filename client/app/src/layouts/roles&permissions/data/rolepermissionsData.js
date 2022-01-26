@@ -55,8 +55,8 @@ export default function GetData() {
 
      roleObj.Role = role.Role_name;
      roleObj.Module = role.Module_name;
-     roleObj.Update = <MDButton><DeleteIcon onClick ={() => deleteConnection(role.Module_ID)}/></MDButton>
-     roleObj.Delete = <MDButton><EditIcon /></MDButton>
+     roleObj.Update = <MDButton><EditIcon /></MDButton>
+     roleObj.Delete = <MDButton><DeleteIcon onClick ={() => deleteConnection(role.Module_ID)}/></MDButton>
      roleModule.push(roleObj);
     });
     console.log(roleModule);

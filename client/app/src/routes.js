@@ -12,6 +12,7 @@ import InvoicePage from "./views/TableList/InvoicePage";
 import RolePermission from "./layouts/roles&permissions";
 import CRMPage from "./layouts/CRMPage";
 import AdminCRM from "./layouts/AdminCRM";
+import UserPage from "./layouts/UserPage";
 // import RolePermission from "./layouts/roles&permissions/data/rolepermissionsData"
 // Version dev
 const baseUrl = "http://localhost:3000/server/crm_crud/";
@@ -100,10 +101,14 @@ export default function ModuleRoutes() {
       {
         type: "collapse",
         name: "Users",
-        key: "users",
-        route: "/app/users",
-        // component: <Users />,
-        noCollapse: true,
+        key: "Users",
+        collapse: [
+          {
+            name: "Liste users",
+            key: "listeUsers",
+            route: "/app/users",
+            component: <UserPage />,
+          }]
       },
       {
         type: "collapse",

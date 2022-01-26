@@ -139,6 +139,34 @@ exports.deleteRole = async(req, res) => {
 		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
 	}
 }
+exports.getAllUserDetails = async(req, res) => {
+	try{
+		const catalystApp = catalyst.initialize(req);
+		let userManagement = catalystApp.userManagement();
+		let allUserPromise = userManagement.getAllUsers();
+		var allUser = [];
+		allUserPromise.then(allUserDetails => {
+			//console.log(allUserDetails);
+			for (const user of allUserDetails){
+				var userData = {
+					"first_name" : user.first_name,
+					"last_name" : user.last_name,
+					"email" : user.email_id,
+					"role" : user.role_details.role_name,
+					"status" : user.status
+				}
+				allUser.push(userData);
+			}
+			//console.log(allUser);
+			res.status(200).send({allUser});
+		});
+	}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
+	}
+}
+
 /**Function to get User Details */
 exports.getUserDetails = async(req, res) => {
     try {
