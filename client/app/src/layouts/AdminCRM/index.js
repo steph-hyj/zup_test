@@ -25,7 +25,7 @@ const baseUrl = "http://localhost:3000/server/crm_crud/";
 
 function DataTables(props) {
 
-  const [role, setRole] = useState(null);
+  const [role, setRole] = useState();
   const [roleNameList, setRoleNameList] = useState({});
   const [roleList, setRoleList] = useState({});
   const { module } = props;
@@ -48,16 +48,16 @@ function DataTables(props) {
   function handleSelectChange(event) {
     roleList.forEach(r => {
       if(r.Role_name === event.target.textContent) {
-        // console.log(r)
         setRole(r.Role_ID);
       }
     });
   };
 
-  if(module) {
+
+  if(role) {
     AdminCRMData = AdminCRMPageData(module);
-  } else {
-    AdminCRMData = AdminDashboardData(role ? role : null);
+  } else  if(role !== null){
+    AdminCRMData = AdminDashboardData(role);
   }
   
   return (
@@ -71,7 +71,7 @@ function DataTables(props) {
             </MDTypography>
             <Autocomplete
                 options={roleNameList}
-                onChange={(event) => handleSelectChange(event)}
+                onChange={(event) => { handleSelectChange(event)}}
                 renderInput={(params) => <MDInput {...params} variant="standard" />}
             />
           </MDBox>
