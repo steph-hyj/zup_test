@@ -174,8 +174,9 @@ exports.getUserDetails = async(req, res) => {
 		const userDetails = await tokenController.getUserDetails(catalystApp);
 		let userManagement = catalystApp.userManagement();
 		let user = await userManagement.getCurrentUser();
+		let role = await getRole(catalystApp, user.user_id);
 		if (userDetails.length !== 0) {
-			res.status(200).send({ user: user, userRole: user.role_details.role_name,userId: userDetails[0].Token.userId })
+			res.status(200).send({ user: user, userRole: user.role_details.role_name,userId: userDetails[0].Token.userId, role : role })
 		} else {
 			res.status(200).send({ userId: null })
 		}
@@ -322,4 +323,12 @@ async function getConnectionModule(catalystApp) {
 	let zcql = catalystApp.zcql();
 	let connectionModule = await zcql.executeZCQLQuery(query);
 	return connectionModule;
+}
+
+/**SQL Request to get userRole in database */
+async function getRole(catalystApp,userID) {
+	let query = 'SELECT * FROM User_role WHERE id_user='+userID;
+	let zcql = catalystApp.zcql();
+	let role = await zcql.executeZCQLQuery(query);
+	return role;
 }

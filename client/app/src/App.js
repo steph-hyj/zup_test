@@ -39,7 +39,7 @@ export default function App() {
 
   useEffect(() => {
     axios.get("http://localhost:3000/server/crm_crud/getUserDetails").then((response) => {
-      setUserRole(response.data.userRole);
+        setUserRole(response.data.userRole);
       }).catch((err) => {
           console.log(err);
     });
@@ -56,15 +56,15 @@ export default function App() {
 
   var modulesRoutes = null;
 
-  if(userRole.length > 0) {
-    if(userRole === "App Administrator") {
-      modulesRoutes = routes();
-    } else {
-      modulesRoutes = userRoutes();
-    }
-  }
-  
- 
+  // if(userRole.length > 0) {
+  //   if(userRole === "App Administrator") {
+  //     modulesRoutes = routes();
+  //   } else {
+      modulesRoutes = userRoutes(); 
+    // }
+    // modulesRoutes = routes();
+  // }
+   
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
       if (route.collapse) {
@@ -77,9 +77,7 @@ export default function App() {
 
       return null;
     });
-  if(modulesRoutes)
-  {
-    if(modulesRoutes.length > 1 )
+    if(modulesRoutes)
     {
       return (
         <ThemeProvider theme={theme}>
@@ -101,6 +99,9 @@ export default function App() {
           </Routes>
         </ThemeProvider>
       );
+    }else {
+      return (
+        <h1>Wait</h1>
+      )
     }
-  }
 }

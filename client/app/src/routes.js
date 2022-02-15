@@ -13,6 +13,7 @@ import RolePermission from "./layouts/roles&permissions";
 import CRMPage from "./layouts/CRMPage";
 import AdminCRM from "./layouts/AdminCRM";
 import UserPage from "./layouts/UserPage";
+import userRoutes from "./userRoutes";
 // import RolePermission from "./layouts/roles&permissions/data/rolepermissionsData"
 // Version dev
 const baseUrl = "http://localhost:3000/server/crm_crud/";
@@ -24,7 +25,6 @@ export default function ModuleRoutes() {
 
   const [modules, setModules] = useState({});
   const [modulesDetails, setModulesDetails] = useState({});
-  const [userRole, setUserRole] = useState({});
   const [userEmail, setUserEmail] = useState({});
   
   useEffect(() =>{
@@ -37,7 +37,6 @@ export default function ModuleRoutes() {
 
     axios.get(baseUrl+"getUserDetails").then((response) => {
       // this.setState({ role : response.data.userRole, userEmail : response.data.user.email_id});
-      setUserRole(response.data.userRole);
       setUserEmail(response.data.email_id);
       }).catch((err) => {
           console.log(err);
@@ -50,11 +49,13 @@ export default function ModuleRoutes() {
       var module = [];
       response.data.Module.forEach((moduleDetails) => {
             if(moduleDetails.Module.Scope === "Read") {
-                modules.forEach(mod => {
-                  if(mod.plural_label === moduleDetails.Module.Module_name) {
-                    module.push(mod);
-                  }
-                });
+                if(modules.length > 0) {
+                  modules.forEach(mod => {
+                    if(mod.plural_label === moduleDetails.Module.Module_name) {
+                      module.push(mod);
+                    }
+                  });
+                }
             }
         })
       setModulesDetails(module);
@@ -66,7 +67,7 @@ export default function ModuleRoutes() {
 
   var moduleRoute = [];
 
-  if(modulesDetails.length > 0 && userRole.length > 0)
+  if(modulesDetails.length > 0)
   {
     moduleRoute = [
       {
@@ -88,97 +89,98 @@ export default function ModuleRoutes() {
       routeObj.name = module.plural_label;
       routeObj.key = module.plural_label;
       routeObj.route = "/app/CRM/"+module.plural_label;
-      if(userRole === "App Administrator") {
+      // if(userRole === "App Administrator") {
         routeObj.component = <AdminCRM module={module.api_name}/>
-      } else {
-        routeObj.component = <CRMPage module={module.api_name}/>
-      }
+      // } else {
+      //   routeObj.component = <CRMPage module={module.api_name}/>
+      // }
       moduleRoute.push(routeObj);
     });
   }
-  
-  const  routes = [
-      {
-        type: "collapse",
-        name: "Users",
-        key: "Users",
-        collapse: [
-          {
-            name: "Liste users",
-            key: "listeUsers",
-            route: "/app/users",
-            component: <UserPage />,
-          }]
-      },
-      {
-        type: "collapse",
-        name: "Roles",
-        key: "roles&permissions",
-        collapse: [
-          {
-            name: "Roles & Permissions",
-            key: "roles&permissions",
-            route: "/app/roles_permissions",
-            component: <RolePermission />,
-          },
-          {
-            name: "Connections",
-            key: "connections",
-            route: "/app/roles_permissions/connection",
-            //component: <Connections />,
-          },
-        ],
-      },
-      { type: "divider", key: "divider-0" },
-      {
-        type: "collapse",
-        name: "Dashboards",
-        key: "dashboards",
-        icon: <DashboardIcon />,
-        collapse: [
-          {
-            name: "Analytics",
-            key: "analytics",
-            route: "/dashboards/analytics",
-            //component: <Analytics />,
-          },
-          {
-            name: "Sales",
-            key: "sales",
-            route: "/dashboards/sales",
-            //component: <Sales />,
-          },
-        ],
-      },
-      { type: "title", title: "Applications", key: "title-pages" },
-      {
-        type: "collapse",
-        name: "Zoho CRM",
-        key: "CRM",
-        icon: <ImageIcon />,
-        collapse: moduleRoute.length > 1 ? moduleRoute : null
-      },
-      {
-        type: "collapse",
-        name: "Zoho Books",
-        key: "books",
-        icon: <ImageIcon />,
-        collapse: [
-          {
-            name: "Factures",
-            key: "factures",
-            route: "/app/books/invoice",
-            //component: <Kanban />,
-          },
-          {
-            name: "Devis",
-            key: "devis",
-            route: "/app/books/quote",
-            //component: <Wizard />,
-          }
-        ],
-      },
-      { type: "divider", key: "divider-1" },
-    ];
+
+  const routes = [
+        {
+          type: "collapse",
+          name: "Users",
+          key: "Users",
+          collapse: [
+            {
+              name: "Liste users",
+              key: "listeUsers",
+              route: "/app/users",
+              component: <UserPage />,
+            }]
+        },
+        {
+          type: "collapse",
+          name: "Roles",
+          key: "roles&permissions",
+          collapse: [
+            {
+              name: "Roles & Permissions",
+              key: "roles&permissions",
+              route: "/app/roles_permissions",
+              component: <RolePermission />,
+            },
+            {
+              name: "Connections",
+              key: "connections",
+              route: "/app/roles_permissions/connection",
+              //component: <Connections />,
+            },
+          ],
+        },
+        { type: "divider", key: "divider-0" },
+        {
+          type: "collapse",
+          name: "Dashboards",
+          key: "dashboards",
+          icon: <DashboardIcon />,
+          collapse: [
+            {
+              name: "Analytics",
+              key: "analytics",
+              route: "/dashboards/analytics",
+              //component: <Analytics />,
+            },
+            {
+              name: "Sales",
+              key: "sales",
+              route: "/dashboards/sales",
+              //component: <Sales />,
+            },
+          ],
+        },
+        { type: "title", title: "Applications", key: "title-pages" },
+        {
+          type: "collapse",
+          name: "Zoho CRM",
+          key: "CRM",
+          icon: <ImageIcon />,
+          collapse: moduleRoute.length > 1 ? moduleRoute : null
+        },
+        {
+          type: "collapse",
+          name: "Zoho Books",
+          key: "books",
+          icon: <ImageIcon />,
+          collapse: [
+            {
+              name: "Factures",
+              key: "factures",
+              route: "/app/books/invoice",
+              //component: <Kanban />,
+            },
+            {
+              name: "Devis",
+              key: "devis",
+              route: "/app/books/quote",
+              //component: <Wizard />,
+            }
+          ],
+        },
+        { type: "divider", key: "divider-1" },
+      ];
+
   return routes;
 }

@@ -53,8 +53,9 @@ function DataTables(props) {
     });
   };
 
+  console.log(role);
 
-  if(role) {
+  if(role === undefined) {
     AdminCRMData = AdminCRMPageData(module);
   } else  if(role !== null){
     AdminCRMData = AdminDashboardData(role);

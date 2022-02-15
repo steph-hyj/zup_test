@@ -25,7 +25,7 @@ function DataTables(props) {
 
   const [userID, setUserID] = useState({});
 
-  const { module, userEmail, scope } = props;
+  const { module, userEmail } = props;
 
   useEffect(() =>{
     axios.get(baseUrl+"getUserZohoID/"+userEmail).then((response) => {
@@ -35,7 +35,7 @@ function DataTables(props) {
     });
   },[userEmail])
 
-  const crmData = CRMData(module, userEmail, userID, scope);
+//   const crmData = CRMData(module, userEmail, userID);
 
   return (
     <DashboardLayout>
@@ -47,7 +47,7 @@ function DataTables(props) {
               
             </MDTypography>
           </MDBox>
-          <DataTable table={crmData} canSearch />
+          {/* <DataTable table={crmData} canSearch /> */}
         </Card>
       </MDBox>
       {/* <Footer /> */}

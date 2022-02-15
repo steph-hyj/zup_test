@@ -14,7 +14,7 @@ import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 import DataTable from "../../examples/Tables/DataTable";
 
 // Data
-import CRMData from "./data/crmdata";
+import BooksData from "./data/booksdata";
 
 const baseUrl = "http://localhost:3000/server/crm_crud/";
 
@@ -35,8 +35,8 @@ function DataTables(props) {
     });
   },[userEmail])
 
-  const crmData = CRMData(module, userEmail, userID, scope);
-
+  const booksData = BooksData(module, userEmail, userID, scope);
+  console.log(booksData);
   return (
     <DashboardLayout>
       {/* <DashboardNavbar /> */}
@@ -47,7 +47,7 @@ function DataTables(props) {
               
             </MDTypography>
           </MDBox>
-          <DataTable table={crmData} canSearch />
+          {/* <DataTable table={booksData} canSearch /> */}
         </Card>
       </MDBox>
       {/* <Footer /> */}

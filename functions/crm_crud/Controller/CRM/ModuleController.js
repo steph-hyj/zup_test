@@ -104,7 +104,6 @@ exports.getAllRecords = async(req, res) => {
 	}
 };
 
-
 exports.getRecord = async(req, res) => {
 	try {
 		const catalystApp = catalyst.initialize(req);
@@ -208,12 +207,18 @@ exports.getPermissions = async(req, res) => {
 		const permissionDetails = await getPermissionsDetails(catalystApp,req.params.roleId);
 		var moduleDetails = [];
 		for(const permissionDetail of permissionDetails) {
+			var moduleObj = {
+				Module: String,
+				Scope: String
+			}
 			const moduleDetail = await getModulePermission(catalystApp, permissionDetail);
-			moduleDetails.push(moduleDetail);
+			moduleObj.Scope = permissionDetail.Role_Permission.Permission;
+			moduleObj.Module = moduleDetail;
+			moduleDetails.push(moduleObj);
 		}
 		let userManagement = catalystApp.userManagement();
 		let userDetail = await userManagement.getCurrentUser();
-		res.status(200).send({Permissions : permissionDetails, Module : moduleDetails, User : userDetail});
+		res.status(200).send({Module : moduleDetails});
 	}
 	catch (err) {
 		console.log(err);
