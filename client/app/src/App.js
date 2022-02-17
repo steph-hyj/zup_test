@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
@@ -8,7 +6,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Sidenav from "./examples/Sidenav";
 import theme from "./assets/theme";
 import routes from "./routes";
-import userRoutes from "./userRoutes";
 import { useMaterialUIController, setMiniSidenav } from "./context";
 
 export default function App() {
@@ -21,7 +18,6 @@ export default function App() {
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const { pathname } = useLocation();
-  const [userRole, setUserRole] = useState({});
 
   const handleOnMouseEnter = () => {
     if (miniSidenav && !onMouseEnter) {
@@ -35,15 +31,7 @@ export default function App() {
       setMiniSidenav(dispatch, true);
       setOnMouseEnter(false);
     }
-  };
-
-  useEffect(() => {
-    axios.get("http://localhost:3000/server/crm_crud/getUserDetails").then((response) => {
-        setUserRole(response.data.userRole);
-      }).catch((err) => {
-          console.log(err);
-    });
-  },[]);
+  }; 
 
   useEffect(() => {
     document.body.setAttribute("dir", direction);
@@ -54,16 +42,7 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
-  var modulesRoutes = null;
-
-  // if(userRole.length > 0) {
-  //   if(userRole === "App Administrator") {
-  //     modulesRoutes = routes();
-  //   } else {
-      modulesRoutes = userRoutes(); 
-    // }
-    // modulesRoutes = routes();
-  // }
+  const modulesRoutes = routes();
    
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
@@ -77,8 +56,8 @@ export default function App() {
 
       return null;
     });
-    if(modulesRoutes)
-    {
+
+    if(modulesRoutes) {
       return (
         <ThemeProvider theme={theme}>
           <CssBaseline />
@@ -99,7 +78,7 @@ export default function App() {
           </Routes>
         </ThemeProvider>
       );
-    }else {
+    } else {
       return (
         <h1>Wait</h1>
       )

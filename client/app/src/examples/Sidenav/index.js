@@ -102,11 +102,10 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
     return template;
   };
-  // Render the all the collpases from the routes.js
+  // Render the all the collapses from the routes.js
   const renderCollapse = (collapses) =>
-    collapses.map(({ name, collapse, route, href, key }) => {
+    collapses.map(({ name, collapse, route, href, component, key }) => {
       let returnValue;
-
       if (collapse) {
         returnValue = (
           <SidenavItem
@@ -146,36 +145,24 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(
-    ({ type, name, icon, title, collapse, noCollapse, key, href }) => {
+    ({ type, name, icon, title, collapse, key, component }) => {
       let returnValue;
-
       if (type === "collapse") {
-        returnValue = href ? (
-          <Link
-            href={href}
-            key={key}
-            target="_blank"
-            rel="noreferrer"
-            sx={{ textDecoration: "none" }}
-          >
+        returnValue = collapse ? (
             <SidenavCollapse
+              key={key}
               name={name}
               icon={icon}
               active={key === collapseName}
-              noCollapse={noCollapse}
-            />
-          </Link>
+              open={openCollapse === key}
+              onClick={() => (openCollapse === key ? setOpenCollapse(false) : setOpenCollapse(key))}
+            >
+              {collapse ? renderCollapse(collapse) : null}
+            </SidenavCollapse>
         ) : (
-          <SidenavCollapse
-            key={key}
-            name={name}
-            icon={icon}
-            active={key === collapseName}
-            open={openCollapse === key}
-            onClick={() => (openCollapse === key ? setOpenCollapse(false) : setOpenCollapse(key))}
-          >
-            {collapse ? renderCollapse(collapse) : null}
-          </SidenavCollapse>
+          <>
+              {component ? renderCollapse(component) : null}
+          </>
         );
       } else if (type === "title") {
         returnValue = (
@@ -205,7 +192,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           />
         );
       }
-
       return returnValue;
     }
   );
@@ -248,6 +234,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           (darkMode && !transparentSidenav && whiteSidenav)
         }
       />
+      {/* <>{console.log(renderRoutes)}</> */}
       <List>{renderRoutes}</List>
     </SidenavRoot>
   );

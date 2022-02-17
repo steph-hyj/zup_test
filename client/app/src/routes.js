@@ -8,12 +8,12 @@ import axios from 'axios';
 import ImageIcon from '@mui/icons-material/Image';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 //Pages
-import InvoicePage from "./views/TableList/InvoicePage";
+import InvoicePage from "./Pages/QuotePage";
 import RolePermission from "./layouts/roles&permissions";
 import CRMPage from "./layouts/CRMPage";
 import AdminCRM from "./layouts/AdminCRM";
 import UserPage from "./layouts/UserPage";
-import userRoutes from "./userRoutes";
+import ProfilePage from "./layouts/CRMPage/ProfilePage";
 // import RolePermission from "./layouts/roles&permissions/data/rolepermissionsData"
 // Version dev
 const baseUrl = "http://localhost:3000/server/crm_crud/";
@@ -25,7 +25,11 @@ export default function ModuleRoutes() {
 
   const [modules, setModules] = useState({});
   const [modulesDetails, setModulesDetails] = useState({});
+  const [moduleScope, setModuleScope] = useState([]);
   const [userEmail, setUserEmail] = useState({});
+  const [appRole, setAppRole] = useState({});
+  const [userRole, setUserRole] = useState([]);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() =>{
     //Call API to get all modules
@@ -36,69 +40,133 @@ export default function ModuleRoutes() {
     });    
 
     axios.get(baseUrl+"getUserDetails").then((response) => {
-      // this.setState({ role : response.data.userRole, userEmail : response.data.user.email_id});
-      setUserEmail(response.data.email_id);
+        // this.setState({ role : response.data.userRole, userEmail : response.data.user.email_id});
+        setUserEmail(response.data.user.email_id);
+        setAppRole(response.data.userRole);
+        setUserRole(response.data.role);
       }).catch((err) => {
-          console.log(err);
+        console.log(err);
+    }).finally(() => {
+      setLoading(false);
     });
   },[]);
 
   useEffect(() => {
-    //Call API to get module where scope == Read
-    axios.get(baseUrl+"module/checkModule").then((response) => {
-      var module = [];
-      response.data.Module.forEach((moduleDetails) => {
-            if(moduleDetails.Module.Scope === "Read") {
-                if(modules.length > 0) {
-                  modules.forEach(mod => {
-                    if(mod.plural_label === moduleDetails.Module.Module_name) {
-                      module.push(mod);
+    if(!loading) {
+      if(appRole === "App Administrator") {
+        //Call API to get module where scope == Read
+        axios.get(baseUrl+"module/checkModule").then((response) => {
+          var module = [];
+          response.data.Module.forEach((moduleDetails) => {
+                if(moduleDetails.Module.Scope === "Read") {
+                    if(modules.length > 0) {
+                      modules.forEach(mod => {
+                        if(mod.plural_label === moduleDetails.Module.Module_name) {
+                          module.push(mod);
+                        }
+                      });
                     }
-                  });
                 }
-            }
-        })
-      setModulesDetails(module);
-      }).catch((err) => {
-          console.log(err);
-    });
-  },[modules])
-
+            })
+          setModulesDetails(module);
+          }).catch((err) => {
+              console.log(err);
+        });
+      } else {
+        if(userRole.length > 0) {
+          axios.get(baseUrl+"module/getPermissions/"+userRole[0].User_role.id_role)
+          .then((response) => {
+            var module = [];
+            var moduleArray = [];
+            response.data.Module.forEach((moduleDetails) => {
+              if(moduleDetails.Scope === "Read") {
+                modules.forEach(mod => {
+                  if(mod.plural_label === moduleDetails.Module[0].Module.Module_name) {
+                    module.push(mod);
+                  }
+                });
+              } else {
+                modules.forEach(mod => {
+                  if(mod.plural_label === moduleDetails.Module[0].Module.Module_name) {
+                    const moduleObj = {
+                      scope: String,
+                      module_name: String,
+                    };
+                    moduleObj.scope = moduleDetails.Scope;
+                    moduleObj.module_name = moduleDetails.Module[0].Module.Module_name;
+                    moduleArray.push(moduleObj);
+                  }
+                });
+              }
+            });
+            setModulesDetails(module);
+            setModuleScope(moduleArray);
+          }).catch((err) => {
+            console.log(err)
+          });
+        }
+      }
+    }
+  },[modules, userRole ,appRole, loading]);
 
   var moduleRoute = [];
-
-  if(modulesDetails.length > 0)
-  {
-    moduleRoute = [
+  if(!loading) {
+    /**Route for admin */
+    if(appRole === "App Administrator") {
+      if(modulesDetails.length > 0)
       {
-        name: "CRM Dashboard",
-        key: "CRM",
-        route:"/app/CRM/dashboard",
-        component: <AdminCRM />
+        moduleRoute = [
+          {
+            name: "CRM Dashboard",
+            key: "CRM",
+            route:"/app/CRM/dashboard",
+            component: <AdminCRM />
+          }
+        ]
+
+        modulesDetails.forEach((module) => {
+          var routeObj = {
+            name: String,
+            key: String,
+            route: String,
+            component: String
+          }
+
+          routeObj.name = module.plural_label;
+          routeObj.key = module.plural_label;
+          routeObj.route = "/app/CRM/"+module.plural_label;
+          routeObj.component = <AdminCRM module={module.api_name}/>
+          moduleRoute.push(routeObj);
+        });
       }
-    ]
+    } else {
+      /**Route for user */
+      if(modulesDetails.length >= 0 && appRole.length >= 0 && moduleScope.length > 0) {
+        modulesDetails.forEach((module) => {
+          var routeObj = {
+            name: String,
+            key: String,
+            route: String,
+            path: String,
+            component: String
+          }
 
-    modulesDetails.forEach((module) => {
-      var routeObj = {
-        name: String,
-        key: String,
-        route: String,
-        component: String
+          const mod = moduleScope.filter(m=> m.scope === "Update" && m.module_name === module.plural_label)
+          routeObj.name = module.plural_label;
+          routeObj.key = module.plural_label;
+          routeObj.route = "app/CRM/"+module.plural_label;
+          if(module.api_name === "Contacts") {
+            routeObj.component = <ProfilePage module={module.api_name} userEmail={userEmail} scope={mod[0] ? mod[0].scope : null}/>;
+          } else {
+            routeObj.component = <CRMPage module={module.api_name} userEmail={userEmail} scope={mod[0] ? mod[0].scope : null}/>;
+          }
+          moduleRoute.push(routeObj);
+        });
       }
+    }
 
-      routeObj.name = module.plural_label;
-      routeObj.key = module.plural_label;
-      routeObj.route = "/app/CRM/"+module.plural_label;
-      // if(userRole === "App Administrator") {
-        routeObj.component = <AdminCRM module={module.api_name}/>
-      // } else {
-      //   routeObj.component = <CRMPage module={module.api_name}/>
-      // }
-      moduleRoute.push(routeObj);
-    });
-  }
-
-  const routes = [
+    if(appRole === "App Administrator") {
+      const routes = [
         {
           type: "collapse",
           name: "Users",
@@ -182,5 +250,36 @@ export default function ModuleRoutes() {
         { type: "divider", key: "divider-1" },
       ];
 
-  return routes;
+      return routes;
+    } else {
+      const routes = [
+        {
+          type: "collapse",
+          name: "Zoho CRM",
+          key: "CRM",
+          icon: <ImageIcon />,
+          collapse: moduleRoute.length > 1 ? moduleRoute : null
+        },
+        {
+          type: "collapse",
+          collapse: [
+            {
+              name: "Factures",
+              key: "factures",
+              route: "/app/books/invoice",
+              //component: <Kanban />,
+            },
+            {
+              name: "Devis",
+              key: "devis",
+              route: "/app/books/quote",
+              component: <InvoicePage />,
+            }
+          ],
+        },
+        { type: "divider", key: "divider-1" },
+      ];
+      return routes;
+    }
+  }
 }

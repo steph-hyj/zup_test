@@ -2,11 +2,9 @@ import { useState, useEffect } from "react";
 
 import axios from "axios";
 
-import MDButton from "../../../components/MDButton";
-
 /**Icons button*/
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+// import DeleteIcon from '@mui/icons-material/Delete';
 
 const baseUrl = "http://localhost:3000/server/crm_crud/";
 
@@ -108,8 +106,6 @@ export default function GetData(module, userEmail, userID, scope) {
     }
   }
 
-  console.log(columnData);
-
   var recordData = [];
   var recordArray = [];
   if(records.length > 0) {
@@ -131,6 +127,7 @@ export default function GetData(module, userEmail, userID, scope) {
         }
         recordArray.push(recordObj);
       });
+      console.log(recordArray);
       //Merge object to get new one
       recordData.push(Object.assign({},...recordArray));
     });
