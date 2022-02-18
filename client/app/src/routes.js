@@ -12,7 +12,8 @@ import InvoicePage from "./Pages/QuotePage";
 import RolePermission from "./layouts/roles&permissions";
 import CRMPage from "./layouts/CRMPage";
 import AdminCRM from "./layouts/AdminCRM";
-import UserPage from "./layouts/UserPage";
+import UserList from "./layouts/Users/UserList";
+import UserCreate from "./layouts/Users/CreateUser";
 import ProfilePage from "./layouts/CRMPage/ProfilePage";
 // import RolePermission from "./layouts/roles&permissions/data/rolepermissionsData"
 // Version dev
@@ -175,9 +176,16 @@ export default function ModuleRoutes() {
             {
               name: "Liste users",
               key: "listeUsers",
-              route: "/app/users",
-              component: <UserPage />,
-            }]
+              route: "/app/userList",
+              component: <UserList/>
+            },
+            {
+              name: "Creation users",
+              key: "createUser",
+              route: "/app/createUser",
+              component: <UserCreate/>
+            }
+          ]
         },
         {
           type: "collapse",

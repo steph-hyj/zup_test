@@ -2,20 +2,20 @@
 import Card from "@mui/material/Card";
 
 // Material Dashboard 2 PRO React components
-import MDBox from "../../components/MDBox";
-import MDTypography from "../../components/MDTypography";
+import MDBox from "../../../components/MDBox";
+import MDTypography from "../../../components/MDTypography";
 
 // Material Dashboard 2 PRO React example components
-import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
+import DashboardLayout from "../../../examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "../../../examples/Navbars/DashboardNavbar";
 // import Footer from "examples/Footer";
-import DataTable from "../../examples/Tables/DataTable";
+import DataTable from "../../../examples/Tables/DataTable";
 
 // Data
 import RolePermissionsData from "./data/users";
 import Users from "./data/users";
 import EditIcon from "@mui/icons-material/Edit";
-import MDButton from "../../components/MDButton";
+import MDButton from "../../../components/MDButton";
 
 function DataTables() {
 
@@ -31,8 +31,6 @@ function DataTables() {
             <MDTypography variant="h5" fontWeight="medium">
               Utilisateurs
             </MDTypography>
-
-            <MDButton variant="gradient" color="info" size="medium">Button</MDButton>
           </MDBox>
           <DataTable table={usersData} canSearch />
         </Card>

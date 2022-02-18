@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import axios from "axios";
 
-import MDButton from "../../../components/MDButton";
+import MDButton from "../../../../components/MDButton";
 
 /**Icons button*/
 import EditIcon from '@mui/icons-material/Edit';
