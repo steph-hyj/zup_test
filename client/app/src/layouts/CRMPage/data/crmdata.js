@@ -49,7 +49,7 @@ export default function GetData(module, userEmail, userID, scope) {
             fieldTab.push(field.api_name);
           }
         });
-        console.log(fieldTab);
+        // console.log(fieldTab);
         if(fieldTab.length === 0) {
             /**Get All records data of specific module */
             axios.get(baseUrl+"module/getRecords/"+module).then((response) => {
@@ -116,7 +116,7 @@ export default function GetData(module, userEmail, userID, scope) {
           [fieldAPI] : String,
           Update: String
         };
-        console.log(fieldAPI,record[fieldAPI],typeof record[fieldAPI]);
+        // console.log(fieldAPI,record[fieldAPI],typeof record[fieldAPI]);
         if(typeof record[fieldAPI] == 'object' && record[fieldAPI] != null) {
             recordObj[fieldAPI] = record[fieldAPI].name;
         } else {
@@ -127,7 +127,7 @@ export default function GetData(module, userEmail, userID, scope) {
         }
         recordArray.push(recordObj);
       });
-      console.log(recordArray);
+      // console.log(recordArray);
       //Merge object to get new one
       recordData.push(Object.assign({},...recordArray));
     });

@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
-import Icon from "@mui/material/Icon";
+import EditIcon from '@mui/icons-material/Edit';
 
 // Material Dashboard 2 PRO React components
 import MDBox from "../../../../components/MDBox";
@@ -21,7 +21,7 @@ function ProfileInfoCard({ title, description, info, social, action, shadow }) {
   // Convert this form `objectKey` of the object key in to this `object key`
   if(info) {
     Object.keys(info).forEach((el) => {
-      console.log(el);
+      // console.log(el);
       if(el !== "Update") {
         if (el.match(/[A-Z\s]+/)) {
           const uppercaseLetter = Array.from(el).find((i) => i.match(/[A-Z]+/));
@@ -56,17 +56,17 @@ function ProfileInfoCard({ title, description, info, social, action, shadow }) {
 
   return (
     <Card sx={{ height: "100%", boxShadow: !shadow && "none" }}>
-      <MDBox display="flex" justifyContent="space-between" alignItems="center" pt={2} px={2}>
+      <MDBox display="flex" justifyContent="space-between" alignItems="center" pt={2} px={10}>
         <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
           {title}
         </MDTypography>
         <MDTypography component={Link} to={action.route} variant="body2" color="secondary">
           <Tooltip title={action.tooltip} placement="top">
-            <Icon>edit</Icon>
+            <EditIcon />
           </Tooltip>
         </MDTypography>
       </MDBox>
-      <MDBox p={2}>
+      <MDBox px={10}>
         <MDBox mb={2} lineHeight={1}>
           <MDTypography variant="button" color="text" fontWeight="light">
             {description}

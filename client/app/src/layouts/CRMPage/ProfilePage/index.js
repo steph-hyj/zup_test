@@ -38,7 +38,7 @@ function Overview(props) {
     },[userEmail]);
 
     const crmData = CRMData(module, userEmail, userID, scope);
-    console.log(crmData);
+    // console.log(crmData);
   return (
     <DashboardLayout>
       <MDBox mb={2} />
