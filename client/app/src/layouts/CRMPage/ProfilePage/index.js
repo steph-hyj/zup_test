@@ -48,10 +48,9 @@ function Overview(props) {
             <Grid item xs={12} md={12} xl={44} sx={{ display: "flex" }}>
               <Divider orientation="vertical" sx={{ ml: 0, mr: 1 }} />
               <ProfileInfoCard
-                title={module}
-                description="-----------------------------------PROFILE INFORMATION-----------------------------------"
+                title={"--------------- "+module+" information ---------------"}
                 info={crmData.rows.length > 0 ? crmData.rows[0] : undefined}
-                action={{ route: "", tooltip: "Edit Profile" }}
+                action={{tooltip: "Edit Profile" }}
                 shadow={false}
               />
               <Divider orientation="vertical" sx={{ mx: 0 }} />

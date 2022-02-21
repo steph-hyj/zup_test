@@ -156,7 +156,7 @@ export default function ModuleRoutes() {
           routeObj.name = module.plural_label;
           routeObj.key = module.plural_label;
           routeObj.route = "app/CRM/"+module.plural_label;
-          if(module.api_name === "Contacts") {
+          if(module.api_name === "Contacts" || module.api_name === "Accounts") {
             routeObj.component = <ProfilePage module={module.api_name} userEmail={userEmail} scope={mod[0] ? mod[0].scope : null}/>;
           } else {
             routeObj.component = <CRMPage module={module.api_name} userEmail={userEmail} scope={mod[0] ? mod[0].scope : null}/>;

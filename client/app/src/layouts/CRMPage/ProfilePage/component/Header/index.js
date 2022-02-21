@@ -6,6 +6,8 @@ import PropTypes from "prop-types";
 // @mui material components
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
 
 // Material Dashboard 2 PRO React components
 import MDBox from "../../../../../components/MDBox";
@@ -68,6 +70,21 @@ function Header({ children }) {
           px: 2,
         }}
       >
+        <Grid container spacing={3} alignItems="center">
+          <Grid item>
+            <AccountCircleIcon />
+          </Grid>
+          <Grid item>
+            <MDBox height="100%" mt={0.5} lineHeight={1}>
+              <MDTypography variant="h5" fontWeight="medium">
+                Contact
+              </MDTypography>
+              <MDTypography variant="button" color="text" fontWeight="regular">
+                Details
+              </MDTypography>
+            </MDBox>
+          </Grid>
+        </Grid>
         {children}
       </Card>
     </MDBox>

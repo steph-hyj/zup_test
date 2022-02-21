@@ -1,5 +1,4 @@
-// react-routers components
-import { Link } from "react-router-dom";
+import { useState } from "react";
 
 // prop-types is library for typechecking of props
 import PropTypes from "prop-types";
@@ -7,14 +6,21 @@ import PropTypes from "prop-types";
 // @mui material components
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
-import Tooltip from "@mui/material/Tooltip";
 import EditIcon from '@mui/icons-material/Edit';
+import Grid from "@mui/material/Grid";
+import { Dialog, DialogActions, DialogContent, DialogTitle} from "@material-ui/core";
+import { Tooltip } from "@mui/material";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "../../../../components/MDBox";
 import MDTypography from "../../../../components/MDTypography";
+import MDButton from "../../../../components/MDButton";
+import FormField from "../../../../layouts/CRMPage/ProfilePage/component/FormField";
 
 function ProfileInfoCard({ title, description, info, social, action, shadow }) {
+  
+  const [open, setOpen] = useState(false);
+  
   const labels = [];
   const values = [];
 
@@ -54,17 +60,50 @@ function ProfileInfoCard({ title, description, info, social, action, shadow }) {
     </MDBox>
   ));
 
+  //Open form
+  const handleOpen = () => setOpen(true);
+
+  //Close form
+  const handleClose = () => setOpen(false);
+
+  //Form's field
+  const formField = labels.map((label, key) => (
+    <Grid item xs={12} sm={6}>
+      <FormField label={label} placeholder={values[key]} />
+    </Grid>
+  ));
+
+
   return (
     <Card sx={{ height: "100%", boxShadow: !shadow && "none" }}>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" pt={2} px={10}>
         <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
           {title}
         </MDTypography>
-        <MDTypography component={Link} to={action.route} variant="body2" color="secondary">
+        <MDBox
+          display="flex"
+          color="dark"
+          sx={{ cursor: "pointer" }}
+          onClick={handleOpen}
+        >
           <Tooltip title={action.tooltip} placement="top">
             <EditIcon />
           </Tooltip>
-        </MDTypography>
+        </MDBox>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Modification contact</DialogTitle>
+          <DialogContent>
+            <MDBox component="form" pb={3} px={3}>
+              <Grid container spacing={2}>
+                {formField}
+              </Grid>
+            </MDBox>
+          </DialogContent>
+          <DialogActions>
+            <MDButton fullWidth color="error" onClick={handleClose} >Annuler</MDButton>
+            <MDButton fullWidth color="success" >Modifier</MDButton>
+          </DialogActions>
+        </Dialog>
       </MDBox>
       <MDBox px={10}>
         <MDBox mb={2} lineHeight={1}>
