@@ -17,7 +17,7 @@ exports.getAllQuotes = async(req,res) => {
 			'hostname': HOST,
 			'port': PORT,
 			'method': 'GET',
-			'path': `/api/v3/estimates?organization_id=${req.params.orgID}`,
+			'path': `/api/v3/estimates?organization_id=${req.params.orgID}&email=${req.params.email}`,
 			'headers': {
 				'Authorization': `Zoho-oauthtoken ${accessToken}`
 			}
