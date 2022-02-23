@@ -43,7 +43,7 @@ function Overview(props) {
     <DashboardLayout>
       <MDBox mb={2} />
       <Header>
-        <MDBox mt={5} mb={3}>
+        <MDBox module={module} mt={5} mb={3}>
           <Grid container spacing={1}>
             <Grid item xs={12} md={12} xl={44} sx={{ display: "flex" }}>
               <Divider orientation="vertical" sx={{ ml: 0, mr: 1 }} />

@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+// import { Routes } from "react-router-dom";
+import { Routes, Route, useLocation} from 'react-router-dom';
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
 import Sidenav from "./examples/Sidenav";
 import theme from "./assets/theme";
 import routes from "./routes";
+
 import { useMaterialUIController, setMiniSidenav } from "./context";
 
 export default function App() {

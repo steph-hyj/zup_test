@@ -92,14 +92,14 @@ export default function InvoicePage() {
 
     org.then((org) => {
         console.log(org);
-        axios.get(baseUrl+"books/customers/getAllCustomers/"+org.organization_id).then((response) => {
+        axios.get(baseUrl+"books/customers/getAllCustomers/"+org.organization_id+"/stephane.ung@tranzition.fr").then((response) => {
             console.log(response);
             const allcustomer = response.data.contacts;
             setCustomers(allcustomer);
         }).catch((err) => {
             console.log(err);
         });
-        axios.get(baseUrl+"books/invoices/getAllInvoices/"+org.organization_id).then((response) => {
+        axios.get(baseUrl+"books/invoices/getAllInvoices/"+org.organization_id+"/stephane.ung@tranzition.fr").then((response) => {
             console.log(response);
             const allinvoice = response.data.invoices;
             setInvoices(allinvoice);
@@ -127,6 +127,7 @@ export default function InvoicePage() {
       // console.log(customerInfo[0].contact_id);
       if (invoice.customer_id == customerInfo[0].contact_id) {
         myinvoices.push(invoice);
+        console.log(invoice);
       }
     })
     : <div></div>}
@@ -135,6 +136,7 @@ export default function InvoicePage() {
       var total = invoice.total + " " + invoice.currency_symbol;
       invoice.total = total;
       var url = invoice.invoice_url;
+      console.log(url);
       invoice.invoice_url = <Button variant="outlined" href = {url} target = "_blank">VISUALIZE</Button>
     })
     : <div></div>}

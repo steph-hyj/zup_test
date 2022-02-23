@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
+import ApartmentIcon from '@mui/icons-material/Apartment';
 
 // Material Dashboard 2 PRO React components
 import MDBox from "../../../../../components/MDBox";
@@ -21,6 +21,8 @@ import backgroundImage from "../../../../../assets/img/bg-profile.jpeg";
 
 function Header({ children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
+
+  const module = children.props.module;
 
   useEffect(() => {
     // A function that sets the orientation state of the tabs.
@@ -72,12 +74,17 @@ function Header({ children }) {
       >
         <Grid container spacing={3} alignItems="center">
           <Grid item>
-            <AccountCircleIcon />
+            { module === "Contacts" 
+            ? 
+              <AccountCircleIcon />
+            :
+              <ApartmentIcon />
+            }
           </Grid>
           <Grid item>
             <MDBox height="100%" mt={0.5} lineHeight={1}>
               <MDTypography variant="h5" fontWeight="medium">
-                Contact
+                {module}
               </MDTypography>
               <MDTypography variant="button" color="text" fontWeight="regular">
                 Details

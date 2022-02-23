@@ -23,19 +23,19 @@ const baseUrl = "http://localhost:3000/server/crm_crud/";
 
 function DataTables(props) {
 
-  const [userID, setUserID] = useState({});
+  // const [userID, setUserID] = useState({});
 
-  const { module, userEmail, scope } = props;
+  const { module, userEmail } = props;
 
-  useEffect(() =>{
-    axios.get(baseUrl+"getUserZohoID/"+userEmail).then((response) => {
-      setUserID(response.data.data[0]);
-    }).catch((err) => {
-        console.log(err);
-    });
-  },[userEmail])
+  // useEffect(() =>{
+  //   axios.get(baseUrl+"getUserZohoID/"+userEmail).then((response) => {
+  //     setUserID(response.data.data[0]);
+  //   }).catch((err) => {
+  //       console.log(err);
+  //   });
+  // },[userEmail])
 
-  const booksData = BooksData(module, userEmail, userID, scope);
+  const booksData = BooksData(module, userEmail);
   console.log(booksData);
   return (
     <DashboardLayout>
@@ -47,7 +47,7 @@ function DataTables(props) {
               
             </MDTypography>
           </MDBox>
-          {/* <DataTable table={booksData} canSearch /> */}
+          <DataTable table={booksData} canSearch />
         </Card>
       </MDBox>
       {/* <Footer /> */}

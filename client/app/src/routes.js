@@ -15,6 +15,7 @@ import AdminCRM from "./layouts/AdminCRM";
 import UserList from "./layouts/Users/UserList";
 import UserCreate from "./layouts/Users/CreateUser";
 import ProfilePage from "./layouts/CRMPage/ProfilePage";
+import BooksPage from "./layouts/BooksPage";
 // import RolePermission from "./layouts/roles&permissions/data/rolepermissionsData"
 // Version dev
 const baseUrl = "http://localhost:3000/server/crm_crud/";
@@ -145,6 +146,7 @@ export default function ModuleRoutes() {
       if(modulesDetails.length >= 0 && appRole.length >= 0 && moduleScope.length > 0) {
         modulesDetails.forEach((module) => {
           var routeObj = {
+            type: String,
             name: String,
             key: String,
             route: String,
@@ -152,10 +154,11 @@ export default function ModuleRoutes() {
             component: String
           }
 
-          const mod = moduleScope.filter(m=> m.scope === "Update" && m.module_name === module.plural_label)
+          const mod = moduleScope.filter(m=> m.scope === "Update" && m.module_name === module.plural_label);
+          routeObj.type = "component";
           routeObj.name = module.plural_label;
           routeObj.key = module.plural_label;
-          routeObj.route = "app/CRM/"+module.plural_label;
+          routeObj.route = "/CRM/"+module.plural_label;
           if(module.api_name === "Contacts" || module.api_name === "Accounts") {
             routeObj.component = <ProfilePage module={module.api_name} userEmail={userEmail} scope={mod[0] ? mod[0].scope : null}/>;
           } else {
@@ -260,33 +263,32 @@ export default function ModuleRoutes() {
 
       return routes;
     } else {
-      const routes = [
+      
+      let routes;
+      const routesModule = moduleRoute.length > 0 ? moduleRoute : null;
+
+      const routesArray = [
         {
-          type: "collapse",
-          name: "Zoho CRM",
-          key: "CRM",
-          icon: <ImageIcon />,
-          collapse: moduleRoute.length > 1 ? moduleRoute : null
+          type: "component",
+          name: "Invoice",
+          key: "invoice",
+          route: "/books/invoice",
+          component: <BooksPage module="Invoice" userEmail={userEmail} />,
         },
         {
-          type: "collapse",
-          collapse: [
-            {
-              name: "Factures",
-              key: "factures",
-              route: "/app/books/invoice",
-              //component: <Kanban />,
-            },
-            {
-              name: "Devis",
-              key: "devis",
-              route: "/app/books/quote",
-              component: <InvoicePage />,
-            }
-          ],
+          type: "component",
+          name: "Devis",
+          key: "devis",
+          route: "/books/quote",
+          component: <BooksPage module="Quote" />,
         },
         { type: "divider", key: "divider-1" },
       ];
+      
+      if(routesModule) {
+        routes = routesModule.concat(routesArray);
+      }
+
       return routes;
     }
   }
