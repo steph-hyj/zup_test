@@ -26,6 +26,7 @@ export default function GetData(module, userEmail, userID, scope) {
 
   useEffect(() => {
     let fields = axios.get(baseUrl+'module/getFields/'+module).then((response) => {
+      console.log(response.data.fields);
       return response.data.fields;
     }).catch((err) => {
         console.log(err)

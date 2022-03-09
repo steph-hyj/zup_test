@@ -1,7 +1,7 @@
 // @mui material components
 import Card from "@mui/material/Card";
-import axios from "axios";
-import { useEffect, useState } from "react";
+// import axios from "axios";
+// import { useEffect, useState } from "react";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "../../components/MDBox";
@@ -9,14 +9,14 @@ import MDTypography from "../../components/MDTypography";
 
 // Material Dashboard 2 PRO React example components
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
+// import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 // import Footer from "examples/Footer";
 import DataTable from "../../examples/Tables/DataTable";
 
 // Data
 import BooksData from "./data/booksdata";
 
-const baseUrl = "http://localhost:3000/server/crm_crud/";
+// const baseUrl = "http://localhost:3000/server/crm_crud/";
 
 // Version deployment
 // const baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";

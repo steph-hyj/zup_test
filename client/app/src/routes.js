@@ -8,7 +8,7 @@ import axios from 'axios';
 import ImageIcon from '@mui/icons-material/Image';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 //Pages
-import InvoicePage from "./Pages/QuotePage";
+// import InvoicePage from "./Pages/QuotePage";
 import RolePermission from "./layouts/roles&permissions";
 import CRMPage from "./layouts/CRMPage";
 import AdminCRM from "./layouts/AdminCRM";

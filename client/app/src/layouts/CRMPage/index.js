@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 // Material Dashboard 2 PRO React components
 import MDBox from "../../components/MDBox";
 import MDTypography from "../../components/MDTypography";
+import MDButton from "../../components/MDButton";
 
 // Material Dashboard 2 PRO React example components
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
@@ -23,6 +24,7 @@ const baseUrl = "http://localhost:3000/server/crm_crud/";
 function DataTables(props) {
 
   const [userID, setUserID] = useState({});
+  const [fields, setFields] = useState({});
 
   const { module, userEmail, scope } = props;
 
@@ -34,16 +36,28 @@ function DataTables(props) {
     });
   },[userEmail]);
 
+  useEffect(() => {
+    axios.get(baseUrl+'module/getFields/'+module).then((response) => {
+      console.log(response.data.fields);
+      setFields(response.data.fields);
+    }).catch((err) => {
+        console.log(err)
+    });
+  },[module]);
+
   const crmData = CRMData(module, userEmail, userID, scope);
 
   return (
     <DashboardLayout>
       {/* <DashboardNavbar /> */}
       <MDBox pt={6} pb={3}>
+        <MDButton variant="gradient" color="info">
+          New {module}
+        </MDButton>
         <Card>
           <MDBox p={3} lineHeight={1}>
             <MDTypography variant="h5" fontWeight="medium">
-              
+              {module}
             </MDTypography>
           </MDBox>
           <DataTable table={crmData} canSearch />
