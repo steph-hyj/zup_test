@@ -38,13 +38,13 @@ export default function GetData(module, userEmail) {
         }).catch((err) => {
             console.log(err);
         });
-
+        /**Call API to get Organization ID to use Books API */
         let org = axios.get(baseUrl+"books/getOrganizationID").then((response) => {
             return response.data.organizations[0];
         }).catch((err) => {
             console.log(err);
         });
-
+        /**Call API to get Contact's email */
         user.then((user) => {
             axios.get(baseUrl+"module/Contacts/Email/"+user.email_id).then((response) => {
                 const user = response.data.data[0];
@@ -58,14 +58,14 @@ export default function GetData(module, userEmail) {
             org.then((org) => {
                 axios.get(baseUrl+"books/customers/getAllCustomers/"+org.organization_id+"/"+userEmail).then((response) => {
                     const allCustomer = response.data.contacts;
-                    console.log(allCustomer);
+                    console.log("API getAllCustomer",allCustomer);
                     setCustomers(allCustomer);
                 }).catch((err) => {
                     console.log(err);
                 });
                 axios.get(baseUrl+"books/quotes/getAllQuotes/"+org.organization_id+"/"+userEmail).then((response) => {
                     const quote = response.data.estimates;
-                    console.log(quote);
+                    console.log("API getAllQuotes",quote);
                     setRecords(quote);
                 }).catch((err) => {
                     console.log(err);
@@ -83,7 +83,7 @@ export default function GetData(module, userEmail) {
                 axios.get(baseUrl+"books/invoices/getAllInvoices/"+org.organization_id+"/"+userEmail).then((response) => {
                     const allInvoice = response.data.invoices;
                     setRecords(allInvoice);
-                    console.log(allInvoice);
+                    console.log("API getAllInvoices",allInvoice);
                 }).catch((err) => {
                     console.log(err);
                 });

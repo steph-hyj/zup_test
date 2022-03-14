@@ -17,7 +17,9 @@ export default function GetData(module, userEmail, userID, scope) {
   const [records, setRecords] = useState({});
 
   useEffect(() => {
+    //Call API to get column (Module Fields) stored in Zoho catalyst
     axios.get(baseUrl+"record/checkColumn/"+module).then((response) => {
+      console.log("API checkColumn",response.data);
       setColumns(response.data.Field);
     }).catch((err) => {
         console.log(err);
@@ -25,8 +27,9 @@ export default function GetData(module, userEmail, userID, scope) {
   },[module]);
 
   useEffect(() => {
+    //Call API get all fields of specific module
     let fields = axios.get(baseUrl+'module/getFields/'+module).then((response) => {
-      console.log(response.data.fields);
+      console.log("API getFields",response.data);
       return response.data.fields;
     }).catch((err) => {
         console.log(err)
@@ -34,9 +37,11 @@ export default function GetData(module, userEmail, userID, scope) {
 
     if(module === "Accounts") {
       if(userID.Account_Name !== undefined) {
+        //Call API to get Account inf
         axios.get(baseUrl+"module/"+module+"/id/"+userID.Account_Name.id)
         .then((response) => {
-          // console.log(response.data.data)
+          console.log("User info",userID);
+          console.log("Account API",response.data);
           setRecords(response.data.data);
         }).catch((err) => {
           console.log(err);

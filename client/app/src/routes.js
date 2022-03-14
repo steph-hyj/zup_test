@@ -41,11 +41,12 @@ export default function ModuleRoutes() {
         console.log(err);
     });    
 
+    //Call API to get user Details
     axios.get(baseUrl+"getUserDetails").then((response) => {
-        // this.setState({ role : response.data.userRole, userEmail : response.data.user.email_id});
         setUserEmail(response.data.user.email_id);
         setAppRole(response.data.userRole);
         setUserRole(response.data.role);
+        console.log("API GetUserDetails =>",response.data);
       }).catch((err) => {
         console.log(err);
     }).finally(() => {
@@ -76,10 +77,12 @@ export default function ModuleRoutes() {
         });
       } else {
         if(userRole.length > 0) {
+          //Call API to get modules with scope = "Read"
           axios.get(baseUrl+"module/getPermissions/"+userRole[0].User_role.id_role)
           .then((response) => {
             var module = [];
             var moduleArray = [];
+            console.log("API GetPermissions =>",response.data);
             response.data.Module.forEach((moduleDetails) => {
               if(moduleDetails.Scope === "Read") {
                 modules.forEach(mod => {
