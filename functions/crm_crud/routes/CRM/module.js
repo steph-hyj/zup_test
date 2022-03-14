@@ -8,10 +8,11 @@ router.get('/getFields/:module',moduleController.getFields);
 /**Get Records of specific module */
 router.get('/getRecords/:module',moduleController.getAllRecords);
 router.get('/:module/:field/:value',moduleController.getRecord);
+router.put('/:module/:id_module',moduleController.updateRecord);
 /** Admin Action on Module*/
-router.post('/:mod', moduleController.hideModule);
+router.post('/:mod', moduleController.showModule);
 router.get('/checkModule', moduleController.checkModule);
-router.delete('/:modID', moduleController.showModule);
+router.delete('/:modID', moduleController.hideModule);
 /**Admin set/get permissions */
 router.get('/getPermissions/:roleId',moduleController.getPermissions);
 

@@ -5,6 +5,7 @@ const PORT = 443;
 const catalyst = require('zcatalyst-sdk-node');
 const tokenController = require('../TokenController.js');
 
+/**Get all modules */
 exports.getAllModules = async (req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
@@ -38,6 +39,7 @@ exports.getAllModules = async (req, res) => {
 	}
 };
 
+/** Get all fields of specific module */
 exports.getFields = async (req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
@@ -104,6 +106,7 @@ exports.getAllRecords = async(req, res) => {
 	}
 };
 
+/** Get record of specific module and user */
 exports.getRecord = async(req, res) => {
 	try {
 		const catalystApp = catalyst.initialize(req);
@@ -140,7 +143,49 @@ exports.getRecord = async(req, res) => {
 	}
 };
 
-exports.hideModule = async(req, res) => {
+/** Update record of specific module */
+exports.updateRecord = async(req, res) => {
+	try {
+		const catalystApp = catalyst.initialize(req);
+		const updateData = req.body;
+		const reqData = [];
+		reqData.push(updateData)
+		const data = {
+			"data": reqData
+		}
+		if (!updateData) {
+			res.status(400).send({ 'message': 'Update Data Not Found' });
+		}
+		const userDetails = await tokenController.getUserDetails(catalystApp);
+		const accessToken = await tokenController.getAccessToken(catalystApp, userDetails);
+		const options = {
+			'hostname': HOST,
+			'port': PORT,
+			'method': 'PUT',
+			'path': `/crm/v2/${req.params.module}/${req.params.id_module}`,
+			'headers': {
+				'Authorization': `Zoho-oauthtoken ${accessToken}`,
+				'Content-Type': 'application/json'
+			}
+		};
+		const request = http.request(options, function (response) {
+
+			res.setHeader('content-type', 'application/json');
+			response.pipe(res);
+		});
+		request.write(JSON.stringify(data));
+		request.end();
+
+	}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.' })
+	}
+}
+
+/****************Admin Actions************/
+/**To show module for user interface (Admin Action) */
+exports.showModule = async(req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
 		const Module_name = req.params.mod;
@@ -172,6 +217,7 @@ exports.hideModule = async(req, res) => {
 	}
 }
 
+/**To get displayable module (Admin Action) */
 exports.checkModule = async(req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
@@ -186,7 +232,8 @@ exports.checkModule = async(req, res) => {
 	}
 }
 
-exports.showModule = async(req, res) => {
+/**To hide module for user interface (Admin action) */
+exports.hideModule = async(req, res) => {
     try{
 		const catalystApp = catalyst.initialize(req);
 		const catalystTable = catalystApp.datastore().table('Module');
@@ -200,7 +247,7 @@ exports.showModule = async(req, res) => {
 		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
 	}
 }
-
+/*****************************************/
 exports.getPermissions = async(req, res) => {
 	try {
 		const catalystApp = catalyst.initialize(req);
