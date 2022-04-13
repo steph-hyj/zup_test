@@ -147,7 +147,7 @@ exports.getRecord = async(req, res) => {
 exports.updateRecord = async(req, res) => {
 	try {
 		const catalystApp = catalyst.initialize(req);
-		const updateData = req.body;
+		const updateData = req.body.values;
 		const reqData = [];
 		reqData.push(updateData)
 		const data = {
@@ -176,6 +176,44 @@ exports.updateRecord = async(req, res) => {
 		request.write(JSON.stringify(data));
 		request.end();
 
+	}
+	catch (err) {
+		console.log(err);
+		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.' })
+	}
+}
+
+/** Create record of specific module */
+exports.createRecord = async(req, res) => {
+	try {
+		const catalystApp = catalyst.initialize(req);
+		const createData = req.body.values;
+		const reqData = [];
+		reqData.push(createData)
+		const data = {
+			"data": reqData
+		}
+		if (!createData) {
+			res.status(400).send({ 'message': 'Data Not Found' });
+		}
+		const userDetails = await tokenController.getUserDetails(catalystApp);
+		const accessToken = await tokenController.getAccessToken(catalystApp, userDetails);
+		const options = {
+			'hostname': HOST,
+			'port': PORT,
+			'method': 'POST',
+			'path': `/crm/v2/${req.params.module}`,
+			'headers': {
+				'Authorization': `Zoho-oauthtoken ${accessToken}`,
+				'Content-Type': 'application/json'
+			}
+		};
+		const request = http.request(options, function (response) {
+			res.setHeader('content-type', 'application/json');
+			response.pipe(res);
+		});
+		request.write(JSON.stringify(data));
+		request.end();
 	}
 	catch (err) {
 		console.log(err);

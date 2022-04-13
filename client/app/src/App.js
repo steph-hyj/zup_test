@@ -7,6 +7,8 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Sidenav from "./examples/Sidenav";
 import theme from "./assets/theme";
 import routes from "./routes";
+import Form from "./layouts/CRMPage/Form";
+// import UpdateForm from "./layouts/CRMPage/Form";
 
 import { useMaterialUIController, setMiniSidenav } from "./context";
 
@@ -77,6 +79,8 @@ export default function App() {
           <Routes>
             {getRoutes(modulesRoutes)}
             <Route path="/" />
+            <Route exact path="/:module/createForm" element={<Form />} key="createForm"/>
+            <Route exact path="/:module/updateForm/:deal_id" element={<Form />} key="updateForm"/>
           </Routes>
         </ThemeProvider>
       );

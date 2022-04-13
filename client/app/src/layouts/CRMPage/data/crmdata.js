@@ -4,6 +4,8 @@ import axios from "axios";
 
 /**Icons button*/
 import EditIcon from '@mui/icons-material/Edit';
+import Button from '@material-ui/core/Button';
+
 // import DeleteIcon from '@mui/icons-material/Delete';
 
 const baseUrl = "http://localhost:3000/server/crm_crud/";
@@ -129,7 +131,7 @@ export default function GetData(module, userEmail, userID, scope) {
             recordObj[fieldAPI] = record[fieldAPI];
         }
         if(scope) {
-          recordObj.Update = <EditIcon />
+          recordObj.Update = <Button variant="contained" href={"http://localhost:3000/app/index.html#/"+module+"/updateForm/"+record.id}><EditIcon /></Button>
         }
         recordArray.push(recordObj);
       });

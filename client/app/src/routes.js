@@ -46,7 +46,6 @@ export default function ModuleRoutes() {
         setUserEmail(response.data.user.email_id);
         setAppRole(response.data.userRole);
         setUserRole(response.data.role);
-        console.log("API GetUserDetails =>",response.data);
       }).catch((err) => {
         console.log(err);
     }).finally(() => {
@@ -82,7 +81,6 @@ export default function ModuleRoutes() {
           .then((response) => {
             var module = [];
             var moduleArray = [];
-            console.log("API GetPermissions =>",response.data);
             response.data.Module.forEach((moduleDetails) => {
               if(moduleDetails.Scope === "Read") {
                 modules.forEach(mod => {
@@ -124,7 +122,7 @@ export default function ModuleRoutes() {
           {
             name: "CRM Dashboard",
             key: "CRM",
-            route:"/app/CRM/dashboard",
+            route:"/CRM/dashboard",
             component: <AdminCRM />
           }
         ]
@@ -139,7 +137,7 @@ export default function ModuleRoutes() {
 
           routeObj.name = module.plural_label;
           routeObj.key = module.plural_label;
-          routeObj.route = "/app/CRM/"+module.plural_label;
+          routeObj.route = "/CRM/"+module.plural_label;
           routeObj.component = <AdminCRM module={module.api_name}/>
           moduleRoute.push(routeObj);
         });
@@ -182,13 +180,13 @@ export default function ModuleRoutes() {
             {
               name: "Liste users",
               key: "listeUsers",
-              route: "/app/userList",
+              route: "/userList",
               component: <UserList/>
             },
             {
               name: "Creation users",
               key: "createUser",
-              route: "/app/createUser",
+              route: "/createUser",
               component: <UserCreate/>
             }
           ]
@@ -201,13 +199,13 @@ export default function ModuleRoutes() {
             {
               name: "Roles & Permissions",
               key: "roles&permissions",
-              route: "/app/roles_permissions",
+              route: "/roles_permissions",
               component: <RolePermission />,
             },
             {
               name: "Connections",
               key: "connections",
-              route: "/app/roles_permissions/connection",
+              route: "/roles_permissions/connection",
               //component: <Connections />,
             },
           ],
@@ -250,13 +248,13 @@ export default function ModuleRoutes() {
             {
               name: "Factures",
               key: "factures",
-              route: "/app/books/invoice",
+              route: "/books/invoice",
               //component: <Kanban />,
             },
             {
               name: "Devis",
               key: "devis",
-              route: "/app/books/quote",
+              route: "/books/quote",
               //component: <Wizard />,
             }
           ],

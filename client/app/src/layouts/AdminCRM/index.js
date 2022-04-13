@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useLocation } from 'react-router-dom'
+
 import axios from "axios";
 // @mui material components
 import Card from "@mui/material/Card";
@@ -25,10 +27,12 @@ const baseUrl = "http://localhost:3000/server/crm_crud/";
 
 function DataTables(props) {
 
+  const location = useLocation();
   const [role, setRole] = useState();
   const [roleNameList, setRoleNameList] = useState({});
   const [roleList, setRoleList] = useState({});
   const { module } = props;
+  
   var AdminCRMData = null;
   
   useEffect(() => {
@@ -53,12 +57,10 @@ function DataTables(props) {
     });
   };
 
-  console.log(role);
-
-  if(role === undefined) {
-    AdminCRMData = AdminCRMPageData(module);
-  } else  if(role !== null){
+  if(location.pathname.includes("dashboard")) {
     AdminCRMData = AdminDashboardData(role);
+  } else {
+    AdminCRMData = AdminCRMPageData(module);
   }
   
   return (
@@ -77,7 +79,7 @@ function DataTables(props) {
             />
           </MDBox>
             {
-              role || module ?
+              AdminCRMData ?
                 <DataTable table={AdminCRMData} canSearch />
               :
                 <h1>Selectionner un rôle</h1>

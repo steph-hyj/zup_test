@@ -38,7 +38,6 @@ function DataTables(props) {
 
   useEffect(() => {
     axios.get(baseUrl+'module/getFields/'+module).then((response) => {
-      console.log(response.data.fields);
       setFields(response.data.fields);
     }).catch((err) => {
         console.log(err)
@@ -51,7 +50,7 @@ function DataTables(props) {
     <DashboardLayout>
       {/* <DashboardNavbar /> */}
       <MDBox pt={6} pb={3}>
-        <MDButton variant="gradient" color="info">
+        <MDButton variant="gradient" color="info" href={"http://localhost:3000/app/index.html#/"+module+"/createForm"}>
           New {module}
         </MDButton>
         <Card>

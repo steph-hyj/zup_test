@@ -9,6 +9,7 @@ router.get('/getFields/:module',moduleController.getFields);
 router.get('/getRecords/:module',moduleController.getAllRecords);
 router.get('/:module/:field/:value',moduleController.getRecord);
 router.put('/:module/:id_module',moduleController.updateRecord);
+router.post('/:module/createRecord',moduleController.createRecord);
 /** Admin Action on Module*/
 router.post('/:mod', moduleController.showModule);
 router.get('/checkModule', moduleController.checkModule);

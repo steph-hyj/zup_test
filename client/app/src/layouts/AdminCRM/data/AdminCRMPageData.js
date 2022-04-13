@@ -12,10 +12,11 @@ const baseUrl = "http://localhost:3000/server/crm_crud/";
 
 export default function GetData(module) {
 
-  const [fields, setFields] = useState({});
-  const [columns, setColumns] = useState({});
+  const [fields, setFields] = useState(null);
+  const [columns, setColumns] = useState(null);
   const [state, setState] = useState([]);
 
+  console.log("Module",module);
   useEffect(() => {
     axios.get(baseUrl+'module/getFields/'+module).then((response) => {
       setFields(response.data.fields);
@@ -31,7 +32,8 @@ export default function GetData(module) {
   },[module]);
 
   useEffect(() => {
-    if(fields.length > 0 && columns.length > 0) {
+    if(fields && columns) {
+      console.log("Column",columns);
       columns.forEach((column) => {
         fields.forEach((field) => {
             var object = {
@@ -57,7 +59,7 @@ export default function GetData(module) {
   /**Table row data */
   var fieldData = [];
 
-  if(fields.length > 0 && state.length > 0) {
+  if(fields && state) {
     fields.forEach(field => {
 
       var fieldObj = {

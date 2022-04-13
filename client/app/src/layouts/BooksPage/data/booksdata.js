@@ -56,13 +56,7 @@ export default function GetData(module, userEmail) {
 
         if(module === "Quote") {
             org.then((org) => {
-                axios.get(baseUrl+"books/customers/getAllCustomers/"+org.organization_id+"/"+userEmail).then((response) => {
-                    const allCustomer = response.data.contacts;
-                    console.log("API getAllCustomer",allCustomer);
-                    setCustomers(allCustomer);
-                }).catch((err) => {
-                    console.log(err);
-                });
+                /**To get quote of specific user */
                 axios.get(baseUrl+"books/quotes/getAllQuotes/"+org.organization_id+"/"+userEmail).then((response) => {
                     const quote = response.data.estimates;
                     console.log("API getAllQuotes",quote);
