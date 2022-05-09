@@ -14,14 +14,13 @@ const baseUrl = "http://localhost:3000/server/crm_crud/";
 // Version deployment
 // const baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 
-export default function GetData(module, userEmail) {
+export default function GetData(module) {
 
     const [columns, setColumns] = useState({});
     const [records, setRecords] = useState({});
-    const [userInfo,setUser] = useState();
-    const [customers,setCustomers] = useState();
-    const myinvoices = [];
-    const customerInfo = [];
+    const [organization, setOrganization] = useState({});
+    const [userInfo,setUser] = useState({});
+    const [customers,setCustomers] = useState({});
 
     useEffect(() => {
         axios.get(baseUrl+"record/checkColumn/"+module).then((response) => {
@@ -39,8 +38,8 @@ export default function GetData(module, userEmail) {
             console.log(err);
         });
         /**Call API to get Organization ID to use Books API */
-        let org = axios.get(baseUrl+"books/getOrganizationID").then((response) => {
-            return response.data.organizations[0];
+        axios.get(baseUrl+"books/getOrganizationID").then((response) => {
+            setOrganization(response.data.organizations[0]);
         }).catch((err) => {
             console.log(err);
         });
@@ -53,37 +52,44 @@ export default function GetData(module, userEmail) {
                 console.log(err);
             });
         });
+    },[module]);
 
-        if(module === "Quote") {
-            org.then((org) => {
+    useEffect(() => {
+        if(Object.entries(organization).length && Object.entries(userInfo).length) {
+            console.log("Organization",organization);
+            console.log("user Info",userInfo);
+            axios.get(baseUrl+"books/customers/getAllCustomers/"+organization.organization_id+"/"+userInfo.id).then((response) => {
+                console.log(response.data);
+                const allCustomer = response.data.contacts;
+                setCustomers(allCustomer);
+            }).catch((err) => {
+                console.log(err);
+            });
+        }
+    },[organization, userInfo, module]);
+
+    useEffect(() => {
+        if(Object.entries(organization).length && Object.entries(customers).length) {
+            if(module === "Quotes") {
                 /**To get quote of specific user */
-                axios.get(baseUrl+"books/quotes/getAllQuotes/"+org.organization_id+"/"+userEmail).then((response) => {
+                axios.get(baseUrl+"books/quotes/getAllQuotes/"+organization.organization_id+"/"+customers.contact_id).then((response) => {
                     const quote = response.data.estimates;
                     console.log("API getAllQuotes",quote);
                     setRecords(quote);
                 }).catch((err) => {
                     console.log(err);
                 });
-            });
-        } else if (module === "Invoice") {
-            org.then((org) => {
-                axios.get(baseUrl+"books/customers/getAllCustomers/"+org.organization_id+"/"+userEmail).then((response) => {
-                    console.log(response);
-                    const allCustomer = response.data.contacts;
-                    setCustomers(allCustomer);
-                }).catch((err) => {
-                    console.log(err);
-                });
-                axios.get(baseUrl+"books/invoices/getAllInvoices/"+org.organization_id+"/"+userEmail).then((response) => {
+            } else if (module === "Invoices") {
+                axios.get(baseUrl+"books/invoices/getAllInvoices/"+organization.organization_id+"/"+customers.contact_id).then((response) => {
                     const allInvoice = response.data.invoices;
                     setRecords(allInvoice);
                     console.log("API getAllInvoices",allInvoice);
                 }).catch((err) => {
                     console.log(err);
                 });
-            });
+            }
         }
-    },[module, userEmail]);
+    },[customers, module, organization])
 
   var columnData = [];
   if(columns.length > 0) {
@@ -113,7 +119,7 @@ export default function GetData(module, userEmail) {
 
   var recordData = [];
   var recordArray = [];
-  if(records.length > 0) {
+  if(Object.entries(records).length > 0) {
     records.forEach(record => {
       columnData.forEach(data => {
         const fieldAPI = data.accessor;

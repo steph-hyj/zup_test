@@ -2,20 +2,15 @@ import { useState, useEffect } from "react";
 
 import axios from "axios";
 
-import MDButton from "../../../components/MDButton";
-
-/**Icons button*/
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Autocomplete, Switch } from '@mui/material';
-import MDInput from "../../../components/MDInput";
+/**Icons button */
+import { Switch } from '@mui/material';
 
 const baseUrl = "http://localhost:3000/server/crm_crud/";
 
 // Version deployment
 // const baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 
-export default function GetData(userRole) {
+function GetData(userRole) {
 
   const [modules, setModules] = useState(null);
   const [modulesDetail, setModulesDetail] = useState(null);
@@ -51,7 +46,7 @@ export default function GetData(userRole) {
   var modulesData = [];
   
   if(modules && userRole && modulesDetail) {
-    console.log(modulesDetail);
+    // console.log(modulesDetail);
     // if(modulesDetail[0].Field) {
     //   console.log("TEST");
     // }
@@ -71,9 +66,10 @@ export default function GetData(userRole) {
       //                                 moduleUpdate(event,"Create",role,module.plural_label,module.plural_label+"CreateID")
       //                         }}/>;
       moduleObj.Read = <RowSwitch module={module.plural_label}
-      moduleDetail={modulesDetail}
-                                 scope="Read"
-                                 role={userRole}
+                                  api_module={module.api_name}
+                                  moduleDetail={modulesDetail}
+                                  scope="Read"
+                                  role={userRole}
                       />;
      moduleObj.Update = <Switch />;
      moduleObj.Delete = <Switch />;
@@ -98,11 +94,11 @@ const RowSwitch = (props) => {
     var boolean = false;
     var module_id = null;
 
-    console.log("Module",props.moduleDetail);
+    // console.log("Module",props.moduleDetail);
     props.moduleDetail.forEach((module) => {
       if(module.Module[0].Module.Module_name === props.module) {
           boolean = true;
-          module_id = module.Module.ROWID;
+          module_id = module.Module[0].Module.ROWID;
       }
     });
     setModulePerm({[props.module + props.scope] : boolean, [props.module + props.scope + "ID"] : module_id});
@@ -110,10 +106,11 @@ const RowSwitch = (props) => {
   },[props]);
 
   /**Insert Into Module(Table) the module to display*/
-  function addModule (permission, role,module) {
+  function addModule (permission, role,module, api_module) {
     axios.post(baseUrl+"module/"+module, {
         role,
-        permission
+        permission,
+        api_module
     }).then((response) => {
         console.log(response);
     }).catch((err) => {
@@ -131,14 +128,15 @@ const RowSwitch = (props) => {
   }
 
   /**Execute a function according to the action of switch */
-  function moduleUpdate(event,permission,role,module,moduleID) {
+  function moduleUpdate(event,permission,role,module,moduleID, api_module) {
     if(event.target.checked)
     {
       // console.log("Add",permission,role,module);
-      addModule(permission,role,module);
+      addModule(permission,role,module,api_module);
     }
     else
     {
+      // console.log(modulePerm);
       // console.log("Delete",moduleID);
       deleteModule(moduleID);
     }
@@ -149,12 +147,14 @@ const RowSwitch = (props) => {
     setModulePerm({ [name]: event.target.checked });
   }
 
-  console.log(modulePerm);
+//   console.log(modulePerm);
   return <Switch checked={modulePerm ? modulePerm[props.module+props.scope] : null}
           onChange={(event) => {
               handleChange(event, props.module+props.scope)
-              moduleUpdate(event,props.scope,props.role,props.module,modulePerm[props.module+props.scope+"ID"])
+              moduleUpdate(event,props.scope,props.role,props.module,modulePerm[props.module+props.scope+"ID"], props.api_module)
           }}
           color="success" 
   />
 }
+
+export default GetData;

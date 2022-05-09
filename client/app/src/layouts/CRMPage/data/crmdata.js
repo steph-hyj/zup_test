@@ -75,6 +75,7 @@ export default function GetData(module, userEmail, userID, scope) {
                 });
             } else if(fieldTab[0] === "Contact_Name" && userID.id) {
               /**Get user's records data of specific module */
+              console.log("User ID",userID);
               axios.get(baseUrl+"module/"+module+"/"+fieldTab[0]+"/"+userID.id).then((response) => {
                 setRecords(response.data.data);
               }).catch((err) => {

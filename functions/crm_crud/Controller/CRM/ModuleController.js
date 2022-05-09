@@ -1,5 +1,4 @@
 const HOST = 'www.zohoapis.eu';
-const { cp } = require('fs');
 const http = require('https')
 const PORT = 443;
 const catalyst = require('zcatalyst-sdk-node');
@@ -227,11 +226,13 @@ exports.showModule = async(req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
 		const Module_name = req.params.mod;
+		const Module_api = req.body.api_module;
 		const Application = "crm"
 		const catalystTable = catalystApp.datastore().table('Module');
 		const createModPermission = await catalystTable.insertRow({
 			Module_name,
-			Application
+			Application,
+			Module_api
 		});
 		try {
 			const Module_ID = createModPermission.ROWID;
@@ -259,7 +260,13 @@ exports.showModule = async(req, res) => {
 exports.checkModule = async(req, res) => {
     try {
 		const catalystApp = catalyst.initialize(req);
-		const moduleDetail = await getModuleDetails(catalystApp);
+		const modules = await getPermModuleDetails(catalystApp);
+		const moduleDetail = [];
+		for(const module of modules) {
+			const mod = await getModulesDetail(catalystApp,module.Role_Permission.Module_ID);
+			// console.log(mod);
+			moduleDetail.push(mod);
+		};
 		let userManagement = catalystApp.userManagement();
 		let userDetail = await userManagement.getCurrentUser();
 		res.status(200).send({Module : moduleDetail, User : userDetail});
@@ -301,8 +308,6 @@ exports.getPermissions = async(req, res) => {
 			moduleObj.Module = moduleDetail;
 			moduleDetails.push(moduleObj);
 		}
-		let userManagement = catalystApp.userManagement();
-		let userDetail = await userManagement.getCurrentUser();
 		res.status(200).send({Module : moduleDetails});
 	}
 	catch (err) {
@@ -311,22 +316,29 @@ exports.getPermissions = async(req, res) => {
 	}
 }
 
-async function getModuleDetails(catalystApp) {
-	let query = 'SELECT * FROM Module';
+async function getModulesDetail(catalystApp, module_id) {
+	let query = `SELECT * FROM Module WHERE ROWID = ${module_id}`;
 	let zcql = catalystApp.zcql();
 	let moduleDetail = await zcql.executeZCQLQuery(query);
 	return moduleDetail;
 }
 
+async function getPermModuleDetails(catalystApp) {
+	let query = "SELECT * FROM Role_Permission WHERE Permission = 'Read'";
+	let zcql = catalystApp.zcql();
+	let modules = await zcql.executeZCQLQuery(query);
+	return modules;
+}
+
 async function getPermissionsDetails(catalystApp,roleId) {
-	let query = 'SELECT * FROM Role_Permission WHERE Permission != Connection AND Role_ID='+roleId;
+	let query = `SELECT * FROM Role_Permission WHERE Role_ID='${roleId}'`;
 	let zcql = catalystApp.zcql();
 	let permissionDetail = await zcql.executeZCQLQuery(query);
 	return permissionDetail;
 }
 
 async function getModulePermission(catalystApp, permissionDetail) {
-	let query = 'SELECT * FROM Module WHERE ROWID='+permissionDetail.Role_Permission.Module_ID;
+	let query = `SELECT * FROM Module WHERE ROWID='${permissionDetail.Role_Permission.Module_ID}'`;
 	let zcql = catalystApp.zcql();
 	let moduleDetail = await zcql.executeZCQLQuery(query);
 	return moduleDetail;

@@ -106,7 +106,7 @@ const styles = theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
-    padding: "0 8px",
+    padding: "0 2px",
     ...theme.mixins.toolbar 
   },
   content: {

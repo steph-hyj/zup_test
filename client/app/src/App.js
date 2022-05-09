@@ -8,6 +8,7 @@ import Sidenav from "./examples/Sidenav";
 import theme from "./assets/theme";
 import routes from "./routes";
 import Form from "./layouts/CRMPage/Form";
+import AdminDashboardCRM from "./layouts/DashboardAdminCRM";
 // import UpdateForm from "./layouts/CRMPage/Form";
 
 import { useMaterialUIController, setMiniSidenav } from "./context";

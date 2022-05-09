@@ -15,7 +15,7 @@ import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
 import DataTable from "../../examples/Tables/DataTable";
 
 // Data
-import AdminCRMPageData from "./data/AdminCRMPageData";
+import AdminDashboardData from "./data/dashboardData";
 
 
 const baseUrl = "http://localhost:3000/server/crm_crud/";
@@ -34,7 +34,8 @@ function DataTables(props) {
   var AdminCRMData = null;
   
   useEffect(() => {
-    axios.get(baseUrl+"getRoles").then((response)=>{ 
+    axios.get(baseUrl+"getRoles").then((response)=>{
+        console.log("Roles",response.data);
         const roles = response.data.ModuleRole;
         setRoleList(roles);
         var roleNameList = [];
@@ -55,8 +56,8 @@ function DataTables(props) {
     });
   };
 
-  AdminCRMData = AdminCRMPageData(role,module);
-  
+  AdminCRMData = AdminDashboardData(role,module);
+
   return (
     <DashboardLayout>
       {/* <DashboardNavbar /> */}
@@ -73,7 +74,7 @@ function DataTables(props) {
             />
           </MDBox>
             {
-              AdminCRMData && role ?
+              AdminCRMData && role?
                 <DataTable table={AdminCRMData} canSearch />
               :
                 <h1>Selectionner un rôle</h1>

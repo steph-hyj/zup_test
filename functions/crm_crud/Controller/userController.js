@@ -125,7 +125,6 @@ exports.updateRole = async(req, res) => {
 	}
 }
 
-
 /**Delete Role*/
 exports.deleteRole = async(req, res) => {
 	try {
@@ -139,6 +138,7 @@ exports.deleteRole = async(req, res) => {
 		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
 	}
 }
+
 exports.getAllUserDetails = async(req, res) => {
 	try{
 		const catalystApp = catalyst.initialize(req);
@@ -295,7 +295,7 @@ exports.deleteConnection = async(req, res) => {
 
 /**SQL Request to get role ID in Role_Permission (Table) details */
 async function getRoleConnectionDetail(catalystApp) {
-	let query = 'SELECT * FROM Role_Permission WHERE Permission=Connection';
+	let query = "SELECT * FROM Role_Permission WHERE Permission='Connection'";
 	let zcql = catalystApp.zcql();
 	let roleDetail = await zcql.executeZCQLQuery(query);
 	return roleDetail;
@@ -303,7 +303,7 @@ async function getRoleConnectionDetail(catalystApp) {
 
 /**SQL Request to get module details */
 async function getModulePermission(catalystApp, permissionDetail) {
-	let query = 'SELECT * FROM Module WHERE ROWID='+permissionDetail.Role_Permission.Module_ID;
+	let query = `SELECT * FROM Module WHERE ROWID=${permissionDetail.Role_Permission.Module_ID}`;
 	let zcql = catalystApp.zcql();
 	let moduleDetail = await zcql.executeZCQLQuery(query);
 	return moduleDetail;
@@ -311,7 +311,7 @@ async function getModulePermission(catalystApp, permissionDetail) {
 
 /**SQL Request to get role details */
 async function getRolePermission(catalystApp, permissionDetail) {
-	let query = 'SELECT * FROM Role WHERE ROWID='+permissionDetail.Role_Permission.Role_ID;
+	let query = `SELECT * FROM Role WHERE ROWID=${permissionDetail.Role_Permission.Role_ID}`;
 	let zcql = catalystApp.zcql();
 	let roleDetail = await zcql.executeZCQLQuery(query);
 	return roleDetail;
@@ -327,7 +327,7 @@ async function getConnectionModule(catalystApp) {
 
 /**SQL Request to get userRole in database */
 async function getRole(catalystApp,userID) {
-	let query = 'SELECT * FROM User_role WHERE id_user='+userID;
+	let query = `SELECT * FROM User_role WHERE id_user=${userID}`;
 	let zcql = catalystApp.zcql();
 	let role = await zcql.executeZCQLQuery(query);
 	return role;

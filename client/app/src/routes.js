@@ -6,7 +6,7 @@ import axios from 'axios';
 
 // @mui icons
 import ImageIcon from '@mui/icons-material/Image';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+// import DashboardIcon from '@mui/icons-material/Dashboard';
 //Pages
 // import InvoicePage from "./Pages/QuotePage";
 import RolePermission from "./layouts/roles&permissions";
@@ -16,6 +16,7 @@ import UserList from "./layouts/Users/UserList";
 import UserCreate from "./layouts/Users/CreateUser";
 import ProfilePage from "./layouts/CRMPage/ProfilePage";
 import BooksPage from "./layouts/BooksPage";
+import AdminDashboardPage from "./layouts/DashboardAdminCRM";
 // import RolePermission from "./layouts/roles&permissions/data/rolepermissionsData"
 // Version dev
 const baseUrl = "http://localhost:3000/server/crm_crud/";
@@ -39,7 +40,7 @@ export default function ModuleRoutes() {
       setModules(response.data.modules);
     }).catch((err) => {
         console.log(err);
-    });    
+    });
 
     //Call API to get user Details
     axios.get(baseUrl+"getUserDetails").then((response) => {
@@ -60,15 +61,14 @@ export default function ModuleRoutes() {
         axios.get(baseUrl+"module/checkModule").then((response) => {
           var module = [];
           response.data.Module.forEach((moduleDetails) => {
-                if(moduleDetails.Module.Scope === "Read") {
-                    if(modules.length > 0) {
-                      modules.forEach(mod => {
-                        if(mod.plural_label === moduleDetails.Module.Module_name) {
-                          module.push(mod);
-                        }
-                      });
-                    }
-                }
+            // console.log(moduleDetails);
+              if(modules.length > 0) {
+                modules.forEach(mod => {
+                  if(mod.api_name === moduleDetails[0].Module.Module_api) {
+                    module.push(mod);
+                  }
+                });
+              } 
             })
           setModulesDetails(module);
           }).catch((err) => {
@@ -76,6 +76,7 @@ export default function ModuleRoutes() {
         });
       } else {
         if(userRole.length > 0) {
+          console.log(userRole);
           //Call API to get modules with scope = "Read"
           axios.get(baseUrl+"module/getPermissions/"+userRole[0].User_role.id_role)
           .then((response) => {
@@ -84,13 +85,14 @@ export default function ModuleRoutes() {
             response.data.Module.forEach((moduleDetails) => {
               if(moduleDetails.Scope === "Read") {
                 modules.forEach(mod => {
-                  if(mod.plural_label === moduleDetails.Module[0].Module.Module_name) {
+                  if(mod.api_name === moduleDetails.Module[0].Module.Module_api) {
                     module.push(mod);
+                    // console.log("Module",mod.plural_label,moduleDetails.Module[0].Module.Module_name);
                   }
                 });
               } else {
                 modules.forEach(mod => {
-                  if(mod.plural_label === moduleDetails.Module[0].Module.Module_name) {
+                  if(mod.api_name === moduleDetails.Module[0].Module.Module_api) {
                     const moduleObj = {
                       scope: String,
                       module_name: String,
@@ -102,10 +104,11 @@ export default function ModuleRoutes() {
                 });
               }
             });
+            // console.log(module)
             setModulesDetails(module);
             setModuleScope(moduleArray);
           }).catch((err) => {
-            console.log(err)
+            console.log("Get Permissions",err)
           });
         }
       }
@@ -123,7 +126,7 @@ export default function ModuleRoutes() {
             name: "CRM Dashboard",
             key: "CRM",
             route:"/CRM/dashboard",
-            component: <AdminCRM />
+            component: <AdminDashboardPage />
           }
         ]
 
@@ -211,26 +214,6 @@ export default function ModuleRoutes() {
           ],
         },
         { type: "divider", key: "divider-0" },
-        {
-          type: "collapse",
-          name: "Dashboards",
-          key: "dashboards",
-          icon: <DashboardIcon />,
-          collapse: [
-            {
-              name: "Analytics",
-              key: "analytics",
-              route: "/dashboards/analytics",
-              //component: <Analytics />,
-            },
-            {
-              name: "Sales",
-              key: "sales",
-              route: "/dashboards/sales",
-              //component: <Sales />,
-            },
-          ],
-        },
         { type: "title", title: "Applications", key: "title-pages" },
         {
           type: "collapse",
@@ -271,17 +254,17 @@ export default function ModuleRoutes() {
       const routesArray = [
         {
           type: "component",
-          name: "Invoice",
-          key: "invoice",
+          name: "Invoices",
+          key: "invoices",
           route: "/books/invoice",
-          component: <BooksPage module="Invoice" userEmail={userEmail} />,
+          component: <BooksPage module="Invoices" userEmail={userEmail} />,
         },
         {
           type: "component",
-          name: "Devis",
-          key: "devis",
+          name: "Quotes",
+          key: "quotes",
           route: "/books/quote",
-          component: <BooksPage module="Quote" />,
+          component: <BooksPage module="Quotes" />,
         },
         { type: "divider", key: "divider-1" },
       ];

@@ -10,13 +10,12 @@ const baseUrl = "http://localhost:3000/server/crm_crud/";
 // Version deployment
 // const baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 
-export default function GetData(module) {
+export default function GetData(userRole,module) {
 
   const [fields, setFields] = useState(null);
   const [columns, setColumns] = useState(null);
   const [state, setState] = useState([]);
 
-  console.log("Module",module);
   useEffect(() => {
     axios.get(baseUrl+'module/getFields/'+module).then((response) => {
       setFields(response.data.fields);
@@ -33,7 +32,7 @@ export default function GetData(module) {
 
   useEffect(() => {
     if(fields && columns) {
-      console.log("Column",columns);
+      // console.log("Column",columns);
       columns.forEach((column) => {
         fields.forEach((field) => {
             var object = {

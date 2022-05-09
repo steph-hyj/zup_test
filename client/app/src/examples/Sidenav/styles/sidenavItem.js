@@ -8,8 +8,6 @@ function item(theme, ownerState) {
 
   return {
     pl: 3,
-    mt: 0.375,
-    mb: 0.3,
     width: "100%",
     borderRadius: borderRadius.md,
     cursor: "pointer",
@@ -57,7 +55,7 @@ function itemContent(theme, ownerState) {
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    padding: `${pxToRem(0)} ${pxToRem(15)}`,
+    
     marginLeft: pxToRem(18),
     userSelect: "none",
     position: "relative",

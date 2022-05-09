@@ -192,9 +192,9 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             variant="caption"
             fontWeight="bold"
             textTransform="uppercase"
-            pl={3}
-            mt={2}
-            mb={1}
+            pl={1}
+            mt={0}
+            mb={0}
             ml={1}
           >
             {title}
@@ -222,7 +222,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       variant="permanent"
       ownerState={{ transparentSidenav, whiteSidenav, miniSidenav, darkMode }}
     >
-      <MDBox pt={3} pb={1} px={4} textAlign="center">
+      <MDBox pt={2} pb={1} px={3} textAlign="center">
         <MDBox
           display={{ xs: "block", xl: "none" }}
           position="absolute"

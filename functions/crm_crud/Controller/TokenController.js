@@ -41,7 +41,7 @@ module.exports = {
 
         let userManagement = catalystApp.userManagement();
         let userDetails = await userManagement.getCurrentUser();
-        let query = 'SELECT * FROM Token where UserId=' + userDetails.user_id;
+        let query = `SELECT * FROM Token where UserId = '${userDetails.user_id}'`;
         let zcql = catalystApp.zcql();
         let userDetail = await zcql.executeZCQLQuery(query);
         return userDetail;

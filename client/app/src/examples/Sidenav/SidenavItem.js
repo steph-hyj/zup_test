@@ -12,7 +12,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import MDBox from "../../components/MDBox";
 
 // Custom styles for the SidenavItem
-import { item, itemContent, itemArrow } from "../../examples/Sidenav/styles/sidenavItem";
+import { item, itemContent, itemArrow } from "./styles/sidenavItem";
 
 // Material Dashboard 2 PRO React contexts
 import { useMaterialUIController } from "../../context";

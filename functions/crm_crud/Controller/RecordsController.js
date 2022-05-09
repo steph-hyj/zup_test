@@ -52,9 +52,8 @@ exports.hideColumn = async(req, res) => {
 
 /**SQL request to get fields details */
 async function getFieldDetails(catalystApp,module) {
-	let query = 'SELECT * FROM Field WHERE Module = '+module;
+	let query = `SELECT * FROM Field WHERE Module = '${module}'`;
 	let zcql = catalystApp.zcql();
 	let fieldDetail = await zcql.executeZCQLQuery(query);
 	return fieldDetail;
-
 }
