@@ -17,7 +17,7 @@ exports.getAllInvoices = async(req,res) => {
 			'hostname': HOST,
 			'port': PORT,
 			'method': 'GET',
-			'path': `/api/v3/invoices?organization_id=${req.params.orgID}&customer_id=${req.params.user_id}`,
+			'path': `/api/v3/invoices?organization_id=${req.params.orgID}&customer_id=${req.params.customer_id}`,
 			'headers': {
 				'Authorization': `Zoho-oauthtoken ${accessToken}`
 			}
