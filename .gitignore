@@ -159,3 +159,4 @@ thumb
 sketch
 
 # End of https://www.gitignore.io/api/git,node,code,react,macos
+client/app/package-lock.json
