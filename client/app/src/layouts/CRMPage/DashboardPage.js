@@ -9,7 +9,7 @@ import MDTypography from "../../components/MDTypography";
 
 // Material Dashboard 2 PRO React example components
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
+// import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 // import Footer from "examples/Footer";
 import DataTable from "../../examples/Tables/DataTable";
 
@@ -33,9 +33,9 @@ function DataTables(props) {
     }).catch((err) => {
         console.log(err);
     });
-  },[userEmail])
+  },[userEmail]);
 
-//   const crmData = CRMData(module, userEmail, userID);
+  const crmData = CRMData(module, userEmail, userID);
 
   return (
     <DashboardLayout>
@@ -44,10 +44,10 @@ function DataTables(props) {
         <Card>
           <MDBox p={3} lineHeight={1}>
             <MDTypography variant="h5" fontWeight="medium">
-              
+              Dashboard
             </MDTypography>
           </MDBox>
-          {/* <DataTable table={crmData} canSearch /> */}
+          <DataTable table={crmData} canSearch />
         </Card>
       </MDBox>
       {/* <Footer /> */}

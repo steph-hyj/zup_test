@@ -4,10 +4,10 @@ import axios from "axios";
 
 import MDButton from "../../../components/MDButton";
 
-/**Icons button*/
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Button from '@mui/material/Button';
+// /**Icons button*/
+// import EditIcon from '@mui/icons-material/Edit';
+// import DeleteIcon from '@mui/icons-material/Delete';
+// import Button from '@mui/material/Button';
 
 const baseUrl = "http://localhost:3000/server/crm_crud/";
 
@@ -16,20 +16,12 @@ const baseUrl = "http://localhost:3000/server/crm_crud/";
 
 export default function GetData(module) {
 
-    const [columns, setColumns] = useState({});
     const [records, setRecords] = useState({});
     const [organization, setOrganization] = useState({});
     const [userInfo,setUser] = useState({});
     const [customers,setCustomers] = useState({});
 
-    useEffect(() => {
-        axios.get(baseUrl+"record/checkColumn/"+module).then((response) => {
-            setColumns(response.data.Field);
-        }).catch((err) => {
-            console.log(err);
-        });
-    },[module]);
-
+    var columnData = [];
 
     useEffect(() => {
         let user = axios.get(baseUrl+"getUserDetails").then((response) => {
@@ -72,7 +64,7 @@ export default function GetData(module) {
         if(Object.entries(organization).length && Object.entries(customers).length) {
             if(module === "Quotes") {
                 /**To get quote of specific user */
-                axios.get(baseUrl+"books/quotes/getAllQuotes/"+organization.organization_id+"/"+customers.contact_id).then((response) => {
+                axios.get(baseUrl+"books/quotes/getAllQuotes/"+organization.organization_id+"/"+customers[0].contact_id).then((response) => {
                     const quote = response.data.estimates;
                     console.log("API getAllQuotes",quote);
                     setRecords(quote);
@@ -80,7 +72,7 @@ export default function GetData(module) {
                     console.log(err);
                 });
             } else if (module === "Invoices") {
-                axios.get(baseUrl+"books/invoices/getAllInvoices/"+organization.organization_id+"/"+customers.contact_id).then((response) => {
+                axios.get(baseUrl+"books/invoices/getAllInvoices/"+organization.organization_id+"/"+customers[0].contact_id).then((response) => {
                     const allInvoice = response.data.invoices;
                     setRecords(allInvoice);
                     console.log("API getAllInvoices",allInvoice);
@@ -91,19 +83,26 @@ export default function GetData(module) {
         }
     },[customers, module, organization])
 
-  var columnData = [];
-  if(columns.length > 0) {
-    columns.forEach(column => {
-      var columnObj = {
-        Header: String,
-        accessor: String,
-        update: String,
-      };
+    if(module === "Invoices") {
+        columnData = [
+            {Header: "Invoice", accessor: "invoice_number"},
+            {Header: "Customer", accessor: "customer_name"},
+            {Header: "Date", accessor: "date"},
+            {Header: "Statut", accessor: "status"},
+            {Header: "Total", accessor: "total"},
+            {Header: "Link", accessor: "invoice_url"},
+        ];
+    } else if (module === "Quotes") {
+        columnData = [
+            {Header: "Quote", accessor: "estimate_number"},
+            {Header: "Customer", accessor: "customer_name"},
+            {Header: "Date", accessor: "date"},
+            {Header: "Statut", accessor: "status"},
+            {Header: "Total", accessor: "total"},
+            // {Header: "Link", accessor: "quote_url"},
+        ];
+    }
 
-      columnObj.Header = column.Field.Field_name;
-      columnObj.accessor = column.Field.Field_name;
-      columnData.push(columnObj);
-    });
     // if(scope) {
     //   var columnObj = {
     //     Header: String,
@@ -115,7 +114,7 @@ export default function GetData(module) {
     //   columnObj.accessor = "Update";
     //   columnData.push(columnObj);
     // }
-  }
+  
 
   var recordData = [];
   var recordArray = [];
@@ -127,7 +126,7 @@ export default function GetData(module) {
           [fieldAPI] : String,
           Update: String
         };
-
+        
         if(typeof record[fieldAPI] == 'object' && record[fieldAPI] != null) {
             recordObj[fieldAPI] = record[fieldAPI].name;
         } else if(fieldAPI === "invoice_url") {

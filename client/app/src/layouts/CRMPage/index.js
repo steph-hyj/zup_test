@@ -24,8 +24,7 @@ const baseUrl = "http://localhost:3000/server/crm_crud/";
 function DataTables(props) {
 
   const [userID, setUserID] = useState({});
-  const [fields, setFields] = useState({});
-
+  
   const { module, userEmail, scope } = props;
 
   useEffect(() =>{
@@ -35,14 +34,6 @@ function DataTables(props) {
         console.log(err);
     });
   },[userEmail]);
-
-  useEffect(() => {
-    axios.get(baseUrl+'module/getFields/'+module).then((response) => {
-      setFields(response.data.fields);
-    }).catch((err) => {
-        console.log(err)
-    });
-  },[module]);
 
   const crmData = CRMData(module, userEmail, userID, scope);
 

@@ -27,13 +27,6 @@ function DataTables(props) {
 
   const { module, userEmail } = props;
 
-  // useEffect(() =>{
-  //   axios.get(baseUrl+"getUserZohoID/"+userEmail).then((response) => {
-  //     setUserID(response.data.data[0]);
-  //   }).catch((err) => {
-  //       console.log(err);
-  //   });
-  // },[userEmail])
 
   const booksData = BooksData(module, userEmail);
   console.log(booksData);

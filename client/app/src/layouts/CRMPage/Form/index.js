@@ -55,6 +55,7 @@ function CreateForm() {
         values_obj.Contact_Name = userId.id;
         Object.assign(values, values_obj);
         //Call API to create record
+        console.log(values);
         axios.post(baseUrl+"module/"+module+"/createRecord", {values}).then((response) => {
           console.log("API record",response.data);
         }).catch((err) => {

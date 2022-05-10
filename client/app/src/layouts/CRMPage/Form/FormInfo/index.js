@@ -4,16 +4,17 @@ import PropTypes from "prop-types";
 // Material Dashboard 2 PRO React components
 import MDBox from "../../../../components/MDBox";
 import MDTypography from "../../../../components/MDTypography";
-import MDInput from "../../../../components/MDInput";
+// import MDInput from "../../../../components/MDInput";
 
 // formik components
-import { ErrorMessage, Field } from "formik";
+// import { ErrorMessage, Field } from "formik";
 
 // NewUser page components
 import FormField from "../FormField";
 
 function FormInfo({ formData }) {
-  const { formField, values, errors, touched } = formData;
+  // const { formField, values, errors, touched } = formData;
+  const { formField } = formData;
   const fieldArray = [];
 
   for (let i = 0; i < Object.keys(formField).length; i++) {

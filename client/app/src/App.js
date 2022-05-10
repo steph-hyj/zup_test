@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-// import { Routes } from "react-router-dom";
 import { Routes, Route, useLocation} from 'react-router-dom';
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -8,8 +7,7 @@ import Sidenav from "./examples/Sidenav";
 import theme from "./assets/theme";
 import routes from "./routes";
 import Form from "./layouts/CRMPage/Form";
-import AdminDashboardCRM from "./layouts/DashboardAdminCRM";
-// import UpdateForm from "./layouts/CRMPage/Form";
+// import AdminDashboardCRM from "./layouts/DashboardAdminCRM";
 
 import { useMaterialUIController, setMiniSidenav } from "./context";
 
