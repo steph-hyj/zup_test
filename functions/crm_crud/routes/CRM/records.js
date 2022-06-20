@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const recordController = require('../../Controller/RecordsController.js');
+const recordController = require('../../Controller/Catalyst/RecordsController.js');
 
 /**Admin Action on Records */
 router.post('/:col', recordController.showColumn);

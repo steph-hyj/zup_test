@@ -1,6 +1,6 @@
 'use strict';
 const catalyst = require('zcatalyst-sdk-node');
-const tokenController = require('../TokenController.js');
+const tokenController = require('../Catalyst/TokenController.js');
 const HOST = 'books.zoho.eu';
 const PORT = 443;
 const http = require('https');

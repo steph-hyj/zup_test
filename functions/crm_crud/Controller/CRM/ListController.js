@@ -2,7 +2,7 @@ const HOST = 'www.zohoapis.eu';
 const http = require('https')
 const PORT = 443;
 const catalyst = require('zcatalyst-sdk-node');
-const tokenController = require('../TokenController.js');
+const tokenController = require('../Catalyst/TokenController.js');
 
 /**Get Related List Records */
 exports.getListData = async(req, res) => {

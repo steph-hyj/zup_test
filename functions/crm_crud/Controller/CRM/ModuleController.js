@@ -2,7 +2,7 @@ const HOST = 'www.zohoapis.eu';
 const http = require('https')
 const PORT = 443;
 const catalyst = require('zcatalyst-sdk-node');
-const tokenController = require('../TokenController.js');
+const tokenController = require('../Catalyst/TokenController.js');
 
 /**Get all modules */
 exports.getAllModules = async (req, res) => {
@@ -161,7 +161,7 @@ exports.updateRecord = async(req, res) => {
 			'hostname': HOST,
 			'port': PORT,
 			'method': 'PUT',
-			'path': `/crm/v2/${req.params.module}/${req.params.id_module}`,
+			'path': `/crm/v2/${req.params.module}/${req.params.id_record}`,
 			'headers': {
 				'Authorization': `Zoho-oauthtoken ${accessToken}`,
 				'Content-Type': 'application/json'
