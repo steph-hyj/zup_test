@@ -24,17 +24,17 @@ const baseUrl = "http://localhost:3000/server/crm_crud/";
 // Version deployment
 // const baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 
-function getForms(formData) {
-  return <FormInfo formData={formData} />;
+function getForms(formData, module) {
+  return <FormInfo formData={formData} module={module} />;
 }
 
 function CreateForm() {
 
   let { module, deal_id } = useParams();
   const url = useLocation();
-  
+
   var formConst = null;
-  
+
   if(url.pathname.includes("create")) {
     formConst = createForm();
   } else {
@@ -45,7 +45,7 @@ function CreateForm() {
     const { formId, formField, userId } = formConst;
 
     const handleSubmit = (values) => {
-      
+
       if(url.pathname.includes("create")) {
         const values_obj = {
           Account_Name: String,
@@ -62,7 +62,7 @@ function CreateForm() {
             console.log(err);
         });
       } else {
-        console.log(values);
+        // console.log(values);
         //Call API to update record
         axios.put(baseUrl+"module/"+module+"/"+deal_id, {values}).then((response) => {
           console.log("API record",response.data);
@@ -72,7 +72,7 @@ function CreateForm() {
       }
 
     };
-  
+
     return (
       <DashboardLayout>
         {/* <DashboardNavbar /> */}
@@ -90,7 +90,7 @@ function CreateForm() {
                             touched,
                             formField,
                             errors,
-                          })}
+                          }, module)}
                           <MDBox mt={2} width="100%" display="flex" justifyContent="space-between">
                             <MDBox />
                             <MDButton

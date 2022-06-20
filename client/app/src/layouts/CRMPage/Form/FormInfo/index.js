@@ -9,10 +9,9 @@ import MDTypography from "../../../../components/MDTypography";
 // formik components
 // import { ErrorMessage, Field } from "formik";
 
-// NewUser page components
 import FormField from "../FormField";
 
-function FormInfo({ formData }) {
+function FormInfo({ formData, module }) {
   // const { formField, values, errors, touched } = formData;
   const { formField } = formData;
   const fieldArray = [];
@@ -24,21 +23,18 @@ function FormInfo({ formData }) {
   return (
     <MDBox>
       <MDBox lineHeight={0}>
-        <MDTypography variant="h5">About me</MDTypography>
+        <MDTypography variant="h5">Form {module}</MDTypography>
         <MDTypography variant="button" color="text">
           Mandatory informations
         </MDTypography>
       </MDBox>
       <MDBox mt={1.625}>
-        <FormField
-          fieldData = {fieldArray}
-        />
+        <FormField fieldData={fieldArray}/>
       </MDBox>
     </MDBox>
   );
 }
 
-// typechecking props for UserInfo
 FormInfo.propTypes = {
   formData: PropTypes.oneOfType([PropTypes.object, PropTypes.func]).isRequired,
 };

@@ -8,7 +8,6 @@ const baseUrl = "http://localhost:3000/server/crm_crud/";
 // const baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 
 export default function FormFields(module, deal_id) {
-    
     const [fields, setFields] = useState({});
     const [userId, setUserId] = useState(null);
     const [data, setData] = useState({});
@@ -64,7 +63,7 @@ export default function FormFields(module, deal_id) {
             formField: FieldTab ? FieldTab : null,
             userId: userId
         };
-        
+
         return form
     }
-}; 
+};

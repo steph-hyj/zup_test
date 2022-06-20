@@ -20,7 +20,7 @@ function FormField({ fieldData }) {
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
             <MDBox mb={1.5}>
-              <Field type={field.type} placeholder={field.placeholder} name={field.name} id={field.name} defaultValue={field.value} 
+              <Field type={field.type} placeholder={field.placeholder} name={field.name} id={field.name} defaultValue={field.value}
                      as={MDInput} variant="standard" label={field.label} fullWidth />
               <MDBox mt={0.75}>
                 <MDTypography component="div" variant="caption" color="error" fontWeight="regular">
