@@ -30,11 +30,11 @@ function DataTables(props) {
   const [roleNameList, setRoleNameList] = useState({});
   const [roleList, setRoleList] = useState({});
   const { module } = props;
-  
+
   var AdminCRMData = null;
-  
+
   useEffect(() => {
-    axios.get(baseUrl+"getRoles").then((response)=>{ 
+    axios.get(baseUrl+"getRoles").then((response)=>{
         const roles = response.data.ModuleRole;
         setRoleList(roles);
         var roleNameList = [];
@@ -56,7 +56,7 @@ function DataTables(props) {
   };
 
   AdminCRMData = AdminCRMPageData(role,module);
-  
+
   return (
     <DashboardLayout>
       {/* <DashboardNavbar /> */}

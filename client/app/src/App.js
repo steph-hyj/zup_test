@@ -7,6 +7,7 @@ import Sidenav from "./examples/Sidenav";
 import theme from "./assets/theme";
 import routes from "./routes";
 import Form from "./layouts/CRMPage/Form";
+import AdminForm from "./layouts/AdminCRM/Form";
 // import AdminDashboardCRM from "./layouts/DashboardAdminCRM";
 
 import { useMaterialUIController, setMiniSidenav } from "./context";
@@ -34,7 +35,7 @@ export default function App() {
       setMiniSidenav(dispatch, true);
       setOnMouseEnter(false);
     }
-  }; 
+  };
 
   useEffect(() => {
     document.body.setAttribute("dir", direction);
@@ -46,7 +47,7 @@ export default function App() {
   }, [pathname]);
 
   const modulesRoutes = routes();
-   
+
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
       if (route.collapse) {
@@ -80,6 +81,8 @@ export default function App() {
             <Route path="/" />
             <Route exact path="/:module/createForm" element={<Form />} key="createForm"/>
             <Route exact path="/:module/updateForm/:deal_id" element={<Form />} key="updateForm"/>
+            <Route exact path="/adminCreateForm/:formName" element={<AdminForm />} key="createConnection" />
+            <Route exact path="/updateConnection/:connection_id" element={<AdminForm />} key="updateConnection" />
           </Routes>
         </ThemeProvider>
       );

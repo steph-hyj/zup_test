@@ -9,7 +9,8 @@ import ImageIcon from '@mui/icons-material/Image';
 // import DashboardIcon from '@mui/icons-material/Dashboard';
 //Pages
 // import InvoicePage from "./Pages/QuotePage";
-import RolePermission from "./layouts/roles&permissions";
+import Role from "./layouts/AdminCRM/roles";
+import Permission from "./layouts/AdminCRM/permissions";
 import CRMPage from "./layouts/CRMPage";
 import AdminCRM from "./layouts/AdminCRM";
 import UserList from "./layouts/Users/UserList";
@@ -17,7 +18,8 @@ import UserCreate from "./layouts/Users/CreateUser";
 import ProfilePage from "./layouts/CRMPage/ProfilePage";
 import BooksPage from "./layouts/BooksPage";
 import AdminDashboardPage from "./layouts/DashboardAdminCRM";
-// import RolePermission from "./layouts/roles&permissions/data/rolepermissionsData"
+import ConnectionPage from "./layouts/AdminCRM/connections";
+
 // Version dev
 const baseUrl = "http://localhost:3000/server/crm_crud/";
 
@@ -33,7 +35,7 @@ export default function ModuleRoutes() {
   const [appRole, setAppRole] = useState({});
   const [userRole, setUserRole] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() =>{
     //Call API to get all modules
     axios.get(baseUrl+"module").then((response) => {
@@ -68,7 +70,7 @@ export default function ModuleRoutes() {
                     module.push(mod);
                   }
                 });
-              } 
+              }
             })
           setModulesDetails(module);
           }).catch((err) => {
@@ -196,20 +198,26 @@ export default function ModuleRoutes() {
         },
         {
           type: "collapse",
-          name: "Roles",
+          name: "Gestion rôle",
           key: "roles&permissions",
           collapse: [
             {
-              name: "Roles & Permissions",
-              key: "roles&permissions",
-              route: "/roles_permissions",
-              component: <RolePermission />,
+              name: "Roles",
+              key: "roles",
+              route: "/gestions/roles",
+              component: <Role />,
+            },
+            {
+              name: "Permissions",
+              key: "permissions",
+              route: "/gestions/permissions",
+              component: <Permission />,
             },
             {
               name: "Connections",
               key: "connections",
-              route: "/roles_permissions/connection",
-              //component: <Connections />,
+              route: "/gestions/connection",
+              component: <ConnectionPage />,
             },
           ],
         },
@@ -221,26 +229,6 @@ export default function ModuleRoutes() {
           key: "CRM",
           icon: <ImageIcon />,
           collapse: moduleRoute.length > 1 ? moduleRoute : null
-        },
-        {
-          type: "collapse",
-          name: "Zoho Books",
-          key: "books",
-          icon: <ImageIcon />,
-          collapse: [
-            {
-              name: "Factures",
-              key: "factures",
-              route: "/books/invoice",
-              //component: <Kanban />,
-            },
-            {
-              name: "Devis",
-              key: "devis",
-              route: "/books/quote",
-              //component: <Wizard />,
-            }
-          ],
         },
         { type: "divider", key: "divider-1" },
       ];

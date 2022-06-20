@@ -16,7 +16,7 @@ import DataTable from "../../examples/Tables/DataTable";
 // Data
 import BooksData from "./data/booksdata";
 
-// const baseUrl = "http://localhost:3000/server/crm_crud/";
+const baseUrl = "http://localhost:3000/server/crm_crud/";
 
 // Version deployment
 // const baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";

@@ -46,7 +46,7 @@ export default function GetData(userRole,module) {
             }
         });
       });
-    } 
+    }
   },[fields,columns]);
 
   /**Table column data*/
@@ -70,7 +70,7 @@ export default function GetData(userRole,module) {
      fieldObj.Fields = field.field_label;
      fieldObj.Api = field.api_name;
 
-     fieldObj.Read = <RowSwitch field={field.api_name} 
+     fieldObj.Read = <RowSwitch field={field.api_name}
                                 fieldChecked={state}
                                 module={module}
                       />;
@@ -83,7 +83,7 @@ export default function GetData(userRole,module) {
     rows: fieldData
   }
 
-  return data;  
+  return data;
 }
 
 const RowSwitch = (props) => {
@@ -101,7 +101,7 @@ const RowSwitch = (props) => {
         })
         return boolean
     }
-    setBoolean({[props.field] : getCheck()});  
+    setBoolean({[props.field] : getCheck()});
 
   },[props.field,props.fieldChecked]);
 
@@ -171,6 +171,6 @@ const RowSwitch = (props) => {
               handleChange(event, props.field)
               userUpdate(event, props.field,getIDField(props.field),props.module)
           }}
-          color="success" 
+          color="success"
   />
 }

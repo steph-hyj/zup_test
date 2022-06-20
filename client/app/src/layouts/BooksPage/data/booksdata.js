@@ -99,7 +99,7 @@ export default function GetData(module) {
             {Header: "Date", accessor: "date"},
             {Header: "Statut", accessor: "status"},
             {Header: "Total", accessor: "total"},
-            // {Header: "Link", accessor: "quote_url"},
+            {Header: "Link", accessor: "estimate_url"},
         ];
     }
 
@@ -114,7 +114,6 @@ export default function GetData(module) {
     //   columnObj.accessor = "Update";
     //   columnData.push(columnObj);
     // }
-  
 
   var recordData = [];
   var recordArray = [];
@@ -126,12 +125,12 @@ export default function GetData(module) {
           [fieldAPI] : String,
           Update: String
         };
-        
+
         if(typeof record[fieldAPI] == 'object' && record[fieldAPI] != null) {
             recordObj[fieldAPI] = record[fieldAPI].name;
-        } else if(fieldAPI === "invoice_url") {
+        } else if(fieldAPI === "invoice_url" || fieldAPI === "estimate_url") {
             const url = record[fieldAPI];
-            if(url) { 
+            if(url) {
                 recordObj[fieldAPI] = <MDButton href={url} >VISUALIZE</MDButton>;
             } else {
                 recordObj[fieldAPI] = <MDButton disabled href={url} >VISUALIZE</MDButton>;
@@ -154,5 +153,5 @@ export default function GetData(module) {
     rows: recordData
   }
 
-  return data;  
+  return data;
 }
