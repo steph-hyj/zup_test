@@ -7,7 +7,7 @@ const baseUrl = "http://localhost:3000/server/crm_crud/";
 // Version deployment
 // const baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 
-export default function FormFields(module, deal_id) {
+export default function FormFields(module, record_id) {
     const [fields, setFields] = useState({});
     const [userId, setUserId] = useState(null);
     const [data, setData] = useState({});
@@ -30,13 +30,13 @@ export default function FormFields(module, deal_id) {
             console.log(err);
         });
 
-        axios.get(baseUrl+"module/"+module+"/id/"+deal_id)
+        axios.get(baseUrl+"module/"+module+"/id/"+record_id)
         .then((response) => {
             setData(response.data.data[0]);
         }).catch((err) => {
           console.log(err);
         });
-    },[module, deal_id]);
+    },[module, record_id]);
 
     var formField = {
         name: String,

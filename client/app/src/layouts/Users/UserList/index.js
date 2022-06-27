@@ -7,19 +7,19 @@ import MDTypography from "../../../components/MDTypography";
 
 // Material Dashboard 2 PRO React example components
 import DashboardLayout from "../../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../../examples/Navbars/DashboardNavbar";
+// import DashboardNavbar from "../../../examples/Navbars/DashboardNavbar";
 // import Footer from "examples/Footer";
 import DataTable from "../../../examples/Tables/DataTable";
 
 // Data
-import RolePermissionsData from "./data/users";
+// import RolePermissionsData from "./data/users";
 import Users from "./data/users";
-import EditIcon from "@mui/icons-material/Edit";
-import MDButton from "../../../components/MDButton";
+// import EditIcon from "@mui/icons-material/Edit";
+// import MDButton from "../../../components/MDButton";
 
 function DataTables() {
 
-  const roleData = RolePermissionsData()
+  // const roleData = RolePermissionsData()
   const usersData = Users();
   console.log(usersData);
   return (

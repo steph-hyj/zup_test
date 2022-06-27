@@ -36,7 +36,7 @@ function DataTables(props) {
   useEffect(() => {
     axios.get(baseUrl+"getRoles").then((response)=>{
         console.log("Roles",response.data);
-        const roles = response.data.ModuleRole;
+        const roles = response.data;
         setRoleList(roles);
         var roleNameList = [];
         roles.forEach(roleName => {

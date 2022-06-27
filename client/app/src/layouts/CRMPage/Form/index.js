@@ -30,7 +30,7 @@ function getForms(formData, module) {
 
 function CreateForm() {
 
-  let { module, deal_id } = useParams();
+  let { module, record_id } = useParams();
   const url = useLocation();
 
   var formConst = null;
@@ -38,7 +38,7 @@ function CreateForm() {
   if(url.pathname.includes("create")) {
     formConst = createForm();
   } else {
-    formConst = updateForm(module, deal_id);
+    formConst = updateForm(module, record_id);
   }
 
   if(formConst) {
@@ -64,7 +64,7 @@ function CreateForm() {
       } else {
         // console.log(values);
         //Call API to update record
-        axios.put(baseUrl+"module/"+module+"/"+deal_id, {values}).then((response) => {
+        axios.put(baseUrl+"module/"+module+"/"+record_id, {values}).then((response) => {
           console.log("API record",response.data);
         }).catch((err) => {
             console.log(err);

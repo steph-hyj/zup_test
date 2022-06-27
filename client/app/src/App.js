@@ -80,7 +80,7 @@ export default function App() {
             {getRoutes(modulesRoutes)}
             <Route path="/" />
             <Route exact path="/:module/createForm" element={<Form />} key="createForm"/>
-            <Route exact path="/:module/updateForm/:deal_id" element={<Form />} key="updateForm"/>
+            <Route exact path="/:module/updateForm/:record_id" element={<Form />} key="updateForm"/>
             <Route exact path="/adminCreateForm/:formName" element={<AdminForm />} key="createConnection" />
             <Route exact path="/updateConnection/:connection_id" element={<AdminForm />} key="updateConnection" />
           </Routes>

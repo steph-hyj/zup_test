@@ -35,13 +35,13 @@ function DataTables(props) {
 
   useEffect(() => {
     axios.get(baseUrl+"getRoles").then((response)=>{
-        const roles = response.data.ModuleRole;
+        const roles = response.data;
         setRoleList(roles);
-        var roleNameList = [];
+        var roleNameTable = [];
         roles.forEach(roleName => {
-          roleNameList.push(roleName.Role_name);
+          roleNameTable.push(roleName.Role_name);
         });
-        setRoleNameList(roleNameList);
+        setRoleNameList(roleNameTable);
     }).catch((err) => {
         console.log(err)
     });
@@ -55,6 +55,7 @@ function DataTables(props) {
     });
   };
 
+  console.log(roleNameList);
   AdminCRMData = AdminCRMPageData(role,module);
 
   return (
