@@ -27,6 +27,10 @@ exports.generateToken = async(req, res) => {
 	}
 };
 
+exports.createuser = async(req, res) => {
+
+};
+
 exports.getAllUserDetails = async(req, res) => {
 	try{
 		const catalystApp = catalyst.initialize(req);
@@ -53,7 +57,7 @@ exports.getAllUserDetails = async(req, res) => {
 		console.log(err);
 		res.status(500).send({ message: 'Internal Server Error. Please try again after sometime.', error: err })
 	}
-}
+};
 
 /**Function to get User Details */
 exports.getUserDetails = async(req, res) => {
