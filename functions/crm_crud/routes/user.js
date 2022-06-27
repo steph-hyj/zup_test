@@ -1,8 +1,7 @@
 const router = require('express').Router();
 const userController = require('../Controller/Catalyst/userController.js');
-const roleController = require('../Controller/Catalyst/roleController.js');
+const roleController = require('../Controller/Catalyst/RolePermissionController.js');
 const connectionController = require('../Controller/Catalyst/connectionController.js');
-const permissionController = require('../Controller/Catalyst/permissionController.js')
 
 /**Get Token to use Zoho API */
 router.get('/generateToken',userController.generateToken);

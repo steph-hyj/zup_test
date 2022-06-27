@@ -9,8 +9,7 @@ import ImageIcon from '@mui/icons-material/Image';
 // import DashboardIcon from '@mui/icons-material/Dashboard';
 //Pages
 // import InvoicePage from "./Pages/QuotePage";
-import Role from "./layouts/AdminCRM/roles";
-import Permission from "./layouts/AdminCRM/permissions";
+import RolePermission from "./layouts/AdminCRM/rolesPermissions";
 import CRMPage from "./layouts/CRMPage";
 import AdminCRM from "./layouts/AdminCRM";
 import UserList from "./layouts/Users/UserList";
@@ -66,7 +65,7 @@ export default function ModuleRoutes() {
             // console.log(moduleDetails);
               if(modules.length > 0) {
                 modules.forEach(mod => {
-                  if(mod.api_name === moduleDetails[0].Module.Module_api) {
+                  if(mod.api_name === moduleDetails[0].Module.Module_api && !moduleDetails[0].Module.Connection) {
                     module.push(mod);
                   }
                 });
@@ -202,16 +201,10 @@ export default function ModuleRoutes() {
           key: "roles&permissions",
           collapse: [
             {
-              name: "Roles",
+              name: "Roles & Permissions",
               key: "roles",
-              route: "/gestions/roles",
-              component: <Role />,
-            },
-            {
-              name: "Permissions",
-              key: "permissions",
-              route: "/gestions/permissions",
-              component: <Permission />,
+              route: "/gestions/rolesPermissions",
+              component: <RolePermission />,
             },
             {
               name: "Connections",
