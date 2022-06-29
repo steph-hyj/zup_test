@@ -51,7 +51,7 @@ module.exports = {
      */
     let query;
     if (!userDetails) {
-      query = `SELECT * FROM Token where UserId = 128000000080008`;
+      query = `SELECT * FROM Token where UserId = 128000000043077`;
     } else {
       query = `SELECT * FROM Token where UserId = '${userDetails.user_id}'`;
     }
