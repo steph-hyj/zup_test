@@ -16,92 +16,106 @@ const baseUrl = "http://localhost:3000/server/crm_crud/";
 
 export default function GetData(module) {
 
-    const [records, setRecords] = useState({});
+    const [records, setRecords] = useState([]);
     const [organization, setOrganization] = useState({});
-    const [userInfo,setUser] = useState({});
+    const [userDetails,setUserDetails] = useState({});
     const [customers,setCustomers] = useState({});
 
-    var columnData = [];
+    useEffect(() => {
+        getUserDetails();
+        getOrganizationDetails();
+    },[]);
 
     useEffect(() => {
-        let user = axios.get(baseUrl+"getUserDetails").then((response) => {
-            return response.data.user;
-        }).catch((err) => {
-            console.log(err);
-        });
-        /**Call API to get Organization ID to use Books API */
-        axios.get(baseUrl+"books/getOrganizationID").then((response) => {
-            setOrganization(response.data.organizations[0]);
-        }).catch((err) => {
-            console.log(err);
-        });
-        /**Call API to get Contact's email */
-        user.then((user) => {
-            axios.get(baseUrl+"module/Contacts/Email/"+user.email_id).then((response) => {
-                const user = response.data.data[0];
-                setUser(user);
-            }).catch((err) => {
-                console.log(err);
-            });
-        });
-    },[module]);
-
-    useEffect(() => {
-        if(Object.entries(organization).length && Object.entries(userInfo).length) {
-            console.log("Organization",organization);
-            console.log("user Info",userInfo);
-            axios.get(baseUrl+"books/customers/getAllCustomers/"+organization.organization_id+"/"+userInfo.id).then((response) => {
-                console.log(response.data);
-                const allCustomer = response.data.contacts;
-                setCustomers(allCustomer);
-            }).catch((err) => {
-                console.log(err);
-            });
-        }
-    },[organization, userInfo, module]);
-
-    useEffect(() => {
-        if(Object.entries(organization).length && Object.entries(customers).length) {
-            if(module === "Quotes") {
-                /**To get quote of specific user */
-                axios.get(baseUrl+"books/quotes/getAllQuotes/"+organization.organization_id+"/"+customers[0].contact_id).then((response) => {
-                    const quote = response.data.estimates;
-                    console.log("API getAllQuotes",quote);
-                    setRecords(quote);
-                }).catch((err) => {
-                    console.log(err);
-                });
-            } else if (module === "Invoices") {
-                axios.get(baseUrl+"books/invoices/getAllInvoices/"+organization.organization_id+"/"+customers[0].contact_id).then((response) => {
-                    const allInvoice = response.data.invoices;
-                    setRecords(allInvoice);
-                    console.log("API getAllInvoices",allInvoice);
+        async function getUserBooksDetails(){
+            if(Object.entries(organization).length > 0 && Object.entries(userDetails).length > 0) {
+                await axios.get(baseUrl+"books/customers/getAllCustomers/"+organization?.organization_id+"/"+userDetails?.email_id).then((response) => {
+                    const allCustomer = response.data.contacts;
+                    setCustomers(allCustomer);
                 }).catch((err) => {
                     console.log(err);
                 });
             }
         }
-    },[customers, module, organization])
+        getUserBooksDetails();
+    },[organization, userDetails]);
 
-    if(module === "Invoices") {
-        columnData = [
-            {Header: "Invoice", accessor: "invoice_number"},
-            {Header: "Customer", accessor: "customer_name"},
-            {Header: "Date", accessor: "date"},
-            {Header: "Statut", accessor: "status"},
-            {Header: "Total", accessor: "total"},
-            {Header: "Link", accessor: "invoice_url"},
-        ];
-    } else if (module === "Quotes") {
-        columnData = [
-            {Header: "Quote", accessor: "estimate_number"},
-            {Header: "Customer", accessor: "customer_name"},
-            {Header: "Date", accessor: "date"},
-            {Header: "Statut", accessor: "status"},
-            {Header: "Total", accessor: "total"},
-            {Header: "Link", accessor: "estimate_url"},
-        ];
+    useEffect(() => {
+        getUserBooksData(organization, customers, module);
+    },[organization, customers, module]);
+
+    /**Call API to get current user details */
+    async function getUserDetails(){
+        await axios.get(baseUrl+"getUserDetails")
+        .then((response) => {
+            setUserDetails(response.data.user);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    };
+
+    /**Call API to get Organization ID to use Books API */
+    async function getOrganizationDetails(){
+        await axios.get(baseUrl+"books/getOrganizationID").then((response) => {
+            let i = null;
+            response.data.organizations.forEach((org , index) => {
+                if(org.AppList.includes("books")) {
+                    i = index;
+                }
+            });
+            setOrganization(response.data.organizations[i]);
+        }).catch((err) => {
+            console.log(err);
+        });
+    };
+    
+    async function getUserBooksData(organization, customers, module) {
+        if(Object.entries(organization).length && Object.entries(customers).length) {
+            if(module === "Quotes") {
+                setRecords([]);
+                /**Call API to get current user quotes */
+                let estimatesData = await axios.get(
+                    baseUrl+"books/quotes/getAllQuotes/"+organization.organization_id+"/"+customers[0].contact_id
+                    )
+                    .then((response) => {
+                        return response.data.estimates;
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+                    estimatesData.forEach((estimate) => {
+                        axios.get(baseUrl+"books/quotes/getQuote/"+organization.organization_id+"/"+estimate.estimate_id)
+                        .then((response) => {
+                            setRecords(records => [...records, response.data.estimate]);
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        })
+                    });
+            } else if (module === "Invoices") {
+                /**Call API to get current user invoices */
+                await axios.get(
+                    baseUrl+"books/invoices/getAllInvoices/"+organization.organization_id+"/"+customers[0].contact_id
+                )
+                .then((response) => {
+                    const allInvoice = response.data.invoices;
+                    setRecords(allInvoice);
+                    // console.log("API getAllInvoices",allInvoice);
+                }).catch((err) => {
+                    console.log(err);
+                });
+            }
+        }
     }
+    
+    const columnData = [
+        module === "Invoices" ? {Header: "Invoice", accessor: "invoice_number"} : {Header: "Quote", accessor: "estimate_number"},
+        {Header: "Customer", accessor: "customer_name"},
+        {Header: "Date", accessor: "date"},
+        {Header: "Statut", accessor: "status"},
+        {Header: "Total", accessor: "total"},
+        module === "Invoices" ? {Header: "Link", accessor: "invoice_url"} : {Header: "Link", accessor: "estimate_url"},
+    ];
 
     // if(scope) {
     //   var columnObj = {
@@ -117,7 +131,7 @@ export default function GetData(module) {
 
   var recordData = [];
   var recordArray = [];
-  if(Object.entries(records).length > 0) {
+  if(records.length > 0) {
     records.forEach(record => {
       columnData.forEach(data => {
         const fieldAPI = data.accessor;
@@ -153,5 +167,5 @@ export default function GetData(module) {
     rows: recordData
   }
 
-  return data;
+  return [data, getUserBooksData];
 }
