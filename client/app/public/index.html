@@ -8,6 +8,8 @@
     <title>Zoho Unified Portal</title>
     <script src="https://static.zohocdn.com/catalyst/sdk/js/2.0.0/catalystWebSDK.js"></script>
     <script src="/__catalyst/sdk/init.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script>
         function getUserDetails() {
             catalyst.auth.isUserAuthenticated().then(result => {
@@ -15,10 +17,13 @@
                     url: "/server/crm_crud/getUserDetails",
                     type: "get",
                     success: function (data) {
-                        console.log(data);
+                        console.log(data, data.userId === null, data.userId != null);
+                        if(data.userId === null) {
+                          $("#connect").show();
+                        }
                     },
                     error: function (error) {
-                        console.log(error);
+                        console.log("Error",error);
                     }
                 });
             })
@@ -27,12 +32,20 @@
   </head>
   <body id="body" onload="getUserDetails()">
     <div id="root" style="height: 100%;"></div>
+    <div id="connect" style="height: 100%;" hidden>
+      <p>Click here to connect to Zoho CRM</p>
+          <button onclick='navigate()'>
+              <img src="https://www.zohowebstatic.com/sites/default/files/styles/product-home-page/public/icon-crm_blue.png"
+                  style="width: 180px;height: 130px;">
+          </button>
+    </div>    
   </body>
 </html>
 
-<!-- <script>
+<script>
   //Add Your Client ID and Redirect URL here
   function navigate() {
-      window.location.href = 'https://accounts.zoho.eu/oauth/v2/auth?scope=ZohoCRM.modules.ALL,ZohoCRM.settings.ALL,ZohoBooks.fullaccess.all&client_id=1000.IYF7J63XV0A53M4ETIBX0VOW390GRU&response_type=code&access_type=offline&redirect_uri=http://localhost:3000/server/crm_crud/generateToken';
+    $("#connect").hide();
+    window.location.href = 'https://accounts.zoho.eu/oauth/v2/auth?scope=ZohoCRM.modules.ALL,ZohoCRM.settings.ALL,ZohoBooks.fullaccess.all&client_id=1000.IYF7J63XV0A53M4ETIBX0VOW390GRU&response_type=code&access_type=offline&redirect_uri=http://localhost:3000/server/crm_crud/generateToken';
   }
-</script> -->
+</script>
