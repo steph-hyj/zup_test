@@ -19,9 +19,8 @@ import Users from "./data/users";
 
 function DataTables() {
 
-  // const roleData = RolePermissionsData()
   const usersData = Users();
-  console.log(usersData);
+  // console.log(usersData);
   return (
     <DashboardLayout>
       {/* <DashboardNavbar /> */}

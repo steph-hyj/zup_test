@@ -62,7 +62,6 @@ function CreateForm() {
             console.log(err);
         });
       } else {
-        // console.log(values);
         //Call API to update record
         axios.put(baseUrl+"module/"+module+"/"+record_id, {values}).then((response) => {
           console.log("API record",response.data);

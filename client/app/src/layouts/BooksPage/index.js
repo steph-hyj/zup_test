@@ -1,5 +1,6 @@
 // @mui material components
 import Card from "@mui/material/Card";
+import { useEffect } from "react";
 // import axios from "axios";
 // import { useEffect, useState } from "react";
 
@@ -16,20 +17,12 @@ import DataTable from "../../examples/Tables/DataTable";
 // Data
 import BooksData from "./data/booksdata";
 
-const baseUrl = "http://localhost:3000/server/crm_crud/";
-
-// Version deployment
-// const baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
-
 function DataTables(props) {
-
-  // const [userID, setUserID] = useState({});
 
   const { module, userEmail } = props;
 
+  let [ data, getUserBooksData] = BooksData(module, userEmail);
 
-  const booksData = BooksData(module, userEmail);
-  console.log(booksData);
   return (
     <DashboardLayout>
       {/* <DashboardNavbar /> */}
@@ -40,7 +33,7 @@ function DataTables(props) {
               
             </MDTypography>
           </MDBox>
-          <DataTable table={booksData} canSearch />
+          <DataTable table={data} canSearch />
         </Card>
       </MDBox>
       {/* <Footer /> */}

@@ -28,7 +28,7 @@ exports.getOrganizationID = async(req,res) => {
 			response.on('data', function (chunk) {
 				data += chunk;
 			});
-
+			
 			response.on('end', function () {
 				res.setHeader('content-type', 'application/json');
 				res.status(200).send(data)
