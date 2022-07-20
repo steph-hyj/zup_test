@@ -120,16 +120,16 @@ export default function ModuleRoutes() {
   if(!loading) {
     /**Route for admin */
     if(appRole === "App Administrator") {
+      moduleRoute = [
+        {
+          name: "CRM Dashboard",
+          key: "CRM",
+          route:"/CRM/dashboard",
+          component: <AdminDashboardPage />
+        }
+      ]
       if(modulesDetails.length > 0)
       {
-        moduleRoute = [
-          {
-            name: "CRM Dashboard",
-            key: "CRM",
-            route:"/CRM/dashboard",
-            component: <AdminDashboardPage />
-          }
-        ]
 
         modulesDetails.forEach((module) => {
           var routeObj = {
@@ -175,6 +175,7 @@ export default function ModuleRoutes() {
     }
 
     if(appRole === "App Administrator") {
+      console.log(moduleRoute);
       const routes = [
         {
           type: "collapse",
@@ -225,7 +226,6 @@ export default function ModuleRoutes() {
         },
         { type: "divider", key: "divider-1" },
       ];
-
       return routes;
     } else {
       
