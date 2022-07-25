@@ -63,14 +63,14 @@ export default function ModuleRoutes() {
           var module = [];
           response.data.Module.forEach((moduleDetails) => {
             // console.log(moduleDetails);
-              if(modules.length > 0) {
-                modules.forEach(mod => {
-                  if(mod.api_name === moduleDetails[0].Module.Module_api && !moduleDetails[0].Module.Connection) {
-                    module.push(mod);
-                  }
-                });
-              }
-            })
+            if(modules.length > 0) {
+              modules.forEach(mod => {
+                if(mod.api_name === moduleDetails[0].Module.Module_api && !moduleDetails[0].Module.Connection) {
+                  module.push(mod);
+                }
+              });
+            }
+           });
           setModulesDetails(module);
           }).catch((err) => {
               console.log(err);
@@ -127,10 +127,9 @@ export default function ModuleRoutes() {
           route:"/CRM/dashboard",
           component: <AdminDashboardPage />
         }
-      ]
+      ];
       if(modulesDetails.length > 0)
       {
-
         modulesDetails.forEach((module) => {
           var routeObj = {
             name: String,
@@ -222,7 +221,7 @@ export default function ModuleRoutes() {
           name: "Zoho CRM",
           key: "CRM",
           icon: <ImageIcon />,
-          collapse: moduleRoute.length > 1 ? moduleRoute : null
+          collapse: moduleRoute.length > 0 ? moduleRoute : null
         },
         { type: "divider", key: "divider-1" },
       ];
