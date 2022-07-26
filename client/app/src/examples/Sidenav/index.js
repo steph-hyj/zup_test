@@ -89,12 +89,12 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           href={href}
           target="_blank"
           rel="noreferrer"
-          sx={{ textDecoration: "none" }}
+          sx={{ textDecoration: "none"}}
         >
           <SidenavItem name={name} nested />
         </Link>
       ) : (
-        <NavLink to={route} key={key} sx={{ textDecoration: "none" }}>
+        <NavLink to={route} key={key} sx={{ textDecoration: "none"}}>
           <SidenavItem name={name} active={route === pathname} nested />
         </NavLink>
       )
@@ -106,7 +106,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const renderCollapse = (collapses) =>
     collapses.map(({ name, collapse, route, href, key }) => {
       let returnValue;
-
       if (collapse) {
         returnValue = (
           <SidenavItem
@@ -121,6 +120,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
                 : setOpenNestedCollapse(key)
             }
           >
+            {/* {console.log("Render Collapse",collapse)} */}
             {renderNestedCollapse(collapse)}
           </SidenavItem>
         );
@@ -133,10 +133,12 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             rel="noreferrer"
             sx={{ textDecoration: "none" }}
           >
+            {console.log(href)}
             <SidenavItem color={color} name={name} active={key === itemName} />
           </Link>
         ) : (
-          <NavLink to={route} key={key} sx={{ textDecoration: "none" }}>
+          <NavLink to={route} key={key} sx={{ textDecoration: "none", height: 5 }}>
+            {console.log(route)}
             <SidenavItem color={color} name={name} active={key === itemName} />
           </NavLink>
         );
@@ -146,11 +148,19 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(
-    ({ type, name, icon, title, collapse, noCollapse, key, href, route }) => {
+    ({ type, name, title, collapse, noCollapse, key, href, route }) => {
       let returnValue;
       
       if(type === "component") {
-        returnValue = (
+        returnValue = href ? (
+          <Link
+            href={href}
+            key={key}
+            sx={{ textDecoration: "none" }}
+          >
+            <SidenavItem color={color} name={name} active={key === itemName} />
+          </Link>
+        ):(
           <NavLink to={route} key={key} sx={{ textDecoration: "none" }}>
             <SidenavItem color={color} name={name} active={key === itemName} />
           </NavLink>
@@ -166,7 +176,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           >
             <SidenavCollapse
               name={name}
-              icon={icon}
               active={key === collapseName}
               noCollapse={noCollapse}
             />
@@ -175,11 +184,11 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           <SidenavCollapse
             key={key}
             name={name}
-            icon={icon}
             active={key === collapseName}
             open={openCollapse === key}
             onClick={() => (openCollapse === key ? setOpenCollapse(false) : setOpenCollapse(key))}
           >
+            {console.log("Collapse",collapse)}
             {collapse ? renderCollapse(collapse) : null}
           </SidenavCollapse>
         );

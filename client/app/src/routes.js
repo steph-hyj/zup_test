@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 
 // @mui icons
-import ImageIcon from '@mui/icons-material/Image';
 // import DashboardIcon from '@mui/icons-material/Dashboard';
 //Pages
 // import InvoicePage from "./Pages/QuotePage";
@@ -174,21 +173,20 @@ export default function ModuleRoutes() {
     }
 
     if(appRole === "App Administrator") {
-      console.log(moduleRoute);
       const routes = [
         {
           type: "collapse",
-          name: "Users",
+          name: "Utilisateurs",
           key: "Users",
           collapse: [
             {
-              name: "Liste users",
+              name: "Liste utilisateurs",
               key: "listeUsers",
               route: "/userList",
               component: <UserList/>
             },
             {
-              name: "Creation users",
+              name: "Creation utilisateur",
               key: "createUser",
               route: "/createUser",
               component: <UserCreate/>
@@ -199,15 +197,17 @@ export default function ModuleRoutes() {
           type: "collapse",
           name: "Gestion rôle",
           key: "roles&permissions",
+          style: [{ height: 5 }],
           collapse: [
             {
               name: "Roles & Permissions",
               key: "roles",
               route: "/gestions/rolesPermissions",
               component: <RolePermission />,
+              style: [{ height: 5 }]
             },
             {
-              name: "Connections",
+              name: "Connexions",
               key: "connections",
               route: "/gestions/connection",
               component: <ConnectionPage />,
@@ -220,11 +220,17 @@ export default function ModuleRoutes() {
           type: "collapse",
           name: "Zoho CRM",
           key: "CRM",
-          icon: <ImageIcon />,
           collapse: moduleRoute.length > 0 ? moduleRoute : null
         },
         { type: "divider", key: "divider-1" },
+        {
+          type: "component",
+          name: "Déconnexion",
+          key: "logout",
+          href: "http://localhost:3000/app/logout.html",
+        },
       ];
+
       return routes;
     } else {
       
@@ -234,14 +240,14 @@ export default function ModuleRoutes() {
       const routesArray = [
         {
           type: "component",
-          name: "Invoices",
+          name: "Factures",
           key: "invoices",
           route: "/books/invoice",
           component: <BooksPage module="Invoices" userEmail={userEmail} />,
         },
         {
           type: "component",
-          name: "Quotes",
+          name: "Devis",
           key: "quotes",
           route: "/books/quote",
           component: <BooksPage module="Quotes" />,
