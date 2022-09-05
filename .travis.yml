@@ -7,7 +7,7 @@ jobs:
   include:
     - stage: functions
       before_script:
-        - cd functions/catly/server
+        - cd functions/crm_crud/server
       script:
         - echo 'function!!'
         - echo 'Installing Deps!'
