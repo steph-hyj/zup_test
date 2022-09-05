@@ -15,8 +15,7 @@ jobs:
         - npm install
       after_success:
         - echo 'deploying functions!'
-        - echo $[CATALYST_TOKEN]
-        - echo [CATALYST_TOKEN]
+        - echo ${CATALYST_TOKEN}
         - catalyst deploy --only functions --project 128000000004001 --verbose --token 
     - stage: client
       before_script:
