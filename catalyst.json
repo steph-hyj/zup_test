@@ -4,7 +4,7 @@
     "ignore": [],
     "scripts": {
       "packageJson": "cd client && copy client-package.json app\\build\\",
-      "build": "cd functions/crm_crud && npm ci && cd ../.. && cd client/app && npm run build",
+      "build": "cd client/app && npm install --force && npm run build",
       "preserve": "catalyst run client:build && catalyst run client:packageJson",
       "predeploy": "catalyst run client:build && catalyst run client:packageJson"
     }
