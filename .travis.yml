@@ -1,33 +1,21 @@
 language: node_js
 node_js:
-  - 14
+  - 8
 install:
   - npm install -g zcatalyst-cli
 jobs:
   include:
     - stage: functions
       before_script:
-        - cd functions/crm_crud
-        - pwd
+        - cd functions/catly/server
       script:
-        - echo 'functions!!'
-        - echo 'Installing Dependencies!'
+        - echo 'function!!'
+        - echo 'Installing Deps!'
         - npm install
       after_success:
-        - echo 'deploying functions!'
-        - echo ${CATALYST_TOKEN}
-        - catalyst deploy --only functions --project 128000000004001 --verbose --token 
+        - echo 'deploying function!'
+        - catalyst deploy --only functions --project 128000000148098 --verbose
     - stage: client
-      before_script:
-        - cd client/app
-        - pwd
       script:
-        - echo 'client!!'
-        - echo 'Installing Dependencies!'
-        - yarn install
-        - yarn build
-        - cp ../client-package.json build/.
-        - cd build
-      after_success:
-        - echo 'deploying client!'
-        - catalyst deploy --only client --project 128000000004001 --verbose --token 
+        - echo 'deploying client!!'
+	      - catalyst deploy --only client --project128000000148098 --verbose
