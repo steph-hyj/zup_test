@@ -12,7 +12,7 @@ jobs:
       script:
         - echo 'functions!!'
         - echo 'Installing Dependencies!'
-        - npm install --force
+        - npm install
       after_success:
         - echo 'deploying functions!'
         - echo ${CATALYST_TOKEN}
@@ -24,7 +24,7 @@ jobs:
       script:
         - echo 'client!!'
         - echo 'Installing Dependencies!'
-        - yarn install --force
+        - yarn install
         - yarn build
         - cp ../client-package.json build/.
         - cd build
