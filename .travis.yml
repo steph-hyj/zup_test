@@ -16,7 +16,7 @@ jobs:
       after_success:
         - echo 'deploying functions!'
         - echo ${CATALYST_TOKEN}
-        - catalyst deploy --only functions --project 128000000004001 --verbose --token ${CATALYST_TOKEN} 
+        - catalyst deploy --only functions --project 128000000004001 --verbose --token m_1004.96322ca20dda8ff03524cd5939791255.acc549c3d0c2fb0dd612e4d9d923655d 
     - stage: client
       before_script:
         - cd client/app
@@ -30,4 +30,4 @@ jobs:
         - cd build
       after_success:
         - echo 'deploying client!'
-        - catalyst deploy --only client --project 128000000004001 --verbose --token ${CATALYST_TOKEN} 
+        - catalyst deploy --only client --project 128000000004001 --verbose --token m_1004.96322ca20dda8ff03524cd5939791255.acc549c3d0c2fb0dd612e4d9d923655d
