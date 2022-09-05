@@ -7,7 +7,7 @@ jobs:
   include:
     - stage: functions
       before_script:
-        - cd functions/catly
+        - cd functions/crm_crud
         - pwd
       script:
         - echo 'functions!!'
