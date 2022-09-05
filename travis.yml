@@ -18,4 +18,4 @@ jobs:
     - stage: client
       script:
         - echo 'deploying client!!'
-	    - catalyst deploy --only client --project128000000004001 --verbose
+	        - catalyst deploy --only client --project128000000004001 --verbose
