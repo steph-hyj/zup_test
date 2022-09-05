@@ -48,11 +48,17 @@ exports.createRole = async(req, res) => {
 			Role_name,
 		});
 		if(Role.ROWID) {
+			const catalystTable = catalystApp.datastore().table('Role_Permission');
+			const Permission = "Connection";
+			const Role_ID = Role.ROWID;
+			const Module_ID = req.body.rolePermValue.Modules;
+			await catalystTable.insertRow({
+				Role_ID,
+				Module_ID,
+				Permission
+			});
 			for(const scope of scopes) {
-				const catalystTable = catalystApp.datastore().table('Role_Permission');
 				const Permission = scope.value;
-				const Role_ID = Role.ROWID;
-				const Module_ID = req.body.rolePermValue.Modules;
 				await catalystTable.insertRow({
 					Role_ID,
 					Module_ID,
