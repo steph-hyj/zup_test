@@ -16,7 +16,7 @@ jobs:
       after_success:
         - echo 'deploying functions!'
         - echo ${CATALYST_TOKEN}
-        - catalyst deploy --only functions --project 128000000004001 --verbose
+        - catalyst deploy --only functions --project 10678000000003010 --verbose --dc eu
     - stage: client
       before_script:
         - cd client/app
@@ -30,4 +30,4 @@ jobs:
         - cd build
       after_success:
         - echo 'deploying client!'
-        - catalyst deploy --only client --project 128000000004001 --verbose
+        - catalyst deploy --only client --project 10678000000003010 --verbose --dc eu
