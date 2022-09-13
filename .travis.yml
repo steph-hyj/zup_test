@@ -7,14 +7,14 @@ jobs:
   include:
     - stage: client
       before_script:
-        - export NODE_OPTIONS=–max_old_space_size=8192
         - cd client/app
         - pwd
       script:
         - echo 'client!!'
         - echo 'Installing Dependencies!'
         - npm install -- force && npm build
-        - cp ../client-package.json build/.
+        - ls
+        - copy ../client-package.json build/
         - cd build
       after_success:
         - echo 'deploying client!'
