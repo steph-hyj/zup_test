@@ -12,7 +12,8 @@ jobs:
       script:
         - echo 'client!!'
         - echo 'Installing Dependencies!'
-        - npm install -- force && npm run-script build
+        - npm install -- force
+        - npm run-script build
         - cp ../client-package.json build/
         - cd build
       after_success:
