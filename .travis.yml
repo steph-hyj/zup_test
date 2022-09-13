@@ -5,21 +5,9 @@ install:
   - npm install -g zcatalyst-cli
 jobs:
   include:
-    - stage: functions
-      before_script:
-        - export NODE_OPTIONS=--max_old_space_size=8192
-        - cd functions/crm_crud
-        - pwd
-      script:
-        - echo 'functions!!'
-        - echo 'Installing Dependencies!'
-        - npm install
-      after_success:
-        - echo 'deploying functions!'
-        - echo ${CATALYST_TOKEN}
-        - catalyst deploy --only functions --project 128000000148098 --verbose --dc eu
     - stage: client
       before_script:
+        - export NODE_OPTIONS=–max_old_space_size=8192
         - cd client/app
         - pwd
       script:
