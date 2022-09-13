@@ -16,7 +16,7 @@ jobs:
       after_success:
         - echo 'deploying functions!'
         - echo ${CATALYST_TOKEN}
-        - catalyst deploy --only functions --project 10678000000003010 --verbose --dc eu
+        - catalyst deploy --only functions --project 128000000148098 --verbose --dc eu
     - stage: client
       before_script:
         - cd client/app
@@ -24,10 +24,9 @@ jobs:
       script:
         - echo 'client!!'
         - echo 'Installing Dependencies!'
-        - yarn install
-        - yarn build
+        - npm install -- force && npm run build
         - cp ../client-package.json build/.
         - cd build
       after_success:
         - echo 'deploying client!'
-        - catalyst deploy --only client --project 10678000000003010 --verbose --dc eu
+        - catalyst deploy --only client --project 128000000148098 --verbose --dc eu
