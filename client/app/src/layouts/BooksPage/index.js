@@ -1,6 +1,5 @@
 // @mui material components
 import Card from "@mui/material/Card";
-import { useEffect } from "react";
 // import axios from "axios";
 // import { useEffect, useState } from "react";
 
@@ -21,7 +20,7 @@ function DataTables(props) {
 
   const { module, userEmail } = props;
 
-  let [ data, getUserBooksData] = BooksData(module, userEmail);
+  let [ data ] = BooksData(module, userEmail);
 
   return (
     <DashboardLayout>

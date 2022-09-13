@@ -25,15 +25,15 @@ export default function GetData() {
     });
   },[]);
 
-  function deleteConnection(moduleID) {
-    // console.log(moduleID);
-    axios.delete(baseUrl+"/deleteConnection/"+moduleID)
-    .then((response) => {
-      console.log(response);
-    }).catch((err) => {
-      console.log(err);
-    })
-  }
+  // function deleteConnection(moduleID) {
+  //   // console.log(moduleID);
+  //   axios.delete(baseUrl+"/deleteConnection/"+moduleID)
+  //   .then((response) => {
+  //     console.log(response);
+  //   }).catch((err) => {
+  //     console.log(err);
+  //   })
+  // }
   const columnsData = [
     {Header: "Nom", accessor: "Nom", width:"10%"},
     {Header: "Prénom", accessor: "Prenom",width:"10%"},

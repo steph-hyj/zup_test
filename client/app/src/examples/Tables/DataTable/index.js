@@ -33,9 +33,6 @@ function DataTable({
   noEndBorder,
 }) {
   const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
-  const entries = entriesPerPage.entries
-    ? entriesPerPage.entries.map((el) => el.toString())
-    : ["5", "10", "15", "20", "25"];
   const columns = useMemo(() => table.columns, [table]);
   const data = useMemo(() => table.rows, [table]);
 
@@ -65,10 +62,8 @@ function DataTable({
   } = tableInstance;
 
   // Set the default value for the entries per page when component mounts
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setPageSize(defaultValue || 10), [defaultValue]);
-
-  // Set the entries per page value based on the select value
-  const setEntriesPerPage = (value) => setPageSize(value);
 
   // Render the paginations
   const renderPagination = pageOptions.map((option) => (

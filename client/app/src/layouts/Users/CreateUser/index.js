@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 import { useParams, useLocation } from "react-router-dom";
 
 import { Formik, Form } from "formik";
@@ -17,11 +17,6 @@ import FormInfo from "../../AdminCRM/Form/FormInfo";
 
 import userForm from "../../AdminCRM/Form/schemas/userForm";
 import initialValues from "../../AdminCRM/Form/schemas/initialValues";
-
-const baseUrl = "http://localhost:3000/server/crm_crud/";
-
-// Version deployment
-// const baseUrl = "https://zup-20078233842.development.catalystserverless.eu/server/crm_crud/";
 
 function getForms(formData, formName) {
   return <FormInfo formData={formData} formName={formName} />;

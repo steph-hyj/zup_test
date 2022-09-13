@@ -17,7 +17,7 @@ import FormInfo from "./FormInfo";
 
 import connectionForm from "./schemas/createForm";
 import rolePermissionForm from "./schemas/rolePermissionForm";
-import updateForm from "./schemas/updateForm";
+// import updateForm from "./schemas/updateForm";
 import initialValues from "./schemas/initialValues";
 
 const baseUrl = "http://localhost:3000/server/crm_crud/";
