@@ -19,7 +19,7 @@ export default function GetData() {
 
   useEffect(() => {
     axios.get(baseUrl+"/getAllUser").then((response)=>{
-      setUsersData(response.data.allUser);
+      setUsersData(response.data);
     }).catch((err) => {
       console.log(err);
     });
