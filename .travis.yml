@@ -11,7 +11,7 @@ jobs:
         - cd client/app
         - pwd
       script:
-        - echo 'client!!'
+        - echo 'client'
         - echo 'Installing Dependencies!'
         - npm install --force
         - npm run build
